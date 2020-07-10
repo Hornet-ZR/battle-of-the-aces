@@ -5,6 +5,7 @@ public class main {
 	private boolean running = false;
 	private double frame_cap = 1.0/120.0;
 	
+	
 	public void init() {
 		
 	}
