@@ -1,23 +1,75 @@
 package main;
 
-public class main {
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+
+
+public class main extends Canvas implements Runnable{
 	private Thread mainLoop;
 	private boolean running = false;
+	private boolean UPDATE = false;
 	private double frame_cap = 1.0/120.0;
+	private int width = 900, height = 700;
+	private Window w;
 	
 	public void init() {
-		
+		w = new Window(this,width,height,"Plane Fight",false);
+		mainLoop = new Thread(this);
+		mainLoop.run();
 	}
 	
 	public void run() {
-		
+		running = true;
+		loop();
 	}
 	
 	public void loop() {
+		double now = 0;
+		double last = System.nanoTime() / 1000000000.0;
+		double passed = 0;
+		double unporcessed = 0;
+		while (running) {
+			UPDATE = false;
+			now = System.nanoTime() / 1000000000.0;
+			passed += now - last;
+			last = now;
+			unporcessed += passed;
+			while (unporcessed >= frame_cap) {
+				unporcessed -= frame_cap;
+				UPDATE = true;
+				update();
+			}
+			if (UPDATE) {
+				update();
+			}else {
+				try {
+					Thread.sleep(1);
+				}catch (Exception e) {
+					
+				}
+			}
+		}
+	}
+	
+	public void update() {
+		BufferStrategy bs = this.getBufferStrategy();
 		
+		if (bs == null) {
+			this.createBufferStrategy(3);
+			return;
+		}
+		Graphics g = bs.getDrawGraphics();
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, width, height);
+		
+		bs.show();
+		g.dispose();
 	}
 	public static void main (String args[]){
-		System.out.println("Hello WOrld");
+		main m = new main();
+		m.init();
 	}
 
 }
