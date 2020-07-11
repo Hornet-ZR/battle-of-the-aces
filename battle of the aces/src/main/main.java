@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
+import render.Renderer;
+
 
 public class main extends Canvas implements Runnable{
 	private Thread mainLoop;
@@ -12,6 +14,8 @@ public class main extends Canvas implements Runnable{
 	private boolean UPDATE = false;
 	private double frame_cap = 1.0/120.0;
 	private int width = 900, height = 700;
+	
+	private Renderer renderer = new Renderer();
 	private Window w;
 	
 	public void init() {
@@ -63,6 +67,8 @@ public class main extends Canvas implements Runnable{
 		Graphics g = bs.getDrawGraphics();
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, width, height);
+		
+		renderer.render(g);
 		
 		bs.show();
 		g.dispose();
