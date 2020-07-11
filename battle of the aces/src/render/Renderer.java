@@ -10,6 +10,9 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import main.main;
+import render.events.KeyEvents;
+
 public class Renderer extends JPanel{
 	private Graphics2D g2;
 	
@@ -17,11 +20,15 @@ public class Renderer extends JPanel{
 	private boolean chosenEnemy = false;
 	private boolean showingMenu = true;
 	
+	//Classes
+	private KeyEvents keyEvent = new KeyEvents();
+	
 	//Player images / files
 	private File playerSpritesF;
 	private BufferedImage playerSprites;
 	
-	public void init() {
+	public void init(main m) {
+		m.addKeyListener(keyEvent);
 		//Set variables
 		try {
 			playerSpritesF = new File(this.getClass().getResource("res/playerSprites").toURI());

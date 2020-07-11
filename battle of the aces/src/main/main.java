@@ -19,6 +19,8 @@ public class main extends Canvas implements Runnable{
 	private Window w;
 	
 	public void init() {
+		this.setFocusable(true);
+		this.setFocusTraversalKeysEnabled(false);
 		w = new Window(this,width,height,"Plane Fight",false);
 		mainLoop = new Thread(this);
 		mainLoop.run();
@@ -26,6 +28,7 @@ public class main extends Canvas implements Runnable{
 	
 	public void run() {
 		running = true;
+		renderer.init(this);
 		loop();
 	}
 	
