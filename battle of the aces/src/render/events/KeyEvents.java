@@ -6,7 +6,6 @@ import java.awt.event.KeyListener;
 public class KeyEvents implements KeyListener{
 	public boolean upArrow = false, keyD = false, rightArrow = false, leftArrow = false, keyZ = false;
 	
-	
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
 			upArrow = true;
@@ -37,6 +36,9 @@ public class KeyEvents implements KeyListener{
 		}
 		if (e.getKeyCode() == KeyEvent.VK_D) {
 			keyD = false;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_Z) {
+			keyZ = false;
 		}
 	}
 

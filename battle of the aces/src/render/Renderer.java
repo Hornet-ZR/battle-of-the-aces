@@ -18,9 +18,11 @@ import render.imageUtil.SpriteLoader;
 public class Renderer extends JPanel{
 	private Graphics2D g2;
 	
-	private boolean chosenPlayer = false;
-	private boolean chosenEnemy = false;
+	private boolean showMainScreen = true;
+	private boolean choosingPlayer = false;
+	private boolean choosingEnemy = false;
 	private boolean showingMenu = true;
+	private int keyZpress = 0;
 	
 	//Classes
 	private KeyEvents keyEvent = new KeyEvents();
@@ -48,32 +50,80 @@ public class Renderer extends JPanel{
 	public void render(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		this.g2 = g2;
-		
-		if (showingMenu == false) {
-			if (chosenPlayer == false) {
-				
-			}
-		}else if (showingMenu == true){
+		if (showMainScreen == true) {
 			renderMainScreen();
+			if (keyEvent.keyZ == true) {
+				keyZpress++;
+				try {
+					Thread.sleep(100);
+				}catch(Exception e) {
+					
+				}
+			}
+			System.out.println(keyZpress);
+			if (keyZpress == 1) {
+				showingMenu = false;
+				choosingPlayer = true;
+			}
+			if (keyZpress == 2) {
+				choosingPlayer = false;
+				choosingEnemy = true;
+			}
+			if (keyZpress == 3) {
+				choosingEnemy = false;
+			}
+			
 		}
 		
 	}
 	
 	public void renderMainScreen() {
-		g2.setColor(Color.RED);
-		g2.setFont(new Font("Arial",Font.BOLD,30));
-		g2.drawString("DOGFIGHTER 8.0: Battle of the aces", 190, 50);
-		g2.drawString("Press Z", 500, 400);
-		
-		
-		if (guiSprites == null) {
-			return;
+		if (showingMenu == true) {
+			g2.setColor(Color.RED);
+			g2.setFont(new Font("Arial",Font.BOLD,30));
+			g2.drawString("DOGFIGHTER 8.0: Battle of the aces", 190, 50);
+			g2.drawString("Press Z to choose player", 500, 400);
+			
+			
+			if (guiSprites == null) {
+				return;
+			}
+			
+			BufferedImage plane_image = spriteLoader.loadSprite(guiSprites, 1, 1);
+			AffineTransform pos = AffineTransform.getTranslateInstance(50, 200);
+			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+			g2.drawImage(plane_image, pos, this);
+		}else if (showingMenu == false && choosingPlayer == true) {
+			g2.setColor(Color.RED);
+			g2.setFont(new Font("Arial",Font.BOLD,30));
+			g2.drawString("Choose your player", 190, 50);
+			g2.drawString("Press Z to choose enemy", 500, 400);
+			
+			
+			if (guiSprites == null) {
+				return;
+			}
+			
+			BufferedImage plane_image = spriteLoader.loadSprite(guiSprites, 1, 1);
+			AffineTransform pos = AffineTransform.getTranslateInstance(50, 200);
+			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+			g2.drawImage(plane_image, pos, this);
+		}else if (showingMenu == false && choosingPlayer == false && choosingEnemy == true) {
+			g2.setColor(Color.RED);
+			g2.setFont(new Font("Arial",Font.BOLD,30));
+			g2.drawString("Choose your enemy", 190, 50);
+			g2.drawString("Press Z to start", 500, 400);
+			
+			
+			if (guiSprites == null) {
+				return;
+			}
+			
+			BufferedImage plane_image = spriteLoader.loadSprite(guiSprites, 1, 1);
+			AffineTransform pos = AffineTransform.getTranslateInstance(50, 200);
+			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+			g2.drawImage(plane_image, pos, this);
 		}
-		
-		BufferedImage plane_image = spriteLoader.loadSprite(guiSprites, 1, 1);
-		AffineTransform pos = AffineTransform.getTranslateInstance(50, 200);
-		pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
-		g2.drawImage(plane_image, pos, this);
 		
 	}
 	
