@@ -27,7 +27,8 @@ public class Renderer extends JPanel{
 	//Classes
 	private KeyEvents keyEvent = new KeyEvents();
 	private SpriteLoader spriteLoader = new SpriteLoader();
-	//Player images / files
+	
+	//Images / files
 	private File playerSpritesF;
 	private BufferedImage playerSprites;
 	private File guiSpritesF;
@@ -38,8 +39,9 @@ public class Renderer extends JPanel{
 		m.addKeyListener(keyEvent);
 		//Set variables
 		try {
-			//playerSpritesF = new File(this.getClass().getResource("res/playerSprites.png").toURI());
-			//playerSprites = ImageIO.read(playerSpritesF);
+			playerSpritesF = new File(this.getClass().getResource("res/playerSprites.png").toURI());
+			playerSprites = ImageIO.read(playerSpritesF);
+			
 			guiSpritesF = new File(this.getClass().getResource("res/guiSprites.png").toURI());
 			guiSprites = ImageIO.read(guiSpritesF);
 		}catch (Exception e) {
@@ -60,7 +62,6 @@ public class Renderer extends JPanel{
 					
 				}
 			}
-			System.out.println(keyZpress);
 			if (keyZpress == 1) {
 				showingMenu = false;
 				choosingPlayer = true;
@@ -89,7 +90,7 @@ public class Renderer extends JPanel{
 				return;
 			}
 			
-			BufferedImage plane_image = spriteLoader.loadSprite(guiSprites, 1, 1);
+			BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
 			AffineTransform pos = AffineTransform.getTranslateInstance(50, 200);
 			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 			g2.drawImage(plane_image, pos, this);
@@ -100,11 +101,11 @@ public class Renderer extends JPanel{
 			g2.drawString("Press Z to choose enemy", 500, 400);
 			
 			
-			if (guiSprites == null) {
+			if (playerSprites == null) {
 				return;
 			}
 			
-			BufferedImage plane_image = spriteLoader.loadSprite(guiSprites, 1, 1);
+			BufferedImage plane_image = spriteLoader.loadGUISprite(playerSprites, 1, 1);
 			AffineTransform pos = AffineTransform.getTranslateInstance(50, 200);
 			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 			g2.drawImage(plane_image, pos, this);
@@ -119,7 +120,7 @@ public class Renderer extends JPanel{
 				return;
 			}
 			
-			BufferedImage plane_image = spriteLoader.loadSprite(guiSprites, 1, 1);
+			BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
 			AffineTransform pos = AffineTransform.getTranslateInstance(50, 200);
 			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 			g2.drawImage(plane_image, pos, this);
