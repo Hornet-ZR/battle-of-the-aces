@@ -82,6 +82,8 @@ public class Renderer extends JPanel{
 				choosingEnemy = false;
 			}
 			
+		}else if (showMainScreen == false) {
+			
 		}
 		
 	}
