@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import main.main;
 import render.events.KeyEvents;
+import render.events.MouseEvents;
 import render.imageUtil.SpriteLoader;
 
 public class Renderer extends JPanel{
@@ -25,8 +26,12 @@ public class Renderer extends JPanel{
 	private int keyZpress = 0;
 	private int plane_preview_x = 100;
 	private int plane_preview_y = 100;
+	public int playerSpriteChosenX = 1;
+	public int playerSpriteChosenY = 1;
+	public int planeIndex = 1;
 	//Classes
 	private KeyEvents keyEvent = new KeyEvents();
+	private MouseEvents mouseEvent = new MouseEvents();
 	private SpriteLoader spriteLoader = new SpriteLoader();
 	
 	//Images / files
@@ -38,6 +43,8 @@ public class Renderer extends JPanel{
 	
 	public void init(main m) {
 		m.addKeyListener(keyEvent);
+		mouseEvent.init(this);
+		m.addMouseListener(mouseEvent);
 		//Set variables
 		try {
 			playerSpritesF = new File(this.getClass().getResource("res/playerSprites.png").toURI());
@@ -80,9 +87,6 @@ public class Renderer extends JPanel{
 	}
 	
 	public void renderMainScreen() {
-		g2.setColor(Color.WHITE);
-		g2.drawOval(0, 500, 100, 100);
-		g2.drawOval(300, 500, 100, 100);
 		if (showingMenu == true) {
 			g2.setColor(Color.RED);
 			g2.setFont(new Font("Arial",Font.BOLD,30));
@@ -108,12 +112,28 @@ public class Renderer extends JPanel{
 			if (playerSprites == null) {
 				return;
 			}
+			if (playerSpriteChosenX > 10) {
+				playerSpriteChosenX = 1;
+				playerSpriteChosenY++;
+			}
+			if (mouseEvent.back == true && playerSpriteChosenY > 1) {
+				playerSpriteChosenY--;
+				playerSpriteChosenX = 10*playerSpriteChosenY;
+			}
 			
-			int chosenPlayerIndex = 1;
-			BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, 1, 1);
+			BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
 			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 			g2.drawImage(plane_image, pos, this);
+			
+			g2.setColor(Color.WHITE);
+			g2.drawOval(0, 500, 100, 100);
+			g2.drawOval(300, 500, 100, 100);
+			g2.setFont(new Font("Arial",Font.BOLD,22));
+			g2.drawString("Previous",5, 560);
+			g2.drawString("Next",325, 560);
+			g2.drawString("Plane "+planeIndex, 165, 560);
+			
 		}else if (showingMenu == false && choosingPlayer == false && choosingEnemy == true) {
 			g2.setColor(Color.RED);
 			g2.setFont(new Font("Arial",Font.BOLD,30));
@@ -129,6 +149,14 @@ public class Renderer extends JPanel{
 			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
 			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 			g2.drawImage(plane_image, pos, this);
+			
+			g2.setColor(Color.WHITE);
+			g2.drawOval(0, 500, 100, 100);
+			g2.drawOval(300, 500, 100, 100);
+			g2.setFont(new Font("Arial",Font.BOLD,22));
+			g2.drawString("Previous",5, 560);
+			g2.drawString("Next",325, 560);
+			g2.drawString("Plane "+planeIndex, 165, 560);
 		}
 		
 	}
