@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 public class SpriteLoader {
 	public BufferedImage loadGUISprite(BufferedImage imgIn, int x, int y) {
-		BufferedImage sprite = imgIn.getSubimage((x*342)-342, (y*342)-342, 342, 342);
+		BufferedImage sprite = imgIn.getSubimage((x*256)-256, (y*342)-342, 256, 342);
 		return sprite;
 	}
 	public BufferedImage loadPlayerSprite(BufferedImage imgIn, int x, int y) {

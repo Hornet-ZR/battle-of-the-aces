@@ -23,7 +23,8 @@ public class Renderer extends JPanel{
 	private boolean choosingEnemy = false;
 	private boolean showingMenu = true;
 	private int keyZpress = 0;
-	
+	private int plane_preview_x = 100;
+	private int plane_preview_y = 100;
 	//Classes
 	private KeyEvents keyEvent = new KeyEvents();
 	private SpriteLoader spriteLoader = new SpriteLoader();
@@ -79,8 +80,6 @@ public class Renderer extends JPanel{
 	}
 	
 	public void renderMainScreen() {
-		g2.setColor(Color.GRAY);
-		g2.fillRect(0, 100, 450, 550);
 		g2.setColor(Color.WHITE);
 		g2.drawOval(0, 500, 100, 100);
 		g2.drawOval(300, 500, 100, 100);
@@ -96,7 +95,7 @@ public class Renderer extends JPanel{
 			}
 			
 			BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
-			AffineTransform pos = AffineTransform.getTranslateInstance(50, 200);
+			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
 			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 			g2.drawImage(plane_image, pos, this);
 		}else if (showingMenu == false && choosingPlayer == true) {
@@ -111,8 +110,8 @@ public class Renderer extends JPanel{
 			}
 			
 			int chosenPlayerIndex = 1;
-			BufferedImage plane_image = spriteLoader.loadGUISprite(playerSprites, 1, 1);
-			AffineTransform pos = AffineTransform.getTranslateInstance(60, 200);
+			BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, 1, 1);
+			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
 			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 			g2.drawImage(plane_image, pos, this);
 		}else if (showingMenu == false && choosingPlayer == false && choosingEnemy == true) {
@@ -127,7 +126,7 @@ public class Renderer extends JPanel{
 			}
 			
 			BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
-			AffineTransform pos = AffineTransform.getTranslateInstance(50, 200);
+			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
 			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 			g2.drawImage(plane_image, pos, this);
 		}
