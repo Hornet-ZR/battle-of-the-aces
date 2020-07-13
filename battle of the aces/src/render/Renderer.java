@@ -79,6 +79,11 @@ public class Renderer extends JPanel{
 	}
 	
 	public void renderMainScreen() {
+		g2.setColor(Color.GRAY);
+		g2.fillRect(0, 100, 450, 550);
+		g2.setColor(Color.WHITE);
+		g2.drawOval(0, 500, 100, 100);
+		g2.drawOval(300, 500, 100, 100);
 		if (showingMenu == true) {
 			g2.setColor(Color.RED);
 			g2.setFont(new Font("Arial",Font.BOLD,30));
@@ -105,8 +110,9 @@ public class Renderer extends JPanel{
 				return;
 			}
 			
+			int chosenPlayerIndex = 1;
 			BufferedImage plane_image = spriteLoader.loadGUISprite(playerSprites, 1, 1);
-			AffineTransform pos = AffineTransform.getTranslateInstance(50, 200);
+			AffineTransform pos = AffineTransform.getTranslateInstance(60, 200);
 			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 			g2.drawImage(plane_image, pos, this);
 		}else if (showingMenu == false && choosingPlayer == false && choosingEnemy == true) {

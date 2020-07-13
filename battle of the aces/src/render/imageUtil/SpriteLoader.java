@@ -8,7 +8,7 @@ public class SpriteLoader {
 		return sprite;
 	}
 	public BufferedImage loadPlayerSprite(BufferedImage imgIn, int x, int y) {
-		BufferedImage sprite = imgIn.getSubimage((x*282)-282, (y*214)-214, 282, 214);
+		BufferedImage sprite = imgIn.getSubimage((x*214)-214, (y*282)-282, 214, 282);
 		return sprite;
 	}
 	public BufferedImage loadEnemySprite(BufferedImage imgIn, int x, int y) {
