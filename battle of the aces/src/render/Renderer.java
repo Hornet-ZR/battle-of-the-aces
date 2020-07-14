@@ -12,9 +12,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import main.main;
-import render.events.KeyEvents;
-import render.events.MouseEvents;
-import render.imageUtil.SpriteLoader;
+import render.entity.*;
+import render.events.*;
+import render.imageUtil.*;
 
 public class Renderer extends JPanel{
 	private Graphics2D g2;
@@ -29,10 +29,14 @@ public class Renderer extends JPanel{
 	public int playerSpriteChosenX = 1;
 	public int playerSpriteChosenY = 1;
 	public int planeIndex = 1;
+	
 	//Classes
 	private KeyEvents keyEvent = new KeyEvents();
 	private MouseEvents mouseEvent = new MouseEvents();
 	private SpriteLoader spriteLoader = new SpriteLoader();
+	
+	//Entities
+	private Player player;
 	
 	//Images / files
 	private File playerSpritesF;
@@ -40,6 +44,10 @@ public class Renderer extends JPanel{
 	private File guiSpritesF;
 	private BufferedImage guiSprites;
 	private double angle = 0;
+	
+	//Game settings
+	private boolean gameStarted = false;
+	private BufferedImage playerSSprite = null;
 	
 	public void init(main m) {
 		m.addKeyListener(keyEvent);
@@ -60,15 +68,26 @@ public class Renderer extends JPanel{
 	public void render(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		this.g2 = g2;
+		
 		if (showMainScreen == true) {
 			renderMainScreen();
-			if (keyEvent.keyZ == true) {
-				keyZpress++;
-				try {
-					Thread.sleep(100);
-				}catch(Exception e) {
-					
-				}
+		}
+		if (gameStarted) {
+			renderPlayer();
+			
+			g2.translate(player.getX(), player.getY());
+			
+			// add in clouds, runway, enemy, and many other things the are relative to the player
+			
+			g2.translate(-player.getX(), -player.getY());
+		}
+		
+		if (keyEvent.keyZ == true && keyZpress < 4) {
+			keyZpress++;
+			try {
+				Thread.sleep(70);
+			}catch(Exception e) {
+				
 			}
 			if (keyZpress == 1) {
 				showingMenu = false;
@@ -80,12 +99,11 @@ public class Renderer extends JPanel{
 			}
 			if (keyZpress == 3) {
 				choosingEnemy = false;
+				playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
+				gameStarted = true;
+				keyZpress++;
 			}
-			
-		}else if (showMainScreen == false) {
-			
 		}
-		
 	}
 	
 	public void renderMainScreen() {
@@ -164,7 +182,24 @@ public class Renderer extends JPanel{
 	}
 	
 	public void renderPlayer() {
+		if (player == null) {
+			player = new Player(g2,playerSSprite);
+			player.setWidth(100);
+			player.setHeight(100);
+		}else {
+			int oldPX, oldPY;
+			oldPX = player.getX();
+			oldPY = player.getY();
+			player = null;
+			player = new Player(g2,playerSSprite);
+			player.setWidth(100);
+			player.setHeight(100);
+			player.setX(oldPX);
+			player.setY(oldPY);
+		}
 		
+		player.tick();
+		player.draw();
 	}
 	
 	public void renderEnemy() {
