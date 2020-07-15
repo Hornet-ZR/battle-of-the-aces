@@ -26,9 +26,14 @@ public class Renderer extends JPanel{
 	private int keyZpress = 0;
 	private int plane_preview_x = 100;
 	private int plane_preview_y = 100;
+	private int player_width = 250;
+	private int player_height = 250;
+	private int player_start_x = 550;
+	private int player_start_y = 450;
 	public int playerSpriteChosenX = 1;
 	public int playerSpriteChosenY = 1;
 	public int planeIndex = 1;
+	
 	
 	//Classes
 	private KeyEvents keyEvent = new KeyEvents();
@@ -73,13 +78,16 @@ public class Renderer extends JPanel{
 			renderMainScreen();
 		}
 		if (gameStarted) {
-			renderPlayer();
+			createPlayer();
 			
 			g2.translate(player.getX(), player.getY());
 			
-			// add in clouds, runway, enemy, and many other things the are relative to the player
+			g2.setColor(Color.red);
+			g2.fillRect(0, 0, 50, 50);
 			
+			// add in clouds, runway, enemy, and many other things the are relative to the player
 			g2.translate(-player.getX(), -player.getY());
+			
 		}
 		
 		if (keyEvent.keyZ == true && keyZpress < 4) {
@@ -181,22 +189,30 @@ public class Renderer extends JPanel{
 		
 	}
 	
-	public void renderPlayer() {
+	public void createPlayer() {
 		if (player == null) {
 			player = new Player(g2,playerSSprite);
-			player.setWidth(100);
-			player.setHeight(100);
+			player.setWidth(player_width);
+			player.setHeight(player_height);
+			player.setX(player_start_x-player.getWidth());
+			player.setY(player_start_y-player.getHeight());
 		}else {
 			int oldPX, oldPY;
 			oldPX = player.getX();
 			oldPY = player.getY();
 			player = null;
 			player = new Player(g2,playerSSprite);
-			player.setWidth(100);
-			player.setHeight(100);
+			player.setWidth(player_width);
+			player.setHeight(player_height);
 			player.setX(oldPX);
 			player.setY(oldPY);
 		}
+	}
+	
+	public void renderPlayer() {
+		this.add(player);
+		
+		player.setVelx(1);
 		
 		player.tick();
 		player.draw();
