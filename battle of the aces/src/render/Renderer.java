@@ -41,7 +41,7 @@ public class Renderer extends JPanel{
 	private SpriteLoader spriteLoader = new SpriteLoader();
 	
 	//Entities
-	private Player player;
+	public Player player;
 	
 	//Images / files
 	private File playerSpritesF;
@@ -80,14 +80,14 @@ public class Renderer extends JPanel{
 		if (gameStarted) {
 			createPlayer();
 			
-			g2.translate(player.getX(), player.getY());
+			g.translate(-player.getX()+player.getWidth(), -player.getY()+player.getHeight());
 			
 			g2.setColor(Color.red);
-			g2.fillRect(0, 0, 50, 50);
+			g2.fillRect(0, 0, 50, 50);	
 			
-			// add in clouds, runway, enemy, and many other things the are relative to the player
-			g2.translate(-player.getX(), -player.getY());
+			renderPlayer();
 			
+			g.translate(player.getX()+player.getWidth(), player.getY()+player.getHeight());
 		}
 		
 		if (keyEvent.keyZ == true && keyZpress < 4) {
