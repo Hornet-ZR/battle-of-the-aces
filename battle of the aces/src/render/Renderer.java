@@ -84,6 +84,8 @@ public class Renderer extends JPanel{
 			g2.setColor(Color.red);
 			g2.fillRect(0, 0, 50, 50);	
 			
+			//System.out.println(player.getDirection());
+			
 			//create entities (player, enemy)
 			renderPlayer();
 		}
@@ -195,9 +197,11 @@ public class Renderer extends JPanel{
 			player.setX(player_start_x-player.getWidth());
 			player.setY(player_start_y-player.getHeight());
 		}else {
-			int oldPX, oldPY, oldDir;
+			float oldPX, oldPY, oldDir, oldVelX, oldVelY;
 			oldPX = player.getX();
 			oldPY = player.getY();
+			oldVelX = player.getVelx();
+			oldVelY = player.getVely();
 			oldDir = player.getDirection();
 			player = null;
 			player = new Player(g2,playerSSprite);
@@ -205,46 +209,44 @@ public class Renderer extends JPanel{
 			player.setHeight(player_height);
 			player.setX(oldPX);
 			player.setY(oldPY);
+			player.setVelx(oldVelX);
+			player.setVely(oldVelY);
 			player.setDirection(oldDir);
 		}
+		player.setSpeed(0.5f);
 	}
 	
 	public void renderPlayer() {
 		this.add(player);
 		
 		if (keyEvent.leftArrow == true) {
-			int newDir = player.getDirection()+1;
+			float newDir = player.getDirection()-0.1f;
 			player.setDirection(newDir);
 		}
 		
 		if (keyEvent.rightArrow == true) {
-			int newDir = player.getDirection()-1;
+			float newDir = player.getDirection()+0.1f;
 			player.setDirection(newDir);
 		}
-		
-		if (player.getDirection() > 360 || player.getDirection() < -360) {
+		//System.out.println(player.getX()+" "+player.getY());
+		// Positive direction
+//		if (player.getDirection() >= 0.0f) {
+//			player.setVelx(1);
+//		}
+//		if (player.getDirection() > 0.0f && player.getDirection() < 180.0f) {
+//			player.setVely(1);
+//		}
+//		if (player.getDirection() >= 90.0f && player.getDirection() >= 270.0f) {
+//			player.setVelx(-1);
+//		}
+//		if (player.getDirection() > 180.0f && player.getDirection() < 0.0f) {
+//			player.setVely(-1);
+//		}
+		//Math.abs(player.getDirection());
+		if (Math.abs(player.getDirection()) >= 360.0f) {
 			player.setDirection(0);
 		}
 		
-		if (player.getDirection() > 0 && player.getDirection() <= 90) {
-			player.setVelx(1);
-			System.out.println("1");
-		}
-		
-		if (player.getDirection() > 90 && player.getDirection() <= 180) {
-			player.setVely(1);
-			System.out.println("2");
-		}
-		
-		if (player.getDirection() > 180 && player.getDirection() <= 0) {
-			player.setVelx(-1);
-			System.out.println("3");
-		}
-		
-		if (player.getDirection() > 90 && player.getDirection() <= -90) {
-			player.setVely(-1);
-			System.out.println("4");
-		}
 		
 		player.tick();
 		player.draw();

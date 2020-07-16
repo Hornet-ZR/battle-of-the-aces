@@ -9,24 +9,30 @@ import javax.swing.JComponent;
 public class GameEntity extends JComponent{
 	private Graphics2D g2;
 	private BufferedImage sprite = null;
-	protected int x, y, direction, velx, vely, width, height;
-
+	protected int width, height;
+	protected float direction, velx, vely, x, y;
+	protected float speed;
+	
 	public GameEntity(Graphics2D g2, BufferedImage sprite) {
 		this.g2 = g2;
 		this.sprite = sprite;
 	}
 	
 	public void draw() {
-		AffineTransform aft = AffineTransform.getTranslateInstance(x, y);
+		AffineTransform aft = AffineTransform.getTranslateInstance((int)x, (int)y);
 		aft.rotate(Math.toRadians(direction),sprite.getWidth()/2,sprite.getHeight()/2);
-		g2.drawImage(sprite,aft, this);
+		g2.drawImage(sprite, aft, this);
 	}
 	
 	public void tick() {
-		x += velx * Math.cos(Math.toRadians(direction));
-	    y += vely * Math.sin(Math.toRadians(direction));
+	    System.out.println(x+" "+y);
+		velx += Math.cos(((direction/180)* Math.PI)*speed);
+	    vely += Math.sin(((direction/180)* Math.PI)*speed);
+	    x += velx;
+	    y += vely;
+	    System.out.println(x+" "+y);
 	}
-	
+
 	public BufferedImage getSprite() {
 		return sprite;
 	}
@@ -35,38 +41,6 @@ public class GameEntity extends JComponent{
 		this.sprite = sprite;
 	}
 
-	public int getX() {
-		return x;
-	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-	
-	public int getVelx() {
-		return velx;
-	}
-
-	public void setVelx(int velx) {
-		this.velx = velx;
-	}
-
-	public int getVely() {
-		return vely;
-	}
-
-	public void setVely(int vely) {
-		this.vely = vely;
-	}
-	
 	public int getWidth() {
 		return width;
 	}
@@ -82,13 +56,53 @@ public class GameEntity extends JComponent{
 	public void setHeight(int height) {
 		this.height = height;
 	}
-	
-	public int getDirection() {
+
+	public float getDirection() {
 		return direction;
 	}
 
-	public void setDirection(int direction) {
+	public void setDirection(float direction) {
 		this.direction = direction;
 	}
 
+	public float getVelx() {
+		return velx;
+	}
+
+	public void setVelx(float velx) {
+		this.velx = velx;
+	}
+
+	public float getVely() {
+		return vely;
+	}
+
+	public void setVely(float vely) {
+		this.vely = vely;
+	}
+
+	public float getPX() {
+		return x;
+	}
+
+	public void setX(float x) {
+		this.x = x;
+	}
+
+	public float getPY() {
+		return y;
+	}
+
+	public void setY(float y) {
+		this.y = y;
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(float speed) {
+		this.speed = speed;
+	}
+	
 }
