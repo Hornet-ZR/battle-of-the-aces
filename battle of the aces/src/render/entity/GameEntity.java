@@ -22,7 +22,7 @@ public class GameEntity extends JComponent{
 	
 	public void tick() {
 		x += velx;
-		y += vely;
+	    y += vely;
 	}
 	
 	public BufferedImage getSprite() {

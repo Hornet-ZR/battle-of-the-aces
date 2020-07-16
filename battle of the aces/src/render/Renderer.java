@@ -51,7 +51,7 @@ public class Renderer extends JPanel{
 	private double angle = 0;
 	
 	//Game settings
-	private boolean gameStarted = false;
+	public boolean gameStarted = false;
 	private BufferedImage playerSSprite = null;
 	
 	public void init(main m) {
@@ -79,15 +79,13 @@ public class Renderer extends JPanel{
 		}
 		if (gameStarted) {
 			createPlayer();
-		
-			//g.translate(-player.getX()+player.getWidth(), -player.getY()+player.getHeight());
 			
+			//create clouds
 			g2.setColor(Color.red);
 			g2.fillRect(0, 0, 50, 50);	
 			
+			//create entities (player, enemy)
 			renderPlayer();
-			
-			//g.translate(player.getX()+player.getWidth(), player.getY()+player.getHeight());
 		}
 		
 		if (keyEvent.keyZ == true && keyZpress < 4) {
@@ -212,7 +210,17 @@ public class Renderer extends JPanel{
 	public void renderPlayer() {
 		this.add(player);
 		
-		//player.setVelx();
+		if (keyEvent.leftArrow == true) {
+			player.setVelx(-1);
+		}
+		
+		if (keyEvent.rightArrow == true) {
+			player.setVelx(1);
+		}
+		
+		if (keyEvent.rightArrow == true) {
+			
+		}
 		
 		player.tick();
 		player.draw();
