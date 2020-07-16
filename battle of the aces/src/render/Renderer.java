@@ -79,11 +79,11 @@ public class Renderer extends JPanel{
 		}
 		if (gameStarted) {
 			createPlayer();
-			
+		
 			g.translate(-player.getX()+player.getWidth(), -player.getY()+player.getHeight());
 			
 			g2.setColor(Color.red);
-			g2.fillRect(0, 0, 50, 50);	
+			g2.fillRect(0+player.getWidth(), 0+player.getHeight(), 50, 50);	
 			
 			renderPlayer();
 			
