@@ -195,15 +195,17 @@ public class Renderer extends JPanel{
 			player.setX(player_start_x-player.getWidth());
 			player.setY(player_start_y-player.getHeight());
 		}else {
-			int oldPX, oldPY;
+			int oldPX, oldPY, oldDir;
 			oldPX = player.getX();
 			oldPY = player.getY();
+			oldDir = player.getDirection();
 			player = null;
 			player = new Player(g2,playerSSprite);
 			player.setWidth(player_width);
 			player.setHeight(player_height);
 			player.setX(oldPX);
 			player.setY(oldPY);
+			player.setDirection(oldDir);
 		}
 	}
 	
@@ -211,15 +213,37 @@ public class Renderer extends JPanel{
 		this.add(player);
 		
 		if (keyEvent.leftArrow == true) {
-			player.setVelx(-1);
+			int newDir = player.getDirection()+1;
+			player.setDirection(newDir);
 		}
 		
 		if (keyEvent.rightArrow == true) {
+			int newDir = player.getDirection()-1;
+			player.setDirection(newDir);
+		}
+		
+		if (player.getDirection() > 360 || player.getDirection() < -360) {
+			player.setDirection(0);
+		}
+		
+		if (player.getDirection() > 0 && player.getDirection() <= 90) {
 			player.setVelx(1);
+			System.out.println("1");
 		}
 		
-		if (keyEvent.rightArrow == true) {
-			
+		if (player.getDirection() > 90 && player.getDirection() <= 180) {
+			player.setVely(1);
+			System.out.println("2");
+		}
+		
+		if (player.getDirection() > 180 && player.getDirection() <= 0) {
+			player.setVelx(-1);
+			System.out.println("3");
+		}
+		
+		if (player.getDirection() > 90 && player.getDirection() <= -90) {
+			player.setVely(-1);
+			System.out.println("4");
 		}
 		
 		player.tick();
