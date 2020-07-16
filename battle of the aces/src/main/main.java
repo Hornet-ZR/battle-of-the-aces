@@ -71,8 +71,15 @@ public class main extends Canvas implements Runnable{
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, width, height);
 		
-		renderer.render(g);
-		
+		if (renderer.player != null) {
+			g.translate(-renderer.player.getX()+renderer.player.getWidth(), -renderer.player.getY()+renderer.player.getHeight());
+			
+			renderer.render(g);
+			
+			g.translate(renderer.player.getX()+renderer.player.getWidth(), renderer.player.getY()+renderer.player.getHeight());
+		}else {
+			renderer.render(g);
+		}
 		bs.show();
 		g.dispose();
 	}

@@ -80,14 +80,14 @@ public class Renderer extends JPanel{
 		if (gameStarted) {
 			createPlayer();
 		
-			g.translate(-player.getX()+player.getWidth(), -player.getY()+player.getHeight());
+			//g.translate(-player.getX()+player.getWidth(), -player.getY()+player.getHeight());
 			
 			g2.setColor(Color.red);
-			g2.fillRect(0+player.getWidth(), 0+player.getHeight(), 50, 50);	
+			g2.fillRect(0, 0, 50, 50);	
 			
 			renderPlayer();
 			
-			g.translate(player.getX()+player.getWidth(), player.getY()+player.getHeight());
+			//g.translate(player.getX()+player.getWidth(), player.getY()+player.getHeight());
 		}
 		
 		if (keyEvent.keyZ == true && keyZpress < 4) {
@@ -212,7 +212,7 @@ public class Renderer extends JPanel{
 	public void renderPlayer() {
 		this.add(player);
 		
-		player.setVelx(1);
+		//player.setVelx();
 		
 		player.tick();
 		player.draw();
