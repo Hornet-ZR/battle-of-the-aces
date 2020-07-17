@@ -79,14 +79,13 @@ public class Renderer extends JPanel{
 		}
 		if (gameStarted) {
 			createPlayer();
-			
 			//create clouds
 			g2.setColor(Color.red);
 			g2.fillRect(0, 0, 50, 50);	
 			
 			//System.out.println(player.getDirection());
 			
-			//create entities (player, enemy)
+			//render entities (player, enemy)
 			renderPlayer();
 		}
 		
@@ -188,7 +187,9 @@ public class Renderer extends JPanel{
 		}
 		
 	}
-	
+	public void gameInit() {
+		createPlayer();
+	}
 	public void createPlayer() {
 		if (player == null) {
 			player = new Player(g2,playerSSprite);
@@ -197,7 +198,8 @@ public class Renderer extends JPanel{
 			player.setX(player_start_x-player.getWidth());
 			player.setY(player_start_y-player.getHeight());
 		}else {
-			float oldPX, oldPY, oldDir, oldVelX, oldVelY;
+			int oldPX, oldPY;
+			float oldDir, oldVelX, oldVelY;
 			oldPX = player.getX();
 			oldPY = player.getY();
 			oldVelX = player.getVelx();
@@ -213,7 +215,7 @@ public class Renderer extends JPanel{
 			player.setVely(oldVelY);
 			player.setDirection(oldDir);
 		}
-		player.setSpeed(0.5f);
+		player.setSpeed(0.1f);
 	}
 	
 	public void renderPlayer() {
@@ -228,25 +230,10 @@ public class Renderer extends JPanel{
 			float newDir = player.getDirection()+0.1f;
 			player.setDirection(newDir);
 		}
-		//System.out.println(player.getX()+" "+player.getY());
-		// Positive direction
-//		if (player.getDirection() >= 0.0f) {
-//			player.setVelx(1);
-//		}
-//		if (player.getDirection() > 0.0f && player.getDirection() < 180.0f) {
-//			player.setVely(1);
-//		}
-//		if (player.getDirection() >= 90.0f && player.getDirection() >= 270.0f) {
-//			player.setVelx(-1);
-//		}
-//		if (player.getDirection() > 180.0f && player.getDirection() < 0.0f) {
-//			player.setVely(-1);
-//		}
-		//Math.abs(player.getDirection());
+		
 		if (Math.abs(player.getDirection()) >= 360.0f) {
 			player.setDirection(0);
 		}
-		
 		
 		player.tick();
 		player.draw();

@@ -73,13 +73,14 @@ public class main extends Canvas implements Runnable{
 		
 		g.fillRect(0, 0, width, height);
 		
-		if (renderer.player != null) {
-			g.translate(-(int)renderer.player.getX()+renderer.player.getWidth(), (int)-renderer.player.getY()+renderer.player.getHeight());
+		if (renderer.gameStarted == true) {	
+			renderer.gameInit();
+			g.translate(-renderer.player.getX()+renderer.player.getWidth(), -renderer.player.getY()+renderer.player.getHeight());
 			
 			renderer.render(g);
 			
-			g.translate((int)renderer.player.getX()+renderer.player.getWidth(), (int)renderer.player.getY()+renderer.player.getHeight());
-		}else {
+			g.translate(renderer.player.getX()+renderer.player.getWidth(), renderer.player.getY()+renderer.player.getHeight());
+		}else if (renderer.gameStarted == false) {
 			renderer.render(g);
 		}
 		bs.show();

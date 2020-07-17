@@ -9,8 +9,8 @@ import javax.swing.JComponent;
 public class GameEntity extends JComponent{
 	private Graphics2D g2;
 	private BufferedImage sprite = null;
-	protected int width, height;
-	protected float direction, velx, vely, x, y;
+	protected int width, height, x, y;
+	protected float direction, velx, vely;
 	protected float speed;
 	
 	public GameEntity(Graphics2D g2, BufferedImage sprite) {
@@ -19,18 +19,17 @@ public class GameEntity extends JComponent{
 	}
 	
 	public void draw() {
-		AffineTransform aft = AffineTransform.getTranslateInstance((int)x, (int)y);
+		AffineTransform aft = AffineTransform.getTranslateInstance(x,y);
 		aft.rotate(Math.toRadians(direction),sprite.getWidth()/2,sprite.getHeight()/2);
 		g2.drawImage(sprite, aft, this);
 	}
 	
 	public void tick() {
-	    System.out.println(x+" "+y);
 		velx += Math.cos(((direction/180)* Math.PI)*speed);
 	    vely += Math.sin(((direction/180)* Math.PI)*speed);
-	    x += velx;
-	    y += vely;
-	    System.out.println(x+" "+y);
+	    x += (velx);
+	    y += (vely);
+	    System.out.println(x);
 	}
 
 	public BufferedImage getSprite() {
@@ -81,19 +80,19 @@ public class GameEntity extends JComponent{
 		this.vely = vely;
 	}
 
-	public float getPX() {
+	public int getX() {
 		return x;
 	}
 
-	public void setX(float x) {
+	public void setX(int x) {
 		this.x = x;
 	}
 
-	public float getPY() {
+	public int getY() {
 		return y;
 	}
 
-	public void setY(float y) {
+	public void setY(int y) {
 		this.y = y;
 	}
 
