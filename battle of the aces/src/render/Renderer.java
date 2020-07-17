@@ -214,8 +214,8 @@ public class Renderer extends JPanel{
 			player.setVelx(oldVelX);
 			player.setVely(oldVelY);
 			player.setDirection(oldDir);
+			player.setSpeed(0.1);
 		}
-		player.setSpeed(0.1f);
 	}
 	
 	public void renderPlayer() {
@@ -234,7 +234,7 @@ public class Renderer extends JPanel{
 		if (Math.abs(player.getDirection()) >= 360.0f) {
 			player.setDirection(0);
 		}
-		
+				
 		player.tick();
 		player.draw();
 	}

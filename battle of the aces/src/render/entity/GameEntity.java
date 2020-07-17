@@ -11,7 +11,7 @@ public class GameEntity extends JComponent{
 	private BufferedImage sprite = null;
 	protected int width, height, x, y;
 	protected float direction, velx, vely;
-	protected float speed;
+	protected double speed;
 	
 	public GameEntity(Graphics2D g2, BufferedImage sprite) {
 		this.g2 = g2;
@@ -25,11 +25,10 @@ public class GameEntity extends JComponent{
 	}
 	
 	public void tick() {
-		velx += Math.cos(((direction/180)* Math.PI)*speed);
-	    vely += Math.sin(((direction/180)* Math.PI)*speed);
-	    x += (velx);
-	    y += (vely);
-	    System.out.println(x);
+		velx = (float) (Math.cos(((direction/180)* Math.PI))*speed);
+	    vely =  (float) (Math.sin(((direction/180)* Math.PI))*speed);
+	    x += Math.round(velx);
+	    y += Math.round(vely);
 	}
 
 	public BufferedImage getSprite() {
@@ -96,11 +95,11 @@ public class GameEntity extends JComponent{
 		this.y = y;
 	}
 
-	public float getSpeed() {
+	public double getSpeed() {
 		return speed;
 	}
 
-	public void setSpeed(float speed) {
+	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
 	

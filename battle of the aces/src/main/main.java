@@ -3,6 +3,7 @@ package main;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 
 import render.Renderer;
@@ -68,6 +69,7 @@ public class main extends Canvas implements Runnable{
 			return;
 		}
 		Graphics g = bs.getDrawGraphics();
+		Graphics2D g2 = (Graphics2D) g;
 		if (renderer.gameStarted == false) g.setColor(Color.BLACK);
 		else if (renderer.gameStarted == true) g.setColor(Color.CYAN);
 		
@@ -75,11 +77,11 @@ public class main extends Canvas implements Runnable{
 		
 		if (renderer.gameStarted == true) {	
 			renderer.gameInit();
-			g.translate(-renderer.player.getX()+renderer.player.getWidth(), -renderer.player.getY()+renderer.player.getHeight());
+			g.translate(-renderer.player.getX()+renderer.player.getWidth(),-renderer.player.getY()+renderer.player.getHeight());
 			
 			renderer.render(g);
 			
-			g.translate(renderer.player.getX()+renderer.player.getWidth(), renderer.player.getY()+renderer.player.getHeight());
+			g.translate(renderer.player.getX()+renderer.player.getWidth(),renderer.player.getY()+renderer.player.getHeight());
 		}else if (renderer.gameStarted == false) {
 			renderer.render(g);
 		}
