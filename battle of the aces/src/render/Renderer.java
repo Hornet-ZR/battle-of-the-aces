@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -80,10 +81,22 @@ public class Renderer extends JPanel{
 		if (gameStarted) {
 			createPlayer();
 			//create clouds
-			g2.setColor(Color.red);
-			g2.fillRect(0, 0, 50, 50);	
 			
-			//System.out.println(player.getDirection());
+			//Measuring markers, does lag the game,
+			//but it lets me see where the plane is moving and how fast.
+			for (int i = 0; i < 1200; i++) {
+				Random r = new Random();
+				int col = r.nextInt((5-1)+1);
+				if (col == 1) g2.setColor(Color.red);
+				if (col == 2) g2.setColor(Color.blue);
+				if (col == 3) g2.setColor(Color.green);
+				if (col == 4) g2.setColor(Color.black);
+				if (col == 5) g2.setColor(Color.magenta);
+				g2.fillRect(player.getWidth()+i*50, player.getHeight(), 50, 50);
+				g2.fillRect(player.getWidth()-i*50, player.getHeight(), 50, 50);
+				g2.fillRect(player.getWidth(), player.getHeight()-i*50, 50, 50);
+				g2.fillRect(player.getWidth(), player.getHeight()+i*50, 50, 50);
+			}	
 			
 			//render entities (player, enemy)
 			renderPlayer();
@@ -214,7 +227,8 @@ public class Renderer extends JPanel{
 			player.setVelx(oldVelX);
 			player.setVely(oldVelY);
 			player.setDirection(oldDir);
-			player.setSpeed(0.1);
+			player.setSpeed(1);
+			System.out.println(player.getX()+" "+player.getY());
 		}
 	}
 	
