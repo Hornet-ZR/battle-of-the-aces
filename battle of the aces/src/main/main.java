@@ -71,8 +71,8 @@ public class main extends Canvas implements Runnable{
 		Graphics g = bs.getDrawGraphics();
 		Graphics2D g2 = (Graphics2D) g;
 		if (renderer.gameStarted == false) g.setColor(Color.BLACK);
-		else if (renderer.gameStarted == true) g.setColor(Color.CYAN);
-		
+		if (renderer.gameStarted == true) g.setColor(Color.CYAN);
+		if (renderer.introStart == true) g.setColor(Color.CYAN);
 		g.fillRect(0, 0, width, height);
 		
 		if (renderer.gameStarted == true) {	

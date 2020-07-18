@@ -20,10 +20,6 @@ import render.imageUtil.*;
 public class Renderer extends JPanel{
 	private Graphics2D g2;
 	
-	private boolean showMainScreen = true;
-	private boolean choosingPlayer = false;
-	private boolean choosingEnemy = false;
-	private boolean showingMenu = true;
 	private int keyZpress = 0;
 	private int plane_preview_x = 100;
 	private int plane_preview_y = 100;
@@ -53,6 +49,13 @@ public class Renderer extends JPanel{
 	
 	//Game settings
 	public boolean gameStarted = false;
+	public boolean introStart = false;
+	private boolean showMainScreen = true;
+	private boolean choosingPlayer = false;
+	private boolean choosingEnemy = false;
+	private boolean showingMenu = true;
+	private boolean introDone = false;
+	private boolean startedIntroThread = false;
 	private BufferedImage playerSSprite = null;
 	
 	public void init(main m) {
@@ -119,6 +122,9 @@ public class Renderer extends JPanel{
 			}
 			if (keyZpress == 3) {
 				choosingEnemy = false;
+				introStart = true;
+			}
+			if (keyZpress == 4 && introDone == true) {
 				playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 				gameStarted = true;
 				keyZpress++;
@@ -197,12 +203,16 @@ public class Renderer extends JPanel{
 			g2.drawString("Previous",5, 560);
 			g2.drawString("Next",325, 560);
 			g2.drawString("Plane "+planeIndex, 165, 560);
+		}else if (showingMenu == false && choosingPlayer == false && choosingEnemy == false && introStart == true) {
+			renderIntro();
 		}
 		
 	}
+	
 	public void gameInit() {
 		createPlayer();
 	}
+	
 	public void createPlayer() {
 		if (player == null) {
 			player = new Player(g2,playerSSprite);
@@ -230,6 +240,37 @@ public class Renderer extends JPanel{
 			player.setSpeed(1);
 			System.out.println(player.getX()+" "+player.getY());
 		}
+	}
+	
+	public void renderIntro() {
+		final BufferedImage plane_image_final = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
+		g2.setFont(new Font("Arial",Font.BOLD,22));
+		g2.setColor(Color.BLACK);
+		g2.drawString("Press Z to start flying", 500, 50);
+		Thread start = new Thread(new Runnable() {
+			public void run() {
+				if (startedIntroThread == false) {
+					startedIntroThread = true;
+					//Take off
+					int px=500,py=325;
+					for (int i = 0; i < 100; i++) {
+						//Draw and move runway backwards
+						try {
+							Thread.sleep(1000);
+						}catch(Exception e) {
+							
+						}
+					}
+					try {
+						Thread.sleep(1000);
+					}catch(Exception e) {
+						
+					}
+					//Gain altitude by making the players sprite larger
+				}
+			}
+		});
+		start.start();
 	}
 	
 	public void renderPlayer() {
