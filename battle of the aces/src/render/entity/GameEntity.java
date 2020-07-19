@@ -25,10 +25,12 @@ public class GameEntity extends JComponent{
 	}
 	
 	public void tick() {
-		velx = (float) (Math.cos(((direction/180)* Math.PI))*speed);
+		int finMult = 2;
+		velx = (float) (Math.cos(((direction/180)* Math.PI))*speed) ;
 	    vely =  (float) (Math.sin(((direction/180)* Math.PI))*speed);
-	    x += Math.round(velx);
-	    y += Math.round(vely);
+	    System.out.println(Math.round(velx)+" "+Math.round(vely));
+	    x += Math.round(velx*finMult);
+	    y += Math.round(vely*finMult);
 	}
 
 	public BufferedImage getSprite() {

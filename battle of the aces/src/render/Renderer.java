@@ -112,22 +112,24 @@ public class Renderer extends JPanel{
 			}catch(Exception e) {
 				
 			}
-			if (keyZpress == 1) {
+			switch (keyZpress) {
+			case 1:
 				showingMenu = false;
 				choosingPlayer = true;
-			}
-			if (keyZpress == 2) {
+				break;
+			case 2:
 				choosingPlayer = false;
 				choosingEnemy = true;
-			}
-			if (keyZpress == 3) {
+				break;
+			case 3:
 				choosingEnemy = false;
 				introStart = true;
-			}
-			if (keyZpress == 4 && introDone == true) {
+				break;
+			case 4:
 				playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 				gameStarted = true;
 				keyZpress++;
+				break;
 			}
 		}
 	}
@@ -238,7 +240,7 @@ public class Renderer extends JPanel{
 			player.setVely(oldVelY);
 			player.setDirection(oldDir);
 			player.setSpeed(1);
-			System.out.println(player.getX()+" "+player.getY());
+			//System.out.println(player.getX()+" "+player.getY());
 		}
 	}
 	
@@ -255,8 +257,9 @@ public class Renderer extends JPanel{
 					int px=500,py=325;
 					for (int i = 0; i < 100; i++) {
 						//Draw and move runway backwards
+						//g2.drawImage(plane_image_final, 100, 100, 100, 100, null);
 						try {
-							Thread.sleep(1000);
+							Thread.sleep(100);
 						}catch(Exception e) {
 							
 						}
@@ -276,13 +279,15 @@ public class Renderer extends JPanel{
 	public void renderPlayer() {
 		this.add(player);
 		
+		float turnSpeed = 0.5f;
+		
 		if (keyEvent.leftArrow == true) {
-			float newDir = player.getDirection()-0.1f;
+			float newDir = player.getDirection()-turnSpeed;
 			player.setDirection(newDir);
 		}
 		
 		if (keyEvent.rightArrow == true) {
-			float newDir = player.getDirection()+0.1f;
+			float newDir = player.getDirection()+turnSpeed;
 			player.setDirection(newDir);
 		}
 		
