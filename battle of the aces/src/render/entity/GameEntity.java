@@ -9,8 +9,8 @@ import javax.swing.JComponent;
 public class GameEntity extends JComponent{
 	private Graphics2D g2;
 	private BufferedImage sprite = null;
-	protected int width, height, x, y;
-	protected float direction, velx, vely;
+	protected int width, height;
+	protected double direction, velx, vely, x, y;
 	protected double speed;
 	
 	public GameEntity(Graphics2D g2, BufferedImage sprite) {
@@ -25,11 +25,12 @@ public class GameEntity extends JComponent{
 	}
 	
 	public void tick() {
-		int finMult = 2;
-		velx = (float) (Math.cos(((direction/180)* Math.PI))*speed) ;
-	    vely =  (float) (Math.sin(((direction/180)* Math.PI))*speed);
-	    x += velx*finMult;
-	    y += vely*finMult;
+		int finMult = 10;
+		velx = ((Math.cos(((direction/180)* Math.PI))*speed));
+	    vely = ((Math.sin(((direction/180)* Math.PI))*speed));
+	    x += velx;
+	    y += vely;
+		System.out.println(velx+" "+vely+" "+x+" "+y);
 	}
 
 	public BufferedImage getSprite() {
@@ -56,43 +57,43 @@ public class GameEntity extends JComponent{
 		this.height = height;
 	}
 
-	public float getDirection() {
+	public double getDirection() {
 		return direction;
 	}
 
-	public void setDirection(float direction) {
+	public void setDirection(double direction) {
 		this.direction = direction;
 	}
 
-	public float getVelx() {
+	public double getVelx() {
 		return velx;
 	}
 
-	public void setVelx(float velx) {
+	public void setVelx(double velx) {
 		this.velx = velx;
 	}
 
-	public float getVely() {
+	public double getVely() {
 		return vely;
 	}
 
-	public void setVely(float vely) {
+	public void setVely(double vely) {
 		this.vely = vely;
 	}
 
-	public int getX() {
+	public double getPX() {
 		return x;
 	}
 
-	public void setX(int x) {
+	public void setX(double x) {
 		this.x = x;
 	}
 
-	public int getY() {
+	public double getPY() {
 		return y;
 	}
 
-	public void setY(int y) {
+	public void setY(double y) {
 		this.y = y;
 	}
 

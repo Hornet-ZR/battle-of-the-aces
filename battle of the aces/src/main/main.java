@@ -11,6 +11,7 @@ import render.Renderer;
 
 public class main extends Canvas implements Runnable{
 	private Thread mainLoop;
+	private double game_version = 0.1;
 	private boolean running = false;
 	private boolean UPDATE = false;
 	private double frame_cap = 1.0/120.0;
@@ -22,7 +23,7 @@ public class main extends Canvas implements Runnable{
 	public void init() {
 		this.setFocusable(true);
 		this.setFocusTraversalKeysEnabled(false);
-		w = new Window(this,width,height,"Plane Fight",false);
+		w = new Window(this,width,height,"Battle of The Aces "+game_version,false);
 		mainLoop = new Thread(this);
 		mainLoop.run();
 	}
@@ -77,11 +78,11 @@ public class main extends Canvas implements Runnable{
 		
 		if (renderer.gameStarted == true) {	
 			renderer.gameInit();
-			g.translate(-renderer.player.getX()+renderer.player.getWidth()+50,-renderer.player.getY()+renderer.player.getHeight()-50);
+			g.translate((int)-renderer.player.getPX()+renderer.player.getWidth()+50,(int)-renderer.player.getPY()+renderer.player.getHeight()-50);
 			
 			renderer.render(g);
 			
-			g.translate(renderer.player.getX()+renderer.player.getWidth()+50,renderer.player.getY()+renderer.player.getHeight()-50);
+			g.translate((int)renderer.player.getPX()+renderer.player.getWidth()+50,(int)renderer.player.getPY()+renderer.player.getHeight()-50);
 		}else if (renderer.gameStarted == false) {
 			renderer.render(g);
 		}

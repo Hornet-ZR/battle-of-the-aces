@@ -99,25 +99,7 @@ public class Renderer extends JPanel{
 			//but it lets me see where the plane is moving and how fast.
 			for (int i = 0; i < 1200; i++) {
 				Random r = new Random();
-				int col = r.nextInt((5-1)+1);
-				switch (col) {
-				case 1:
-					g2.setColor(Color.red);
-					break;
-				case 2:
-					g2.setColor(Color.blue);
-					break;
-				case 3:
-					g2.setColor(Color.green);
-					break;
-				case 4:
-					g2.setColor(Color.black);
-					break;
-				case 5:
-					g2.setColor(Color.magenta);
-					break;
-				}
-				
+				g2.setColor(Color.BLACK);
 				g2.fillRect(player.getWidth()+i*50, player.getHeight(), 50, 50);
 				g2.fillRect(player.getWidth()-i*50, player.getHeight(), 50, 50);
 				g2.fillRect(player.getWidth(), player.getHeight()-i*50, 50, 50);
@@ -245,10 +227,10 @@ public class Renderer extends JPanel{
 			player.setX(player_start_x-player.getWidth());
 			player.setY(player_start_y-player.getHeight());
 		}else {
-			int oldPX, oldPY;
-			float oldDir, oldVelX, oldVelY;
-			oldPX = player.getX();
-			oldPY = player.getY();
+			double oldPX, oldPY;
+			double oldDir, oldVelX, oldVelY;
+			oldPX = player.getPX();
+			oldPY = player.getPY();
 			oldVelX = player.getVelx();
 			oldVelY = player.getVely();
 			oldDir = player.getDirection();
@@ -335,15 +317,15 @@ public class Renderer extends JPanel{
 	public void renderPlayer() {
 		this.add(player);
 		
-		float turnSpeed = 0.8f;
+		double turnSpeed = 0.6;
 		
 		if (keyEvent.leftArrow == true) {
-			float newDir = player.getDirection()-turnSpeed;
+			double newDir = player.getDirection()-turnSpeed;
 			player.setDirection(newDir);
 		}
 		
 		if (keyEvent.rightArrow == true) {
-			float newDir = player.getDirection()+turnSpeed;
+			double newDir = player.getDirection()+turnSpeed;
 			player.setDirection(newDir);
 		}
 		
