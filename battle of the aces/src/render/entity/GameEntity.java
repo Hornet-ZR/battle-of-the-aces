@@ -28,9 +28,8 @@ public class GameEntity extends JComponent{
 		int finMult = 2;
 		velx = (float) (Math.cos(((direction/180)* Math.PI))*speed) ;
 	    vely =  (float) (Math.sin(((direction/180)* Math.PI))*speed);
-	    System.out.println(Math.round(velx)+" "+Math.round(vely));
-	    x += Math.round(velx*finMult);
-	    y += Math.round(vely*finMult);
+	    x += velx*finMult;
+	    y += vely*finMult;
 	}
 
 	public BufferedImage getSprite() {

@@ -27,6 +27,12 @@ public class Renderer extends JPanel{
 	private int player_height = 250;
 	private int player_start_x = 550;
 	private int player_start_y = 450;
+	private int intro_runway_x = 950;
+	private double intro_plane_width = 50;
+	private double intro_plane_height = 50;
+	private double intro_plane_x = 450;
+	private double intro_plane_y = 250;
+	private double angle = 0;
 	public int playerSpriteChosenX = 1;
 	public int playerSpriteChosenY = 1;
 	public int planeIndex = 1;
@@ -42,11 +48,11 @@ public class Renderer extends JPanel{
 	
 	//Images / files
 	private File playerSpritesF;
-	private BufferedImage playerSprites;
 	private File guiSpritesF;
+	private File intro_runwayF;
+	private BufferedImage playerSprites;
 	private BufferedImage guiSprites;
-	private double angle = 0;
-	
+	private BufferedImage intro_runway;
 	//Game settings
 	public boolean gameStarted = false;
 	public boolean introStart = false;
@@ -55,7 +61,8 @@ public class Renderer extends JPanel{
 	private boolean choosingEnemy = false;
 	private boolean showingMenu = true;
 	private boolean introDone = false;
-	private boolean startedIntroThread = false;
+	private boolean startedIntroThread1 = false;
+	private boolean startedIntroThread2 = false;
 	private BufferedImage playerSSprite = null;
 	
 	public void init(main m) {
@@ -69,8 +76,11 @@ public class Renderer extends JPanel{
 			
 			guiSpritesF = new File(this.getClass().getResource("res/guiSprites.png").toURI());
 			guiSprites = ImageIO.read(guiSpritesF);
-		}catch (Exception e) {
 			
+			intro_runwayF = new File(this.getClass().getResource("res/runway.png").toURI());
+			intro_runway = ImageIO.read(intro_runwayF);
+		}catch (Exception e) {
+			System.out.println("Resource loading error");
 		}
 	}
 	
@@ -90,11 +100,24 @@ public class Renderer extends JPanel{
 			for (int i = 0; i < 1200; i++) {
 				Random r = new Random();
 				int col = r.nextInt((5-1)+1);
-				if (col == 1) g2.setColor(Color.red);
-				if (col == 2) g2.setColor(Color.blue);
-				if (col == 3) g2.setColor(Color.green);
-				if (col == 4) g2.setColor(Color.black);
-				if (col == 5) g2.setColor(Color.magenta);
+				switch (col) {
+				case 1:
+					g2.setColor(Color.red);
+					break;
+				case 2:
+					g2.setColor(Color.blue);
+					break;
+				case 3:
+					g2.setColor(Color.green);
+					break;
+				case 4:
+					g2.setColor(Color.black);
+					break;
+				case 5:
+					g2.setColor(Color.magenta);
+					break;
+				}
+				
 				g2.fillRect(player.getWidth()+i*50, player.getHeight(), 50, 50);
 				g2.fillRect(player.getWidth()-i*50, player.getHeight(), 50, 50);
 				g2.fillRect(player.getWidth(), player.getHeight()-i*50, 50, 50);
@@ -105,7 +128,7 @@ public class Renderer extends JPanel{
 			renderPlayer();
 		}
 		
-		if (keyEvent.keyZ == true && keyZpress < 4) {
+		if (keyEvent.keyZ == true && keyZpress < 4 && introStart == false) {
 			keyZpress++;
 			try {
 				Thread.sleep(70);
@@ -125,12 +148,11 @@ public class Renderer extends JPanel{
 				choosingEnemy = false;
 				introStart = true;
 				break;
-			case 4:
-				playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
-				gameStarted = true;
-				keyZpress++;
-				break;
 			}
+		}
+		if (introDone == true) {
+			playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
+			gameStarted = true;
 		}
 	}
 	
@@ -150,7 +172,7 @@ public class Renderer extends JPanel{
 			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
 			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 			g2.drawImage(plane_image, pos, this);
-		}else if (showingMenu == false && choosingPlayer == true) {
+		}else if (choosingPlayer == true) {
 			g2.setColor(Color.RED);
 			g2.setFont(new Font("Arial",Font.BOLD,30));
 			g2.drawString("Choose your player", 190, 50);
@@ -182,7 +204,7 @@ public class Renderer extends JPanel{
 			g2.drawString("Next",325, 560);
 			g2.drawString("Plane "+planeIndex, 165, 560);
 			
-		}else if (showingMenu == false && choosingPlayer == false && choosingEnemy == true) {
+		}else if (choosingEnemy == true) {
 			g2.setColor(Color.RED);
 			g2.setFont(new Font("Arial",Font.BOLD,30));
 			g2.drawString("Choose your enemy", 190, 50);
@@ -205,7 +227,7 @@ public class Renderer extends JPanel{
 			g2.drawString("Previous",5, 560);
 			g2.drawString("Next",325, 560);
 			g2.drawString("Plane "+planeIndex, 165, 560);
-		}else if (showingMenu == false && choosingPlayer == false && choosingEnemy == false && introStart == true) {
+		}else if (introStart == true) {
 			renderIntro();
 		}
 		
@@ -240,46 +262,80 @@ public class Renderer extends JPanel{
 			player.setVely(oldVelY);
 			player.setDirection(oldDir);
 			player.setSpeed(1);
-			//System.out.println(player.getX()+" "+player.getY());
 		}
 	}
 	
 	public void renderIntro() {
-		final BufferedImage plane_image_final = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
-		g2.setFont(new Font("Arial",Font.BOLD,22));
-		g2.setColor(Color.BLACK);
-		g2.drawString("Press Z to start flying", 500, 50);
-		Thread start = new Thread(new Runnable() {
+		BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
+		AffineTransform runway_transform = AffineTransform.getTranslateInstance(intro_runway_x, 225);
+		runway_transform.rotate(Math.toRadians(90));
+		g2.drawImage(intro_runway, runway_transform, this);
+		g2.drawImage(plane_image, (int)Math.round(intro_plane_x), (int)Math.round(intro_plane_y), (int)Math.round(intro_plane_width), (int)Math.round(intro_plane_height), this);
+		final Thread gainAltitude = new Thread(new Runnable() {
 			public void run() {
-				if (startedIntroThread == false) {
-					startedIntroThread = true;
-					//Take off
-					int px=500,py=325;
-					for (int i = 0; i < 100; i++) {
-						//Draw and move runway backwards
-						//g2.drawImage(plane_image_final, 100, 100, 100, 100, null);
+				while (true) {
+					if (intro_plane_width < 214) {
+						intro_plane_width++;
+						intro_plane_x-=1;
+						
 						try {
-							Thread.sleep(100);
+							Thread.sleep(1);
 						}catch(Exception e) {
 							
 						}
 					}
-					try {
-						Thread.sleep(1000);
-					}catch(Exception e) {
+					if (intro_plane_height < 282) {
+						intro_plane_height+=1.4;
+						intro_plane_y-=0.4;
 						
+						try {
+							Thread.sleep(1);
+						}catch(Exception e) {
+							
+						}
 					}
-					//Gain altitude by making the players sprite larger
+					if (intro_plane_width >= 214 && intro_plane_height >= 282) {
+						try {
+							Thread.sleep(1000);
+						}catch(Exception e) {
+							
+						}
+						introDone = true;
+						introStart = false;
+						break;
+					}
 				}
 			}
 		});
-		start.start();
+		
+		Thread increaseX = new Thread(new Runnable() {
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(1);
+						intro_runway_x--;
+						if (intro_runway_x <= -200 && startedIntroThread2 == false) {
+							startedIntroThread2 = true;
+							gainAltitude.start();
+							break;
+						}
+					}catch(Exception e) {
+						
+					}
+				}
+			}
+		});
+		
+		if (startedIntroThread1 == false) {
+			startedIntroThread1 = true;
+			increaseX.start();
+		}
 	}
 	
 	public void renderPlayer() {
 		this.add(player);
 		
-		float turnSpeed = 0.5f;
+		float turnSpeed = 0.8f;
 		
 		if (keyEvent.leftArrow == true) {
 			float newDir = player.getDirection()-turnSpeed;
@@ -303,7 +359,4 @@ public class Renderer extends JPanel{
 		
 	}
 	
-	public void renderMap() {
-		
-	}
 }
