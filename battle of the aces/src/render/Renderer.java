@@ -243,7 +243,7 @@ public class Renderer extends JPanel{
 			player.setVelx(oldVelX);
 			player.setVely(oldVelY);
 			player.setDirection(oldDir);
-			player.setSpeed(1);
+			player.setSpeed(2);
 		}
 	}
 	
@@ -317,7 +317,7 @@ public class Renderer extends JPanel{
 	public void renderPlayer() {
 		this.add(player);
 		
-		double turnSpeed = 0.6;
+		double turnSpeed = 0.7;
 		
 		if (keyEvent.leftArrow == true) {
 			double newDir = player.getDirection()-turnSpeed;
