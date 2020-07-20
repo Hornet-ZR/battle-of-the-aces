@@ -56,9 +56,9 @@ public class Renderer extends JPanel{
 	//Game settings
 	public boolean gameStarted = false;
 	public boolean introStart = false;
+	public boolean choosingPlayer = false;
+	public boolean choosingEnemy = false;
 	private boolean showMainScreen = true;
-	private boolean choosingPlayer = false;
-	private boolean choosingEnemy = false;
 	private boolean showingMenu = true;
 	private boolean introDone = false;
 	private boolean startedIntroThread1 = false;

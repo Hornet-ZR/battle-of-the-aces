@@ -15,20 +15,22 @@ public class MouseEvents implements MouseListener{
 		int mx,my;
 		mx = e.getX();
 		my = e.getY();
-		if (mx > 0 && mx < 100) {
-			if (my > 500 && my < 600) {
-				if (renderer.playerSpriteChosenX > 1) {
-					renderer.playerSpriteChosenX--;
-					renderer.planeIndex--;
+		if (renderer.choosingPlayer || renderer.choosingEnemy) {
+			if (mx > 0 && mx < 100) {
+				if (my > 500 && my < 600) {
+					if (renderer.playerSpriteChosenX > 1) {
+						renderer.playerSpriteChosenX--;
+						renderer.planeIndex--;
+					}
+					back = true;
 				}
-				back = true;
 			}
-		}
-		if (mx > 300 && mx < 400) {
-			if (my > 500 && my < 600) {
-				renderer.playerSpriteChosenX++;
-				back = false;
-				renderer.planeIndex++;
+			if (mx > 300 && mx < 400) {
+				if (my > 500 && my < 600) {
+					renderer.playerSpriteChosenX++;
+					back = false;
+					renderer.planeIndex++;
+				}
 			}
 		}
 	}
