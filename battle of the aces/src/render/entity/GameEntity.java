@@ -30,7 +30,6 @@ public class GameEntity extends JComponent{
 	    vely = ((Math.sin(((direction/180)* Math.PI))*speed));
 	    x += velx;
 	    y += vely;
-		System.out.println(velx+" "+vely+" "+x+" "+y);
 	}
 
 	public BufferedImage getSprite() {

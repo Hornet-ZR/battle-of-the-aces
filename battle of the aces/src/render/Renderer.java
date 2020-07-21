@@ -111,12 +111,9 @@ public class Renderer extends JPanel{
 		}
 		
 		if (keyEvent.keyZ == true && keyZpress < 4 && introStart == false) {
+			keyEvent.keyZ = false;
 			keyZpress++;
-			try {
-				Thread.sleep(70);
-			}catch(Exception e) {
-				
-			}
+	
 			switch (keyZpress) {
 			case 1:
 				showingMenu = false;
