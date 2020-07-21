@@ -164,14 +164,18 @@ public class Renderer extends JPanel{
 			if (playerSprites == null) {
 				return;
 			}
-			if (playerSpriteChosenX > 10) {
+			if (playerSpriteChosenX > 10) { 
 				playerSpriteChosenX = 1;
 				playerSpriteChosenY++;
 			}
-			if (mouseEvent.back == true && playerSpriteChosenY > 1) {
+			
+			if (mouseEvent.back == true && playerSpriteChosenY > 1 && playerSpriteChosenX == 1) {
+				mouseEvent.back = false;
 				playerSpriteChosenY--;
-				playerSpriteChosenX = 10*playerSpriteChosenY;
+				playerSpriteChosenX = 10;
 			}
+			
+			planeIndex = 10*(playerSpriteChosenY-1)+playerSpriteChosenX;
 			
 			BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
