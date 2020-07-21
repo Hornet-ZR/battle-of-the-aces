@@ -25,7 +25,6 @@ public class GameEntity extends JComponent{
 	}
 	
 	public void tick() {
-		int finMult = 10;
 		velx = ((Math.cos(((direction/180)* Math.PI))*speed));
 	    vely = ((Math.sin(((direction/180)* Math.PI))*speed));
 	    x += velx;

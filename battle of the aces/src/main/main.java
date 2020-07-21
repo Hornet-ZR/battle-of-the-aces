@@ -14,11 +14,13 @@ public class main extends Canvas implements Runnable{
 	private double game_version = 0.1;
 	private boolean running = false;
 	private boolean UPDATE = false;
-	private double frame_cap = 1.0/120.0;
+	private double frame_cap = 1.0/60.0;
 	private int width = 900, height = 700;
 	
 	private Renderer renderer = new Renderer();
 	private Window w;
+	
+	public int fps = 0;
 	
 	public void init() {
 		this.setFocusable(true);
@@ -39,6 +41,8 @@ public class main extends Canvas implements Runnable{
 		double last = System.nanoTime() / 1000000000.0;
 		double passed = 0;
 		double unporcessed = 0;
+		long timer = System.currentTimeMillis();
+		int pre_fps = 0;
 		while (running) {
 			UPDATE = false;
 			now = System.nanoTime() / 1000000000.0;
@@ -49,6 +53,12 @@ public class main extends Canvas implements Runnable{
 				unporcessed -= frame_cap;
 				UPDATE = true;
 				update();
+				pre_fps++;
+			}
+			if (System.currentTimeMillis() - timer > 1000) {
+				timer += 1000;
+				fps = pre_fps;
+				pre_fps = 0;
 			}
 			if (UPDATE) {
 				update();
@@ -78,6 +88,9 @@ public class main extends Canvas implements Runnable{
 		
 		if (renderer.gameStarted == true) {	
 			renderer.gameInit();
+			
+			renderer.renderUI(g);
+			
 			g.translate((int)-renderer.player.getPX()+renderer.player.getWidth()+50,(int)-renderer.player.getPY()+renderer.player.getHeight()-50);
 			
 			renderer.render(g);

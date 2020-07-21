@@ -20,6 +20,11 @@ import render.imageUtil.*;
 public class Renderer extends JPanel{
 	private Graphics2D g2;
 	
+	//Main vars
+	private main m;
+	private int fps = 0;
+	
+	//Player stuff
 	private int keyZpress = 0;
 	private int plane_preview_x = 100;
 	private int plane_preview_y = 100;
@@ -66,6 +71,7 @@ public class Renderer extends JPanel{
 	private BufferedImage playerSSprite = null;
 	
 	public void init(main m) {
+		this.m = m;
 		m.addKeyListener(keyEvent);
 		mouseEvent.init(this);
 		m.addMouseListener(mouseEvent);
@@ -87,6 +93,7 @@ public class Renderer extends JPanel{
 	public void render(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		this.g2 = g2;
+		fps = m.fps;
 		
 		if (showMainScreen == true) {
 			renderMainScreen();
@@ -134,7 +141,13 @@ public class Renderer extends JPanel{
 			gameStarted = true;
 		}
 	}
-	
+	public void renderUI(Graphics g) {
+		Graphics2D g2 = (Graphics2D) g;
+		this.g2 = g2;
+		g2.setColor(Color.BLACK);
+		g2.setFont(new Font("Arial",Font.BOLD,30));
+		g2.drawString("UPDATES: "+fps, 10, 50);
+	}
 	public void renderMainScreen() {
 		if (showingMenu == true) {
 			g2.setColor(Color.RED);
