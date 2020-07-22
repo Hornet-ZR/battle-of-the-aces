@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import main.main;
-import render.entity.Player;
+import render.entity.*;
 import render.events.KeyEvents;
 import render.events.MouseEvents;
 import render.imageUtil.SpriteLoader;
@@ -60,7 +60,7 @@ public class Renderer extends JPanel{
 	
 	//Entities
 	public Player player;
-	
+	public Enemy enemy;
 	//Images / files
 	private File playerSpritesF;
 	private File enemySpritesF;
@@ -81,6 +81,7 @@ public class Renderer extends JPanel{
 	private boolean startedIntroThread1 = false;
 	private boolean startedIntroThread2 = false;
 	private BufferedImage playerSSprite = null;
+	private BufferedImage enemySSprite = null;
 	
 	public void init(main m) {
 		this.m = m;
@@ -129,6 +130,7 @@ public class Renderer extends JPanel{
 			}	
 			
 			//render entities (player, enemy)
+			renderEnemy();
 			renderPlayer();
 		}
 		
@@ -153,6 +155,7 @@ public class Renderer extends JPanel{
 		}
 		if (introDone == true) {
 			playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
+			enemySSprite = spriteLoader.loadEnemySprite(enemySprites, enemySpriteChosenX, enemySpriteChosenY);
 			gameStarted = true;
 		}
 	}
@@ -226,6 +229,19 @@ public class Renderer extends JPanel{
 				return;
 			}
 			
+			if (playerSpriteChosenX > 10) { 
+				enemySpriteChosenX = 1;
+				enemySpriteChosenY++;
+			}
+			
+			if (mouseEvent.back == true && playerSpriteChosenY > 1 && playerSpriteChosenX == 1) {
+				mouseEvent.back = false;
+				enemySpriteChosenY--;
+				enemySpriteChosenX = 10;
+			}
+			
+			enemyPlaneIndex = 10*(enemySpriteChosenY-1)+enemySpriteChosenX;
+			
 			BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
 			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
 			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
@@ -237,7 +253,7 @@ public class Renderer extends JPanel{
 			g2.setFont(new Font("Arial",Font.BOLD,22));
 			g2.drawString("Previous",5, 560);
 			g2.drawString("Next",325, 560);
-			g2.drawString("Plane "+playerPlaneIndex, 165, 560);
+			g2.drawString("Plane "+enemyPlaneIndex, 165, 560);
 		}else if (introStart == true) {
 			renderIntro();
 		}
@@ -246,6 +262,7 @@ public class Renderer extends JPanel{
 	
 	public void gameInit() {
 		createPlayer();
+		createEnemy();
 	}
 	
 	public void createPlayer() {
@@ -256,8 +273,7 @@ public class Renderer extends JPanel{
 			player.setX(player_start_x-player.getWidth());
 			player.setY(player_start_y-player.getHeight());
 		}else {
-			double oldPX, oldPY;
-			double oldDir, oldVelX, oldVelY;
+			double oldPX, oldPY, oldDir, oldVelX, oldVelY;
 			oldPX = player.getPX();
 			oldPY = player.getPY();
 			oldVelX = player.getVelx();
@@ -273,6 +289,33 @@ public class Renderer extends JPanel{
 			player.setVely(oldVelY);
 			player.setDirection(oldDir);
 			player.setSpeed(2);
+		}
+	}
+	
+	public void createEnemy() {
+		if (enemy == null) {
+			enemy = new Enemy(g2,enemySSprite);
+			enemy.setWidth(enemy_width);
+			enemy.setHeight(enemy_height);
+			enemy.setX(enemy_start_x-enemy.getWidth());
+			enemy.setY(enemy_start_y-enemy.getHeight());
+		}else {
+			double oldPX, oldPY, oldDir, oldVelX, oldVelY;
+			oldPX = enemy.getPX();
+			oldPY = enemy.getPY();
+			oldVelX = enemy.getVelx();
+			oldVelY = enemy.getVely();
+			oldDir = enemy.getDirection();
+			enemy = null;
+			enemy = new Enemy(g2,enemySSprite);
+			enemy.setWidth(enemy_width);
+			enemy.setHeight(enemy_height);
+			enemy.setX(oldPX);
+			enemy.setY(oldPY);
+			enemy.setVelx(oldVelX);
+			enemy.setVely(oldVelY);
+			enemy.setDirection(oldDir);
+			enemy.setSpeed(2);
 		}
 	}
 	
@@ -367,7 +410,18 @@ public class Renderer extends JPanel{
 	}
 	
 	public void renderEnemy() {
+		this.add(enemy);
 		
+		double turnSpeed = 0.7;
+		
+		double newDir = enemy.getDirection()-turnSpeed;
+		enemy.setDirection(newDir);
+		
+		if (Math.abs(enemy.getDirection()) >= 360.0f) {
+			enemy.setDirection(0);
+		}
+				
+		enemy.draw();
 	}
 	
 }
