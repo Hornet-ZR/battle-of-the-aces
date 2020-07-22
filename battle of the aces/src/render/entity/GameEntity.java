@@ -31,6 +31,17 @@ public class GameEntity extends JComponent{
 	    x += velx;
 	    y += vely;
 	}
+	
+	public void target(double tx, double ty, double tw, double th) {
+		double ax = (x+width - tx-tw);
+		double ay = (y+height - ty-th);
+	       
+	    double angle = 0;
+	    angle = Math.atan2(-ay,-ax);
+	    double angle2 = Math.toDegrees(angle);
+	    
+	    direction = angle2;
+	}
 
 	public BufferedImage getSprite() {
 		return sprite;
