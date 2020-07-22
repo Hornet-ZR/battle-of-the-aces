@@ -80,6 +80,7 @@ public class Renderer extends JPanel{
 	private boolean introDone = false;
 	private boolean startedIntroThread1 = false;
 	private boolean startedIntroThread2 = false;
+	private boolean enemyBackingOffThreadStarted = false;
 	private BufferedImage playerSSprite = null;
 	private BufferedImage enemySSprite = null;
 	
@@ -121,7 +122,6 @@ public class Renderer extends JPanel{
 			//Measuring markers, does lag the game,
 			//but it lets me see where the plane is moving and how fast.
 			for (int i = 0; i < 1200; i++) {
-				Random r = new Random();
 				g2.setColor(Color.BLACK);
 				g2.fillRect(player.getWidth()+i*50, player.getHeight(), 50, 50);
 				g2.fillRect(player.getWidth()-i*50, player.getHeight(), 50, 50);
@@ -132,6 +132,24 @@ public class Renderer extends JPanel{
 			//render entities (player, enemy)
 			renderEnemy();
 			renderPlayer();
+			
+			//collision
+			if (player.barrier_bounds().intersects(enemy.barrier_bounds()) && enemyBackingOffThreadStarted == false) {
+				Thread backOff = new Thread(new Runnable() {
+					public void run() {
+						enemyBackingOffThreadStarted = true;
+						enemy.setSpeed(1.5);
+						try {
+							Thread.sleep(100);
+						}catch(Exception e) {
+							
+						}
+						enemy.setSpeed(2);
+						enemyBackingOffThreadStarted = false;
+					}
+				});
+				backOff.start();
+			}
 		}
 		
 		if (keyEvent.keyZ == true && keyZpress < 4 && introStart == false) {
@@ -143,10 +161,12 @@ public class Renderer extends JPanel{
 				showingMenu = false;
 				choosingPlayer = true;
 				break;
+				
 			case 2:
 				choosingPlayer = false;
 				choosingEnemy = true;
 				break;
+				
 			case 3:
 				choosingEnemy = false;
 				introStart = true;
@@ -174,9 +194,8 @@ public class Renderer extends JPanel{
 			g2.drawString("Press Z to choose player", 500, 400);
 			
 			
-			if (guiSprites == null) {
+			if (guiSprites == null)
 				return;
-			}
 			
 			BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
 			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
@@ -189,9 +208,9 @@ public class Renderer extends JPanel{
 			g2.drawString("Press Z to choose enemy", 500, 400);
 			
 			
-			if (playerSprites == null) {
+			if (playerSprites == null) 
 				return;
-			}
+			
 			if (playerSpriteChosenX > 10) { 
 				playerSpriteChosenX = 1;
 				playerSpriteChosenY++;
@@ -225,9 +244,9 @@ public class Renderer extends JPanel{
 			g2.drawString("Press Z to start", 500, 400);
 			
 			
-			if (guiSprites == null) {
+			if (guiSprites == null)
 				return;
-			}
+			
 			
 			if (playerSpriteChosenX > 10) { 
 				enemySpriteChosenX = 1;
@@ -300,12 +319,13 @@ public class Renderer extends JPanel{
 			enemy.setX(enemy_start_x-enemy.getWidth());
 			enemy.setY(enemy_start_y-enemy.getHeight());
 		}else {
-			double oldPX, oldPY, oldDir, oldVelX, oldVelY;
+			double oldPX, oldPY, oldDir, oldVelX, oldVelY, oldSpeed;
 			oldPX = enemy.getPX();
 			oldPY = enemy.getPY();
 			oldVelX = enemy.getVelx();
 			oldVelY = enemy.getVely();
 			oldDir = enemy.getDirection();
+			oldSpeed = enemy.getSpeed();
 			enemy = null;
 			enemy = new Enemy(g2,enemySSprite);
 			enemy.setWidth(enemy_width);
@@ -315,7 +335,7 @@ public class Renderer extends JPanel{
 			enemy.setVelx(oldVelX);
 			enemy.setVely(oldVelY);
 			enemy.setDirection(oldDir);
-			enemy.setSpeed(1.25);
+			enemy.setSpeed(oldSpeed);
 		}
 	}
 	
@@ -413,8 +433,6 @@ public class Renderer extends JPanel{
 	public void renderEnemy() {
 		this.add(enemy);
 		
-		double turnSpeed = 0.7;
-	
 		if (Math.abs(enemy.getDirection()) >= 360.0f) {
 			enemy.setDirection(0);
 		}

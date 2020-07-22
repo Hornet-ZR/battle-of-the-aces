@@ -1,6 +1,7 @@
 package render.entity;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
@@ -115,5 +116,16 @@ public class GameEntity extends JComponent{
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
+	public Rectangle bounds() {
+		Rectangle rect = new Rectangle();
+		rect.setBounds((int)x-width/2, (int)y-height/2, (int)width, (int)height);
+		return rect;
+	}
 	
+	public Rectangle barrier_bounds() {
+		Rectangle rect = new Rectangle();
+		int pix_add_value = 200;
+		rect.setBounds((int)x-width/2-pix_add_value, (int)y-height/2-pix_add_value, (int)width+pix_add_value, (int)height+pix_add_value);
+		return rect;
+	}
 }
