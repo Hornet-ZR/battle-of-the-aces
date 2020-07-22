@@ -13,9 +13,10 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import main.main;
-import render.entity.*;
-import render.events.*;
-import render.imageUtil.*;
+import render.entity.Player;
+import render.events.KeyEvents;
+import render.events.MouseEvents;
+import render.imageUtil.SpriteLoader;
 
 public class Renderer extends JPanel{
 	private Graphics2D g2;
@@ -24,10 +25,12 @@ public class Renderer extends JPanel{
 	private main m;
 	private int fps = 0;
 	
-	//Player stuff
+	//General menu stuff
 	private int keyZpress = 0;
 	private int plane_preview_x = 100;
 	private int plane_preview_y = 100;
+	
+	//Player stuff
 	private int player_width = 250;
 	private int player_height = 250;
 	private int player_start_x = 550;
@@ -40,9 +43,16 @@ public class Renderer extends JPanel{
 	private double angle = 0;
 	public int playerSpriteChosenX = 1;
 	public int playerSpriteChosenY = 1;
-	public int planeIndex = 1;
+	public int playerPlaneIndex = 1;
 	
-	
+	//Enemy Stuff
+	private int enemy_width = 250;
+	private int enemy_height = 250;
+	private int enemy_start_x = 550;
+	private int enemy_start_y = 450;
+	public int enemySpriteChosenX = 1;
+	public int enemySpriteChosenY = 1;
+	public int enemyPlaneIndex = 1;
 	//Classes
 	private KeyEvents keyEvent = new KeyEvents();
 	private MouseEvents mouseEvent = new MouseEvents();
@@ -53,9 +63,11 @@ public class Renderer extends JPanel{
 	
 	//Images / files
 	private File playerSpritesF;
+	private File enemySpritesF;
 	private File guiSpritesF;
 	private File intro_runwayF;
 	private BufferedImage playerSprites;
+	private BufferedImage enemySprites;
 	private BufferedImage guiSprites;
 	private BufferedImage intro_runway;
 	//Game settings
@@ -79,6 +91,9 @@ public class Renderer extends JPanel{
 		try {
 			playerSpritesF = new File(this.getClass().getResource("res/playerSprites.png").toURI());
 			playerSprites = ImageIO.read(playerSpritesF);
+			
+			enemySpritesF = new File(this.getClass().getResource("res/enemySprites.png").toURI());
+			enemySprites = ImageIO.read(enemySpritesF);
 			
 			guiSpritesF = new File(this.getClass().getResource("res/guiSprites.png").toURI());
 			guiSprites = ImageIO.read(guiSpritesF);
@@ -185,7 +200,7 @@ public class Renderer extends JPanel{
 				playerSpriteChosenX = 10;
 			}
 			
-			planeIndex = 10*(playerSpriteChosenY-1)+playerSpriteChosenX;
+			playerPlaneIndex = 10*(playerSpriteChosenY-1)+playerSpriteChosenX;
 			
 			BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
@@ -198,7 +213,7 @@ public class Renderer extends JPanel{
 			g2.setFont(new Font("Arial",Font.BOLD,22));
 			g2.drawString("Previous",5, 560);
 			g2.drawString("Next",325, 560);
-			g2.drawString("Plane "+planeIndex, 165, 560);
+			g2.drawString("Plane "+playerPlaneIndex, 165, 560);
 			
 		}else if (choosingEnemy == true) {
 			g2.setColor(Color.RED);
@@ -222,7 +237,7 @@ public class Renderer extends JPanel{
 			g2.setFont(new Font("Arial",Font.BOLD,22));
 			g2.drawString("Previous",5, 560);
 			g2.drawString("Next",325, 560);
-			g2.drawString("Plane "+planeIndex, 165, 560);
+			g2.drawString("Plane "+playerPlaneIndex, 165, 560);
 		}else if (introStart == true) {
 			renderIntro();
 		}
