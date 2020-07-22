@@ -8,7 +8,8 @@ import javax.swing.JComponent;
 
 public class GameEntity extends JComponent{
 	private Graphics2D g2;
-	private BufferedImage sprite = null;
+	protected BufferedImage sprite = null;
+	protected AffineTransform aft;
 	protected int width, height;
 	protected double direction, velx, vely, x, y;
 	protected double speed;
@@ -19,7 +20,7 @@ public class GameEntity extends JComponent{
 	}
 	
 	public void draw() {
-		AffineTransform aft = AffineTransform.getTranslateInstance(x,y);
+		aft = AffineTransform.getTranslateInstance(x,y);
 		aft.rotate(Math.toRadians(direction),sprite.getWidth()/2,sprite.getHeight()/2);
 		g2.drawImage(sprite, aft, this);
 	}

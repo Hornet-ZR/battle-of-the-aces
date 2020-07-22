@@ -48,8 +48,8 @@ public class Renderer extends JPanel{
 	//Enemy Stuff
 	private int enemy_width = 250;
 	private int enemy_height = 250;
-	private int enemy_start_x = 550;
-	private int enemy_start_y = 450;
+	private int enemy_start_x = 450;
+	private int enemy_start_y = 350;
 	public int enemySpriteChosenX = 1;
 	public int enemySpriteChosenY = 1;
 	public int enemyPlaneIndex = 1;
@@ -315,7 +315,7 @@ public class Renderer extends JPanel{
 			enemy.setVelx(oldVelX);
 			enemy.setVely(oldVelY);
 			enemy.setDirection(oldDir);
-			enemy.setSpeed(2);
+			enemy.setSpeed(0.5);
 		}
 	}
 	
@@ -414,14 +414,13 @@ public class Renderer extends JPanel{
 		this.add(enemy);
 		
 		double turnSpeed = 0.7;
-		
-		double newDir = enemy.getDirection()-turnSpeed;
-		enemy.setDirection(newDir);
-		
+	
 		if (Math.abs(enemy.getDirection()) >= 360.0f) {
 			enemy.setDirection(0);
 		}
-		enemy.tick();	
+		
+		
+		enemy.tick();
 		enemy.draw();
 		this.remove(enemy);
 	}
