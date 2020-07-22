@@ -419,9 +419,11 @@ public class Renderer extends JPanel{
 			enemy.setDirection(0);
 		}
 		
-		
+		if (player != null)
+			enemy.target(player.getPX(),player.getPY());
 		enemy.tick();
 		enemy.draw();
+		
 		this.remove(enemy);
 	}
 	
