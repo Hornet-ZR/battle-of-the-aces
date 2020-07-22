@@ -16,7 +16,9 @@ public class Enemy extends GameEntity{
        double ax = (x - tx-tw/2);
        double ay = (y - ty-th/2);
        
-       double angle = Math.atan2(-ay,-ax);
+       double angle = 0;
+       if (x > ax-100) angle = Math.atan2(-ay,-ax-100);
+       else if (x < ax+100) angle = Math.atan2(-ay, -ax+100);
        double angle2 = Math.toDegrees(angle);
        
        direction = angle2;
