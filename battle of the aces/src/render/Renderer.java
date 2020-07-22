@@ -294,7 +294,7 @@ public class Renderer extends JPanel{
 	
 	public void createEnemy() {
 		if (enemy == null) {
-			enemy = new Enemy(g2,playerSSprite);
+			enemy = new Enemy(g2,enemySSprite);
 			enemy.setWidth(enemy_width);
 			enemy.setHeight(enemy_height);
 			enemy.setX(enemy_start_x-enemy.getWidth());
@@ -307,7 +307,7 @@ public class Renderer extends JPanel{
 			oldVelY = enemy.getVely();
 			oldDir = enemy.getDirection();
 			enemy = null;
-			enemy = new Enemy(g2,playerSSprite);
+			enemy = new Enemy(g2,enemySSprite);
 			enemy.setWidth(enemy_width);
 			enemy.setHeight(enemy_height);
 			enemy.setX(oldPX);
