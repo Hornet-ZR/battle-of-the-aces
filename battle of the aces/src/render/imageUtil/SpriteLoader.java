@@ -12,7 +12,7 @@ public class SpriteLoader {
 		return sprite;
 	}
 	public BufferedImage loadEnemySprite(BufferedImage imgIn, int x, int y) {
-		BufferedImage sprite = imgIn.getSubimage((x*342)-342, (y*342)-342, 342, 342);
+		BufferedImage sprite = imgIn.getSubimage((x*214)-214, (y*282)-282, 214, 282);
 		return sprite;
 	}
 }

@@ -115,7 +115,7 @@ public class Renderer extends JPanel{
 			renderMainScreen();
 		}
 		if (gameStarted) {
-			createPlayer();
+			gameInit();
 			//create clouds
 			
 			//Measuring markers, does lag the game,
@@ -294,7 +294,7 @@ public class Renderer extends JPanel{
 	
 	public void createEnemy() {
 		if (enemy == null) {
-			enemy = new Enemy(g2,enemySSprite);
+			enemy = new Enemy(g2,playerSSprite);
 			enemy.setWidth(enemy_width);
 			enemy.setHeight(enemy_height);
 			enemy.setX(enemy_start_x-enemy.getWidth());
@@ -307,7 +307,7 @@ public class Renderer extends JPanel{
 			oldVelY = enemy.getVely();
 			oldDir = enemy.getDirection();
 			enemy = null;
-			enemy = new Enemy(g2,enemySSprite);
+			enemy = new Enemy(g2,playerSSprite);
 			enemy.setWidth(enemy_width);
 			enemy.setHeight(enemy_height);
 			enemy.setX(oldPX);
@@ -407,6 +407,7 @@ public class Renderer extends JPanel{
 				
 		player.tick();
 		player.draw();
+		this.remove(player);
 	}
 	
 	public void renderEnemy() {
@@ -420,8 +421,9 @@ public class Renderer extends JPanel{
 		if (Math.abs(enemy.getDirection()) >= 360.0f) {
 			enemy.setDirection(0);
 		}
-				
+		enemy.tick();	
 		enemy.draw();
+		this.remove(enemy);
 	}
 	
 }
