@@ -315,7 +315,7 @@ public class Renderer extends JPanel{
 			enemy.setVelx(oldVelX);
 			enemy.setVely(oldVelY);
 			enemy.setDirection(oldDir);
-			enemy.setSpeed(2);
+			enemy.setSpeed(1.25);
 		}
 	}
 	
