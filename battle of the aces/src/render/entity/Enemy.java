@@ -1,5 +1,6 @@
 package render.entity;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -11,14 +12,13 @@ public class Enemy extends GameEntity{
 		super(g2, sprite);
 	}
 	
-	public void target(double tx, double ty) {
-       double ax = tx - x;
-       double ay = ty - y;
+	public void target(double tx, double ty, double tw, double th) {
+       double ax = (x - tx-tw/2);
+       double ay = (y - ty-th/2);
        
-       double angle = Math.atan2(ax,ay);
+       double angle = Math.atan2(-ay,-ax);
        double angle2 = Math.toDegrees(angle);
-   
+       
        direction = angle2;
-       System.out.println(angle2+" "+x+" "+y);
 	}
 }

@@ -288,7 +288,7 @@ public class Renderer extends JPanel{
 			player.setVelx(oldVelX);
 			player.setVely(oldVelY);
 			player.setDirection(oldDir);
-			player.setSpeed(2);
+			player.setSpeed(1);
 		}
 	}
 	
@@ -420,7 +420,8 @@ public class Renderer extends JPanel{
 		}
 		
 		if (player != null)
-			enemy.target(player.getPX(),player.getPY());
+			enemy.target(player.getPX(),player.getPY(),player.getWidth(),player.getHeight());
+		
 		enemy.tick();
 		enemy.draw();
 		

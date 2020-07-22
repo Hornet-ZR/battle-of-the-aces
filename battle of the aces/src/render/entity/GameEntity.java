@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 
 public class GameEntity extends JComponent{
-	private Graphics2D g2;
+	protected Graphics2D g2;
 	protected BufferedImage sprite = null;
 	protected AffineTransform aft;
 	protected int width, height;
