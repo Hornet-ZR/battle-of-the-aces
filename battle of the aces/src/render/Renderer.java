@@ -97,6 +97,7 @@ public class Renderer extends JPanel{
 		this.m = m;
 		m.addKeyListener(keyEvent);
 		mouseEvent.init(this);
+		keyEvent.init(this);
 		m.addMouseListener(mouseEvent);
 		//Set variables
 		try {
