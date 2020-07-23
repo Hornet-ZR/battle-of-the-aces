@@ -15,4 +15,8 @@ public class SpriteLoader {
 		BufferedImage sprite = imgIn.getSubimage((x*214)-214, (y*282)-282, 214, 282);
 		return sprite;
 	}
+	public BufferedImage loadObjectSprite(BufferedImage imgIn, int x, int y) {
+		BufferedImage sprite = imgIn.getSubimage((x*264)-264, (y*218)-218, 264, 218);
+		return sprite;
+	}
 }

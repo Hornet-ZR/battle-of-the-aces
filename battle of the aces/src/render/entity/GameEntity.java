@@ -128,4 +128,9 @@ public class GameEntity extends JComponent{
 		rect.setBounds((int)x-width/2-pix_add_value, (int)y-height/2-pix_add_value, (int)width+pix_add_value, (int)height+pix_add_value);
 		return rect;
 	}
+	public Rectangle render_bounds() {
+		Rectangle rect = new Rectangle();
+		rect.setBounds((int)x-300, (int)y-200, 900, 700);
+		return rect;
+	}
 }

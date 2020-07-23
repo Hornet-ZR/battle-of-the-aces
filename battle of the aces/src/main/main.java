@@ -89,8 +89,11 @@ public class main extends Canvas implements Runnable{
 		if (renderer.gameStarted == true) {	
 			renderer.gameInit();
 			
-			renderer.renderUI(g);
+//			renderer.createClouds(g);
+//			renderer.renderClouds(g);
 			
+			renderer.renderUI(g);
+			renderer.renderClouds(g);
 			g.translate((int)-renderer.player.getPX()+renderer.player.getWidth()+50,(int)-renderer.player.getPY()+renderer.player.getHeight()-50);
 			
 			renderer.render(g);

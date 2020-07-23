@@ -7,16 +7,19 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import main.main;
-import render.entity.*;
+import render.entity.Enemy;
+import render.entity.Player;
 import render.events.KeyEvents;
 import render.events.MouseEvents;
 import render.imageUtil.SpriteLoader;
+import render.object.Cloud;
 
 public class Renderer extends JPanel{
 	private Graphics2D g2;
@@ -61,14 +64,18 @@ public class Renderer extends JPanel{
 	//Entities
 	public Player player;
 	public Enemy enemy;
+	//Objects
+	public Cloud cloud;
 	//Images / files
 	private File playerSpritesF;
 	private File enemySpritesF;
 	private File guiSpritesF;
+	private File objectSpritesF;
 	private File intro_runwayF;
 	private BufferedImage playerSprites;
 	private BufferedImage enemySprites;
 	private BufferedImage guiSprites;
+	private BufferedImage objectSprites;
 	private BufferedImage intro_runway;
 	//Game settings
 	public boolean gameStarted = false;
@@ -83,6 +90,8 @@ public class Renderer extends JPanel{
 	private boolean enemyBackingOffThreadStarted = false;
 	private BufferedImage playerSSprite = null;
 	private BufferedImage enemySSprite = null;
+	private BufferedImage cloudImage = null;
+	private ArrayList<Cloud> clouds = new ArrayList();
 	
 	public void init(main m) {
 		this.m = m;
@@ -102,6 +111,9 @@ public class Renderer extends JPanel{
 			
 			intro_runwayF = new File(this.getClass().getResource("res/runway.png").toURI());
 			intro_runway = ImageIO.read(intro_runwayF);
+			
+			objectSpritesF = new File(this.getClass().getResource("res/objectSprites.png").toURI());
+			objectSprites = ImageIO.read(objectSpritesF);
 		}catch (Exception e) {
 			System.out.println("Resource loading error");
 		}
@@ -117,18 +129,7 @@ public class Renderer extends JPanel{
 		}
 		if (gameStarted) {
 			gameInit();
-			//create clouds
-			
-			//Measuring markers, does lag the game,
-			//but it lets me see where the plane is moving and how fast.
-			for (int i = 0; i < 1200; i++) {
-				g2.setColor(Color.BLACK);
-				g2.fillRect(player.getWidth()+i*50, player.getHeight(), 50, 50);
-				g2.fillRect(player.getWidth()-i*50, player.getHeight(), 50, 50);
-				g2.fillRect(player.getWidth(), player.getHeight()-i*50, 50, 50);
-				g2.fillRect(player.getWidth(), player.getHeight()+i*50, 50, 50);
-			}	
-			
+	
 			//render entities (player, enemy)
 			renderEnemy();
 			renderPlayer();
@@ -138,7 +139,7 @@ public class Renderer extends JPanel{
 				Thread backOff = new Thread(new Runnable() {
 					public void run() {
 						enemyBackingOffThreadStarted = true;
-						enemy.setSpeed(1.5);
+						enemy.setSpeed(1);
 						try {
 							Thread.sleep(100);
 						}catch(Exception e) {
@@ -176,6 +177,7 @@ public class Renderer extends JPanel{
 		if (introDone == true) {
 			playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 			enemySSprite = spriteLoader.loadEnemySprite(enemySprites, enemySpriteChosenX, enemySpriteChosenY);
+			cloudImage = spriteLoader.loadObjectSprite(objectSprites, 1, 1);
 			gameStarted = true;
 		}
 	}
@@ -339,6 +341,18 @@ public class Renderer extends JPanel{
 		}
 	}
 	
+	public void createClouds(Graphics g) {
+		for (int i = 0; i < 100; i++) {
+			cloud = new Cloud((Graphics2D) g,cloudImage);
+			Random r = new Random();
+			cloud.setX(r.nextInt((900-0)+0));
+			cloud.setY(r.nextInt((700-0)+0));
+			cloud.setWidth(100);
+			cloud.setHeight(100);
+			clouds.add(cloud);
+		}
+	}
+	
 	public void renderIntro() {
 		BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 		AffineTransform runway_transform = AffineTransform.getTranslateInstance(intro_runway_x, 225);
@@ -405,7 +419,13 @@ public class Renderer extends JPanel{
 			increaseX.start();
 		}
 	}
-	
+	public void renderClouds(Graphics g) {
+		Graphics2D g2 = (Graphics2D) g;
+		for (Cloud cl : clouds) {
+			cl.draw();
+		}
+		clouds.removeAll(clouds);
+	}
 	public void renderPlayer() {
 		this.add(player);
 		
