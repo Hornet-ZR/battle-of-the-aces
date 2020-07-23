@@ -19,9 +19,11 @@ import render.entity.Player;
 import render.events.KeyEvents;
 import render.events.MouseEvents;
 import render.imageUtil.SpriteLoader;
-import render.object.Cloud;
+import render.object.*;
 
 public class Renderer extends JPanel{
+	private static final long serialVersionUID = 1L;
+
 	private Graphics2D g2;
 	
 	//Main vars
@@ -66,6 +68,7 @@ public class Renderer extends JPanel{
 	public Enemy enemy;
 	//Objects
 	public Cloud cloud;
+	public Bullets bullet;
 	//Images / files
 	private File playerSpritesF;
 	private File enemySpritesF;
@@ -87,11 +90,12 @@ public class Renderer extends JPanel{
 	private boolean introDone = false;
 	private boolean startedIntroThread1 = false;
 	private boolean startedIntroThread2 = false;
-	private boolean enemyBackingOffThreadStarted = false;
 	private BufferedImage playerSSprite = null;
 	private BufferedImage enemySSprite = null;
-	private BufferedImage cloudImage = null;
-	private ArrayList<Cloud> clouds = new ArrayList();
+	private BufferedImage cloudSprite = null;
+	private BufferedImage bulletSprite = null;
+	private ArrayList<Cloud> clouds = new ArrayList<Cloud>();
+	private ArrayList<Bullets> bullets = new ArrayList<Bullets>();
 	
 	public void init(main m) {
 		this.m = m;
@@ -130,28 +134,21 @@ public class Renderer extends JPanel{
 		}
 		if (gameStarted) {
 			gameInit();
-	
+			
+			//render objects (bullets)
+			renderBullets();
+			
 			//render entities (player, enemy)
 			renderEnemy();
 			renderPlayer();
 			
-			//collision
-			if (player.barrier_bounds().intersects(enemy.barrier_bounds()) && enemyBackingOffThreadStarted == false) {
-				Thread backOff = new Thread(new Runnable() {
-					public void run() {
-						enemyBackingOffThreadStarted = true;
-						enemy.setSpeed(1);
-						try {
-							Thread.sleep(100);
-						}catch(Exception e) {
-							
-						}
-						enemy.setSpeed(2);
-						enemyBackingOffThreadStarted = false;
-					}
-				});
-				backOff.start();
+			//player slow zone collisions
+			if (player.barrier_bounds().intersects(enemy.barrier_bounds())) {
+				enemy.setSpeed(0.25);
+			}else if (!player.barrier_bounds().intersects(enemy.barrier_bounds())) {
+				enemy.setSpeed(1);
 			}
+			
 		}
 		
 		if (keyEvent.keyZ == true && keyZpress < 4 && introStart == false) {
@@ -178,7 +175,8 @@ public class Renderer extends JPanel{
 		if (introDone == true) {
 			playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 			enemySSprite = spriteLoader.loadEnemySprite(enemySprites, enemySpriteChosenX, enemySpriteChosenY);
-			cloudImage = spriteLoader.loadObjectSprite(objectSprites, 1, 1);
+			cloudSprite = spriteLoader.loadObjectSprite(objectSprites, 1, 1);
+			bulletSprite = spriteLoader.loadObjectSprite(objectSprites, 2, 1);
 			gameStarted = true;
 		}
 	}
@@ -344,7 +342,7 @@ public class Renderer extends JPanel{
 	
 	public void createClouds(Graphics g) {
 		for (int i = 0; i < 100; i++) {
-			cloud = new Cloud((Graphics2D) g,cloudImage);
+			cloud = new Cloud((Graphics2D) g,cloudSprite);
 			Random r = new Random();
 			cloud.setX(r.nextInt((900-0)+0));
 			cloud.setY(r.nextInt((700-0)+0));
@@ -420,17 +418,26 @@ public class Renderer extends JPanel{
 			increaseX.start();
 		}
 	}
+	
 	public void renderClouds(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
 		for (Cloud cl : clouds) {
 			cl.draw();
 		}
 		clouds.removeAll(clouds);
 	}
+	
+	public void renderBullets() {
+		for (Bullets bullet : bullets) {
+			bullet.tick();
+			bullet.draw();
+		}
+		bullets.removeAll(bullets);
+	}
+	
 	public void renderPlayer() {
 		this.add(player);
 		
-		double turnSpeed = 0.7;
+		double turnSpeed = 1;
 		
 		if (keyEvent.leftArrow == true) {
 			double newDir = player.getDirection()-turnSpeed;
@@ -440,6 +447,16 @@ public class Renderer extends JPanel{
 		if (keyEvent.rightArrow == true) {
 			double newDir = player.getDirection()+turnSpeed;
 			player.setDirection(newDir);
+		}
+		
+		if (keyEvent.keySpace == true) {
+			keyEvent.keySpace = false;
+			bullet = new Bullets(g2,bulletSprite);
+			bullet.setAngle(player.getDirection());
+			bullet.setX(player.getPX());
+			bullet.setY(player.getPY());
+			bullet.setSpeed(10);
+			bullets.add(bullet);
 		}
 		
 		if (Math.abs(player.getDirection()) >= 360.0f) {
@@ -463,7 +480,6 @@ public class Renderer extends JPanel{
 		
 		enemy.tick();
 		enemy.draw();
-		
 		this.remove(enemy);
 	}
 	

@@ -9,7 +9,7 @@ import javax.swing.JComponent;
 public class GameObject extends JComponent{
 	private Graphics2D g2;
 	private BufferedImage sprite = null;
-	protected double width, height, x, y, angle, velx, vely;
+	protected double width, height, x, y, angle, velx, vely, speed;
 	protected AffineTransform aft;
 	
 	public GameObject(Graphics2D g2, BufferedImage sprite) {
@@ -24,16 +24,12 @@ public class GameObject extends JComponent{
 	}
 	
 	public void tick() {
-		
-	}
-	
-	public void directional_tick(double angle, double speed, double sx, double sy) {
 		velx = ((Math.cos(((angle/180)* Math.PI))*speed));
 	    vely = ((Math.sin(((angle/180)* Math.PI))*speed));
-	    x += sx + velx;
-	    y += sy + vely;
+	    x += velx;
+	    y += vely;
 	}
-	
+
 	public BufferedImage getSprite() {
 		return sprite;
 	}
@@ -54,7 +50,7 @@ public class GameObject extends JComponent{
 		return height;
 	}
 
-	public void setHeight(int height) {
+	public void setHeight(double height) {
 		this.height = height;
 	}
 
@@ -72,5 +68,37 @@ public class GameObject extends JComponent{
 
 	public void setY(double y) {
 		this.y = y;
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
+	public double getVelx() {
+		return velx;
+	}
+
+	public void setVelx(double velx) {
+		this.velx = velx;
+	}
+
+	public double getVely() {
+		return vely;
+	}
+
+	public void setVely(double vely) {
+		this.vely = vely;
+	}
+
+	public double getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
 	}
 }

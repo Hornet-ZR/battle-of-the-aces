@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import javax.swing.JComponent;
 
@@ -14,6 +15,7 @@ public class GameEntity extends JComponent{
 	protected int width, height;
 	protected double direction, velx, vely, x, y;
 	protected double speed;
+	protected boolean targeting = false;
 	
 	public GameEntity(Graphics2D g2, BufferedImage sprite) {
 		this.g2 = g2;
@@ -35,8 +37,8 @@ public class GameEntity extends JComponent{
 	
 	public void target(double tx, double ty, double tw, double th) {
 		double ax=0,ay=0; 
-		ax= (x+width - tx-tw);
-		ay= (y+height - ty-th);
+		ax = (x+width - tx-tw);
+		ay = (y+height - ty-th);
 	    
 	    double angle = 0;
 	    angle = Math.atan2(-ay,-ax);
