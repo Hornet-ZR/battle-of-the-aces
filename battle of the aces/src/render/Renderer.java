@@ -176,7 +176,6 @@ public class Renderer extends JPanel{
 			playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 			enemySSprite = spriteLoader.loadEnemySprite(enemySprites, enemySpriteChosenX, enemySpriteChosenY);
 			cloudSprite = spriteLoader.loadObjectSprite(objectSprites, 1, 1);
-			bulletSprite = spriteLoader.loadObjectSprite(objectSprites, 2, 1);
 			gameStarted = true;
 		}
 	}
@@ -283,6 +282,7 @@ public class Renderer extends JPanel{
 	public void gameInit() {
 		createPlayer();
 		createEnemy();
+		createBullets();
 	}
 	
 	public void createPlayer() {
@@ -349,6 +349,27 @@ public class Renderer extends JPanel{
 			cloud.setWidth(100);
 			cloud.setHeight(100);
 			clouds.add(cloud);
+		}
+	}
+	
+	public void createBullets() {
+		for (Bullets bu : bullets) {
+			double oldx, oldy, oldangle, oldwidth, oldheight;
+			oldx = bu.getOX();
+			oldy = bu.getOY();
+			oldangle = bu.getAngle();
+			oldwidth = bu.getOWidth();
+			oldheight = bu.getOHeight();
+			bullets.remove(bu);
+			bu = null;
+			bu = new Bullets(g2,spriteLoader.loadObjectSprite(objectSprites, 2, 1));
+			bu.setX(oldx);
+			bu.setY(oldy);
+			bu.setAngle(oldangle);
+			bu.setWidth(oldwidth);
+			bu.setHeight(oldheight);
+			bu.setSpeed(1);
+			bullets.add(bu);
 		}
 	}
 	
@@ -431,13 +452,12 @@ public class Renderer extends JPanel{
 			bullet.tick();
 			bullet.draw();
 		}
-		bullets.removeAll(bullets);
 	}
 	
 	public void renderPlayer() {
 		this.add(player);
 		
-		double turnSpeed = 1;
+		double turnSpeed = 0.8;
 		
 		if (keyEvent.leftArrow == true) {
 			double newDir = player.getDirection()-turnSpeed;
@@ -451,12 +471,7 @@ public class Renderer extends JPanel{
 		
 		if (keyEvent.keySpace == true) {
 			keyEvent.keySpace = false;
-			bullet = new Bullets(g2,bulletSprite);
-			bullet.setAngle(player.getDirection());
-			bullet.setX(player.getPX());
-			bullet.setY(player.getPY());
-			bullet.setSpeed(10);
-			bullets.add(bullet);
+			
 		}
 		
 		if (Math.abs(player.getDirection()) >= 360.0f) {
