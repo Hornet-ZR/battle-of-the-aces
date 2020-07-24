@@ -97,6 +97,8 @@ public class Renderer extends JPanel{
 	private BufferedImage bulletSprite = null;
 	private ArrayList<Cloud> clouds = new ArrayList<Cloud>();
 	private ArrayList<Bullets> bullets = new ArrayList<Bullets>();
+	private ArrayList<Bullets> next_bullets = new ArrayList<Bullets>();
+	
 	
 	public void init(main m) {
 		this.m = m;
@@ -177,6 +179,7 @@ public class Renderer extends JPanel{
 			playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 			enemySSprite = spriteLoader.loadEnemySprite(enemySprites, enemySpriteChosenX, enemySpriteChosenY);
 			cloudSprite = spriteLoader.loadObjectSprite(objectSprites, 1, 1);
+			bulletSprite = spriteLoader.loadObjectSprite(objectSprites, 2, 1);
 			gameStarted = true;
 		}
 	}
@@ -354,14 +357,34 @@ public class Renderer extends JPanel{
 	}
 	
 	public void createBullets() {
-		bullet = new Bullets(g2,spriteLoader.loadObjectSprite(objectSprites, 2, 1));
-		bullet.setX(player.getPX());
-		bullet.setY(player.getPY());
-		bullet.setAngle(player.getDirection());
-		bullet.setWidth(100);
-		bullet.setHeight(100);
-		bullet.setSpeed(1);
-		bullets.add(bullet);
+		System.out.println(bullets.size());
+		if (bullets.size() > 0) {
+			double oldX,oldY,oldWidth,oldHeight,oldAngle;
+			for (Bullets b : bullets) {
+				oldX = b.getOX();
+				oldY = b.getOY();
+				oldWidth = b.getOWidth();
+				oldHeight = b.getOHeight();
+				oldAngle = b.getAngle();
+				bullet = new Bullets(g2,bulletSprite);
+				bullet.setX(oldX);
+				bullet.setY(oldY);
+				bullet.setAngle(oldAngle);
+				bullet.setWidth(oldWidth);
+				bullet.setHeight(oldHeight);
+				bullet.setSpeed(10);
+				next_bullets.add(bullet);
+			}
+			bullets.removeAll(bullets);
+			
+			for (Bullets b : next_bullets)
+				bullets.add(b);
+			
+			next_bullets.removeAll(next_bullets);
+			
+			
+			System.out.println(bullets.size());
+		}
 	}
 	
 	public void renderIntro() {
@@ -463,7 +486,14 @@ public class Renderer extends JPanel{
 		
 		if (keyEvent.keySpace == true) {
 			keyEvent.keySpace = false;
-			createBullets();
+			bullet = new Bullets(g2,bulletSprite);
+			bullet.setX(player.getPX());
+			bullet.setY(player.getPY());
+			bullet.setAngle(player.getDirection());
+			bullet.setWidth(50);
+			bullet.setHeight(50);
+			bullet.setSpeed(10);
+			bullets.add(bullet);
 		}
 		
 		if (Math.abs(player.getDirection()) >= 360.0f) {
