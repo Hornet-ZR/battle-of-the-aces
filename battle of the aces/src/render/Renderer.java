@@ -147,9 +147,9 @@ public class Renderer extends JPanel{
 			
 			//player slow zone collisions
 			if (player.barrier_bounds().intersects(enemy.barrier_bounds())) {
-				enemy.setSpeed(0.25);
+				enemy.setSpeed(0);
 			}else if (!player.barrier_bounds().intersects(enemy.barrier_bounds())) {
-				enemy.setSpeed(1);
+				enemy.setSpeed(0.5);
 			}
 			
 		}
@@ -181,6 +181,7 @@ public class Renderer extends JPanel{
 			cloudSprite = spriteLoader.loadObjectSprite(objectSprites, 1, 1);
 			bulletSprite = spriteLoader.loadObjectSprite(objectSprites, 2, 1);
 			gameStarted = true;
+			introDone = false;
 		}
 	}
 	public void renderUI(Graphics g) {
@@ -312,7 +313,7 @@ public class Renderer extends JPanel{
 			player.setVelx(oldVelX);
 			player.setVely(oldVelY);
 			player.setDirection(oldDir);
-			player.setSpeed(2);
+			player.setSpeed(0.5);
 		}
 	}
 	
@@ -357,7 +358,6 @@ public class Renderer extends JPanel{
 	}
 	
 	public void createBullets() {
-		System.out.println(bullets.size());
 		if (bullets.size() > 0) {
 			double oldX,oldY,oldWidth,oldHeight,oldAngle;
 			for (Bullets b : bullets) {
@@ -372,7 +372,7 @@ public class Renderer extends JPanel{
 				bullet.setAngle(oldAngle);
 				bullet.setWidth(oldWidth);
 				bullet.setHeight(oldHeight);
-				bullet.setSpeed(10);
+				bullet.setSpeed(2);
 				next_bullets.add(bullet);
 			}
 			bullets.removeAll(bullets);
@@ -382,8 +382,6 @@ public class Renderer extends JPanel{
 			
 			next_bullets.removeAll(next_bullets);
 			
-			
-			System.out.println(bullets.size());
 		}
 	}
 	
@@ -472,7 +470,7 @@ public class Renderer extends JPanel{
 	public void renderPlayer() {
 		this.add(player);
 		
-		double turnSpeed = 0.8;
+		double turnSpeed = 0.25;
 		
 		if (keyEvent.leftArrow == true) {
 			double newDir = player.getDirection()-turnSpeed;
@@ -492,7 +490,7 @@ public class Renderer extends JPanel{
 			bullet.setAngle(player.getDirection());
 			bullet.setWidth(50);
 			bullet.setHeight(50);
-			bullet.setSpeed(10);
+			bullet.setSpeed(2);
 			bullets.add(bullet);
 		}
 		
