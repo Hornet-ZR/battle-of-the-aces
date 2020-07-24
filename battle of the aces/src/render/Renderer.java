@@ -19,7 +19,8 @@ import render.entity.Player;
 import render.events.KeyEvents;
 import render.events.MouseEvents;
 import render.imageUtil.SpriteLoader;
-import render.object.*;
+import render.object.Bullets;
+import render.object.Cloud;
 
 public class Renderer extends JPanel{
 	private static final long serialVersionUID = 1L;
@@ -353,24 +354,14 @@ public class Renderer extends JPanel{
 	}
 	
 	public void createBullets() {
-		for (Bullets bu : bullets) {
-			double oldx, oldy, oldangle, oldwidth, oldheight;
-			oldx = bu.getOX();
-			oldy = bu.getOY();
-			oldangle = bu.getAngle();
-			oldwidth = bu.getOWidth();
-			oldheight = bu.getOHeight();
-			bullets.remove(bu);
-			bu = null;
-			bu = new Bullets(g2,spriteLoader.loadObjectSprite(objectSprites, 2, 1));
-			bu.setX(oldx);
-			bu.setY(oldy);
-			bu.setAngle(oldangle);
-			bu.setWidth(oldwidth);
-			bu.setHeight(oldheight);
-			bu.setSpeed(1);
-			bullets.add(bu);
-		}
+		bullet = new Bullets(g2,spriteLoader.loadObjectSprite(objectSprites, 2, 1));
+		bullet.setX(player.getPX());
+		bullet.setY(player.getPY());
+		bullet.setAngle(player.getDirection());
+		bullet.setWidth(100);
+		bullet.setHeight(100);
+		bullet.setSpeed(1);
+		bullets.add(bullet);
 	}
 	
 	public void renderIntro() {
@@ -451,6 +442,7 @@ public class Renderer extends JPanel{
 		for (Bullets bullet : bullets) {
 			bullet.tick();
 			bullet.draw();
+			this.remove(bullet);
 		}
 	}
 	
@@ -471,7 +463,7 @@ public class Renderer extends JPanel{
 		
 		if (keyEvent.keySpace == true) {
 			keyEvent.keySpace = false;
-			
+			createBullets();
 		}
 		
 		if (Math.abs(player.getDirection()) >= 360.0f) {
