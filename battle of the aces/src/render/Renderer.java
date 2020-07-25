@@ -7,12 +7,14 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import main.main;
 import render.entity.Enemy;
@@ -152,11 +154,20 @@ public class Renderer extends JPanel{
 			renderEnemy();
 			renderPlayer();
 			
-			//player slow zone collisions
+			//collisions
 			if (player.barrier_bounds().intersects(enemy.barrier_bounds())) {
 				enemy.setSpeed(0);
 			}else if (!player.barrier_bounds().intersects(enemy.barrier_bounds())) {
 				enemy.setSpeed(0.5);
+			}
+			
+			if (isMultiplayer) {
+//          create socket and read data
+//				try {
+//					Socket s = new Socket(ip,Integer.valueOf(port));
+//				} catch (Exception e) {
+//					
+//				}
 			}
 			
 		}
@@ -413,6 +424,9 @@ public class Renderer extends JPanel{
 			player.setDirection(oldDir);
 			player.setSpeed(0.5);
 		}
+		if (isMultiplayer) {
+			//send player data
+		}
 	}
 	
 	public void createEnemy() {
@@ -440,6 +454,9 @@ public class Renderer extends JPanel{
 			enemy.setVely(oldVelY);
 			enemy.setDirection(oldDir);
 			enemy.setSpeed(oldSpeed);
+		}
+		if (isMultiplayer) {
+			//get data
 		}
 	}
 	
@@ -479,7 +496,9 @@ public class Renderer extends JPanel{
 				bullets.add(b);
 			
 			next_bullets.removeAll(next_bullets);
-			
+		}
+		if (isMultiplayer) {
+			//get data
 		}
 	}
 	
@@ -602,18 +621,22 @@ public class Renderer extends JPanel{
 	}
 	
 	public void renderEnemy() {
-		this.add(enemy);
-		
-		if (Math.abs(enemy.getDirection()) >= 360.0f) {
-			enemy.setDirection(0);
+		if (isMultiplayer) {
+			//render other player
+		}else {
+			this.add(enemy);
+			
+			if (Math.abs(enemy.getDirection()) >= 360.0f) {
+				enemy.setDirection(0);
+			}
+			
+			if (player != null)
+				enemy.target(player.getPX(),player.getPY(),player.getWidth(),player.getHeight());
+			
+			enemy.tick();
+			enemy.draw();
+			this.remove(enemy);
 		}
-		
-		if (player != null)
-			enemy.target(player.getPX(),player.getPY(),player.getWidth(),player.getHeight());
-		
-		enemy.tick();
-		enemy.draw();
-		this.remove(enemy);
 	}
 	
 }
