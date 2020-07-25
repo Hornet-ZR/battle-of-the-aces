@@ -368,8 +368,12 @@ public class Renderer extends JPanel{
 				g2.drawString("Server IP: "+ip, 100, 100);
 				g2.drawString("Server Port: "+port, 100, 200);
 				
-				g2.drawRect(225, 65, 200, 50);
-				g2.drawRect(225, 165, 200, 50);
+				if (choosingServerIP) g2.drawRect(200, 65, 1000, 50);
+				if (choosingServerPort) g2.drawRect(225, 165, 1000, 50);
+				
+				if (!ip.equals("") && !port.equals("")) 
+					g2.drawString("Press X to connect to server", 500, 500);
+				
 			}
 			
 			else if (introStart == true) {

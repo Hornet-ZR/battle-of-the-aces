@@ -14,6 +14,22 @@ public class KeyEvents implements KeyListener{
 	}
 	
 	public void keyPressed(KeyEvent e) {
+		if (renderer.choosingServer) {
+			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && renderer.ip.length() > 0 && renderer.choosingServerIP == true) {
+				renderer.ip = renderer.ip.substring(0, renderer.ip.length() - 1);
+			}else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && renderer.port.length() > 0 && renderer.choosingServerPort == true) {
+				renderer.port = renderer.port.substring(0, renderer.port.length() - 1);
+			}
+			
+			if (e.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
+				if (renderer.choosingServerIP) {
+					renderer.ip += e.getKeyChar();
+				}
+				if (renderer.choosingServerPort) {
+					renderer.port += e.getKeyChar();
+				}
+			}
+		}
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
 			upArrow = true;
 		}
@@ -76,14 +92,7 @@ public class KeyEvents implements KeyListener{
 	}
 
 	public void keyTyped(KeyEvent e) {
-		if (renderer.choosingServer) {
-			if (renderer.choosingServerIP) {
-				renderer.ip += e.getKeyChar();
-			}
-			if (renderer.choosingServerPort) {
-				renderer.port += e.getKeyChar();
-			}
-		}
+		
 	}
 
 }
