@@ -46,6 +46,19 @@ public class MouseEvents implements MouseListener{
 				}
 			}
 		}
+		if (renderer.choosingServer) {
+			if (mx > 225 && mx < 425) {
+				if (my > 65 && my < 115) {
+					renderer.choosingServerIP = true;
+					renderer.choosingServerPort = false;
+				}
+				if (my > 165 && my < 215) {
+					System.out.println("eeasd");
+					renderer.choosingServerPort = true;
+					renderer.choosingServerIP = false;
+				}
+			}
+		}
 	}
 
 	public void mouseEntered(MouseEvent e) {

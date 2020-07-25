@@ -12,6 +12,7 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import main.main;
 import render.entity.Enemy;
@@ -32,7 +33,11 @@ public class Renderer extends JPanel{
 	private int fps = 0;
 	
 	//General menu stuff
+	public boolean isMultiplayer = false;
+	public String ip = "";
+	public String port = "";
 	private int keyZpress = 0;
+	private int keyXpress = 0;
 	private int plane_preview_x = 100;
 	private int plane_preview_y = 100;
 	
@@ -86,6 +91,9 @@ public class Renderer extends JPanel{
 	public boolean introStart = false;
 	public boolean choosingPlayer = false;
 	public boolean choosingEnemy = false;
+	public boolean choosingServer = false;
+	public boolean choosingServerIP = false;
+	public boolean choosingServerPort = false;
 	private boolean showMainScreen = true;
 	private boolean showingMenu = true;
 	private boolean introDone = false;
@@ -132,10 +140,9 @@ public class Renderer extends JPanel{
 		this.g2 = g2;
 		fps = m.fps;
 		
-		if (showMainScreen == true) {
+		if (showMainScreen) {
 			renderMainScreen();
-		}
-		if (gameStarted) {
+		}else if (gameStarted) {
 			gameInit();
 			
 			//render objects (bullets)
@@ -156,6 +163,7 @@ public class Renderer extends JPanel{
 		
 		if (keyEvent.keyZ == true && keyZpress < 4 && introStart == false) {
 			keyEvent.keyZ = false;
+			isMultiplayer = false;
 			keyZpress++;
 	
 			switch (keyZpress) {
@@ -174,6 +182,25 @@ public class Renderer extends JPanel{
 				introStart = true;
 				break;
 			}
+		}else if (keyEvent.keyX == true && keyXpress < 3 && introStart == false) {
+			keyEvent.keyX = false;
+			isMultiplayer = true;
+			keyXpress++;
+	
+			switch (keyXpress) {
+			case 1:
+				showingMenu = false;
+				choosingPlayer = true;
+				break;
+				
+			case 2:
+				choosingPlayer = false;
+				choosingServer = true;
+				break;
+			case 3:
+				choosingServer = false;
+				break;
+			}
 		}
 		if (introDone == true) {
 			playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
@@ -184,6 +211,7 @@ public class Renderer extends JPanel{
 			introDone = false;
 		}
 	}
+	
 	public void renderUI(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		this.g2 = g2;
@@ -191,97 +219,163 @@ public class Renderer extends JPanel{
 		g2.setFont(new Font("Arial",Font.BOLD,30));
 		g2.drawString("UPDATES: "+fps, 10, 50);
 	}
+	
 	public void renderMainScreen() {
-		if (showingMenu == true) {
-			g2.setColor(Color.RED);
-			g2.setFont(new Font("Arial",Font.BOLD,30));
-			g2.drawString("DOGFIGHTER 8.0: Battle of the aces", 190, 50);
-			g2.drawString("Press Z to choose player", 500, 400);
-			
-			
-			if (guiSprites == null)
-				return;
-			
-			BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
-			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
-			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
-			g2.drawImage(plane_image, pos, this);
-		}else if (choosingPlayer == true) {
-			g2.setColor(Color.RED);
-			g2.setFont(new Font("Arial",Font.BOLD,30));
-			g2.drawString("Choose your player", 190, 50);
-			g2.drawString("Press Z to choose enemy", 500, 400);
-			
-			
-			if (playerSprites == null) 
-				return;
-			
-			if (playerSpriteChosenX > 10) { 
-				playerSpriteChosenX = 1;
-				playerSpriteChosenY++;
+		if (isMultiplayer == false) {
+			if (showingMenu) {
+				g2.setColor(Color.RED);
+				g2.setFont(new Font("Arial",Font.BOLD,30));
+				g2.drawString("DOGFIGHTER 8.0: Battle of the aces", 190, 50);
+				g2.drawString("Press Z to choose player", 500, 400);
+				g2.drawString("Press X to choose player (Multiplayer)", 320, 500);
+				
+				if (guiSprites == null)
+					return;
+				
+				BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
+				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
+				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+				g2.drawImage(plane_image, pos, this);
+			}else if (choosingPlayer) {
+				g2.setColor(Color.RED);
+				g2.setFont(new Font("Arial",Font.BOLD,30));
+				g2.drawString("Choose your player", 190, 50);
+				g2.drawString("Press Z to choose enemy", 500, 400);
+				
+				
+				if (playerSprites == null) 
+					return;
+				
+				if (playerSpriteChosenX > 10) { 
+					playerSpriteChosenX = 1;
+					playerSpriteChosenY++;
+				}
+				
+				if (mouseEvent.back == true && playerSpriteChosenY > 1 && playerSpriteChosenX == 1) {
+					mouseEvent.back = false;
+					playerSpriteChosenY--;
+					playerSpriteChosenX = 10;
+				}
+				
+				playerPlaneIndex = 10*(playerSpriteChosenY-1)+playerSpriteChosenX;
+				
+				BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
+				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
+				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+				g2.drawImage(plane_image, pos, this);
+				
+				g2.setColor(Color.WHITE);
+				g2.drawOval(0, 500, 100, 100);
+				g2.drawOval(300, 500, 100, 100);
+				g2.setFont(new Font("Arial",Font.BOLD,22));
+				g2.drawString("Previous",5, 560);
+				g2.drawString("Next",325, 560);
+				g2.drawString("Plane "+playerPlaneIndex, 165, 560);
+				
+			}else if (choosingEnemy) {
+				g2.setColor(Color.RED);
+				g2.setFont(new Font("Arial",Font.BOLD,30));
+				g2.drawString("Choose your enemy", 190, 50);
+				g2.drawString("Press Z to start", 500, 400);
+				
+				
+				if (guiSprites == null)
+					return;
+				
+				
+				if (playerSpriteChosenX > 10) { 
+					enemySpriteChosenX = 1;
+					enemySpriteChosenY++;
+				}
+				
+				if (mouseEvent.back == true && playerSpriteChosenY > 1 && playerSpriteChosenX == 1) {
+					mouseEvent.back = false;
+					enemySpriteChosenY--;
+					enemySpriteChosenX = 10;
+				}
+				
+				enemyPlaneIndex = 10*(enemySpriteChosenY-1)+enemySpriteChosenX;
+				
+				BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
+				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
+				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+				g2.drawImage(plane_image, pos, this);
+				
+				g2.setColor(Color.WHITE);
+				g2.drawOval(0, 500, 100, 100);
+				g2.drawOval(300, 500, 100, 100);
+				g2.setFont(new Font("Arial",Font.BOLD,22));
+				g2.drawString("Previous",5, 560);
+				g2.drawString("Next",325, 560);
+				g2.drawString("Plane "+enemyPlaneIndex, 165, 560);
+			}else if (introStart == true) {
+				renderIntro();
+			}
+		}else if (isMultiplayer) {
+			if (showingMenu) {
+				g2.setColor(Color.RED);
+				g2.setFont(new Font("Arial",Font.BOLD,30));
+				g2.drawString("DOGFIGHTER 8.0: Battle of the aces", 190, 50);
+				g2.drawString("Press Z to choose player", 500, 400);
+				g2.drawString("Press X to choose player (Multiplayer)", 320, 500);
+				
+				if (guiSprites == null)
+					return;
+				
+				BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
+				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
+				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+				g2.drawImage(plane_image, pos, this);
+			}else if (choosingPlayer) {
+				g2.setColor(Color.RED);
+				g2.setFont(new Font("Arial",Font.BOLD,30));
+				g2.drawString("Choose your player", 190, 50);
+				g2.drawString("Press X to choose server", 500, 400);
+				
+				
+				if (playerSprites == null) 
+					return;
+				
+				if (playerSpriteChosenX > 10) { 
+					playerSpriteChosenX = 1;
+					playerSpriteChosenY++;
+				}
+				
+				if (mouseEvent.back == true && playerSpriteChosenY > 1 && playerSpriteChosenX == 1) {
+					mouseEvent.back = false;
+					playerSpriteChosenY--;
+					playerSpriteChosenX = 10;
+				}
+				
+				playerPlaneIndex = 10*(playerSpriteChosenY-1)+playerSpriteChosenX;
+				
+				BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
+				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
+				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+				g2.drawImage(plane_image, pos, this);
+				
+				g2.setColor(Color.WHITE);
+				g2.drawOval(0, 500, 100, 100);
+				g2.drawOval(300, 500, 100, 100);
+				g2.setFont(new Font("Arial",Font.BOLD,22));
+				g2.drawString("Previous",5, 560);
+				g2.drawString("Next",325, 560);
+				g2.drawString("Plane "+playerPlaneIndex, 165, 560);
+				
+			}else if (choosingServer) {
+				g2.setColor(Color.WHITE);
+				g2.setFont(new Font("Arial",Font.BOLD,22));
+				g2.drawString("Server IP: "+ip, 100, 100);
+				g2.drawString("Server Port: "+port, 100, 200);
+				
+				g2.drawRect(225, 65, 200, 50);
+				g2.drawRect(225, 165, 200, 50);
 			}
 			
-			if (mouseEvent.back == true && playerSpriteChosenY > 1 && playerSpriteChosenX == 1) {
-				mouseEvent.back = false;
-				playerSpriteChosenY--;
-				playerSpriteChosenX = 10;
+			else if (introStart == true) {
+				renderIntro();
 			}
-			
-			playerPlaneIndex = 10*(playerSpriteChosenY-1)+playerSpriteChosenX;
-			
-			BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
-			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
-			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
-			g2.drawImage(plane_image, pos, this);
-			
-			g2.setColor(Color.WHITE);
-			g2.drawOval(0, 500, 100, 100);
-			g2.drawOval(300, 500, 100, 100);
-			g2.setFont(new Font("Arial",Font.BOLD,22));
-			g2.drawString("Previous",5, 560);
-			g2.drawString("Next",325, 560);
-			g2.drawString("Plane "+playerPlaneIndex, 165, 560);
-			
-		}else if (choosingEnemy == true) {
-			g2.setColor(Color.RED);
-			g2.setFont(new Font("Arial",Font.BOLD,30));
-			g2.drawString("Choose your enemy", 190, 50);
-			g2.drawString("Press Z to start", 500, 400);
-			
-			
-			if (guiSprites == null)
-				return;
-			
-			
-			if (playerSpriteChosenX > 10) { 
-				enemySpriteChosenX = 1;
-				enemySpriteChosenY++;
-			}
-			
-			if (mouseEvent.back == true && playerSpriteChosenY > 1 && playerSpriteChosenX == 1) {
-				mouseEvent.back = false;
-				enemySpriteChosenY--;
-				enemySpriteChosenX = 10;
-			}
-			
-			enemyPlaneIndex = 10*(enemySpriteChosenY-1)+enemySpriteChosenX;
-			
-			BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
-			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
-			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
-			g2.drawImage(plane_image, pos, this);
-			
-			g2.setColor(Color.WHITE);
-			g2.drawOval(0, 500, 100, 100);
-			g2.drawOval(300, 500, 100, 100);
-			g2.setFont(new Font("Arial",Font.BOLD,22));
-			g2.drawString("Previous",5, 560);
-			g2.drawString("Next",325, 560);
-			g2.drawString("Plane "+enemyPlaneIndex, 165, 560);
-		}else if (introStart == true) {
-			renderIntro();
 		}
-		
 	}
 	
 	public void gameInit() {
