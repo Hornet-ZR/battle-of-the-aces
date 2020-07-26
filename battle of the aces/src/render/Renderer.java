@@ -97,10 +97,12 @@ public class Renderer extends JPanel{
 	public boolean choosingServerIP = false;
 	public boolean choosingServerPort = false;
 	private boolean showMainScreen = true;
-	private boolean showingMenu = true;
+	private boolean showingMenu = false;
 	private boolean introDone = false;
 	private boolean startedIntroThread1 = false;
 	private boolean startedIntroThread2 = false;
+	private boolean playerWon = true;
+	private boolean enemyWon = false;
 	private BufferedImage playerSSprite = null;
 	private BufferedImage enemySSprite = null;
 	private BufferedImage cloudSprite = null;
@@ -110,7 +112,6 @@ public class Renderer extends JPanel{
 	private ArrayList<Bullets> next_bullets = new ArrayList<Bullets>();
 	private ArrayList<Bullets> enemy_bullets = new ArrayList<Bullets>();
 	private ArrayList<Bullets> enemy_next_bullets = new ArrayList<Bullets>();
-	private Socket server;
 	
 	public void init(main m) {
 		this.m = m;
@@ -165,15 +166,16 @@ public class Renderer extends JPanel{
 				enemy.setSpeed(0.5);
 			}
 			
-//			if (isMultiplayer) {
-//				try {
-//					server = new Socket(ip,Integer.valueOf(port));
-//					BufferedReader info = new BufferedReader(new InputStreamReader(server.getInputStream()));
-//					System.out.println(info);
-//				}catch(Exception e) {
-//					
-//				}
-//			}
+			if (player.getHealth() <= 0) {
+				showMainScreen = true;
+				enemyWon = true;
+				gameStarted = false;
+			}
+			if (enemy.getHealth() <= 0) {
+				showMainScreen = true;
+				playerWon = true;
+				gameStarted = false;
+			}
 			
 		}
 		
@@ -238,6 +240,18 @@ public class Renderer extends JPanel{
 	
 	public void renderMainScreen() {
 		if (isMultiplayer == false) {
+			if (playerWon == true) {
+				BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
+				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
+				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+				g2.drawImage(plane_image, pos, this);
+				
+				g2.setColor(Color.WHITE);
+				g2.setFont(new Font("Arial",Font.BOLD,48));
+				g2.drawString("You won!", 100, 500);
+				g2.drawString("Your remaining health: "+(int)player.getHealth(), 100, 550);
+				g2.drawString("Enemy's remaining health: "+(int)enemy.getHealth(), 100, 550);
+			}
 			if (showingMenu) {
 				g2.setColor(Color.RED);
 				g2.setFont(new Font("Arial",Font.BOLD,30));
