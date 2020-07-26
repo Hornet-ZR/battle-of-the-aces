@@ -1,6 +1,7 @@
 package render.object;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
@@ -11,7 +12,8 @@ public class GameObject extends JComponent{
 	private BufferedImage sprite = null;
 	protected double width=100, height=100, x=0, y=0, angle=0, velx=0, vely=0, speed=0;
 	protected AffineTransform aft;
-	
+	protected boolean dead = false;
+
 	public GameObject(Graphics2D g2, BufferedImage sprite) {
 		this.g2 = g2;
 		this.sprite = sprite;
@@ -101,4 +103,19 @@ public class GameObject extends JComponent{
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
+	
+	public boolean isDead() {
+		return dead;
+	}
+
+	public void setDead(boolean dead) {
+		this.dead = dead;
+	}
+	
+	public Rectangle oBounds() {
+		Rectangle rect = new Rectangle();
+		rect.setBounds((int)(x-width/2), (int)(y-height/2), (int)width, (int)height);
+		return rect;
+	}
+	
 }

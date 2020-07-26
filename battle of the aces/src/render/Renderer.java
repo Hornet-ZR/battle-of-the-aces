@@ -6,10 +6,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -108,7 +108,9 @@ public class Renderer extends JPanel{
 	private ArrayList<Cloud> clouds = new ArrayList<Cloud>();
 	private ArrayList<Bullets> bullets = new ArrayList<Bullets>();
 	private ArrayList<Bullets> next_bullets = new ArrayList<Bullets>();
-	
+	private ArrayList<Bullets> enemy_bullets = new ArrayList<Bullets>();
+	private ArrayList<Bullets> enemy_next_bullets = new ArrayList<Bullets>();
+	private Socket server;
 	
 	public void init(main m) {
 		this.m = m;
@@ -142,9 +144,11 @@ public class Renderer extends JPanel{
 		this.g2 = g2;
 		fps = m.fps;
 		
-		if (showMainScreen) {
+		if (showMainScreen == true) {
 			renderMainScreen();
-		}else if (gameStarted) {
+		}
+		if (gameStarted == true) {
+			System.out.println("Enemy's health = "+enemy.getHealth());
 			gameInit();
 			
 			//render objects (bullets)
@@ -161,14 +165,15 @@ public class Renderer extends JPanel{
 				enemy.setSpeed(0.5);
 			}
 			
-			if (isMultiplayer) {
-//          create socket and read data
+//			if (isMultiplayer) {
 //				try {
-//					Socket s = new Socket(ip,Integer.valueOf(port));
-//				} catch (Exception e) {
+//					server = new Socket(ip,Integer.valueOf(port));
+//					BufferedReader info = new BufferedReader(new InputStreamReader(server.getInputStream()));
+//					System.out.println(info);
+//				}catch(Exception e) {
 //					
 //				}
-			}
+//			}
 			
 		}
 		
@@ -385,9 +390,7 @@ public class Renderer extends JPanel{
 				if (!ip.equals("") && !port.equals("")) 
 					g2.drawString("Press X to connect to server", 500, 500);
 				
-			}
-			
-			else if (introStart == true) {
+			}else if (introStart == true) {
 				renderIntro();
 			}
 		}
@@ -396,7 +399,17 @@ public class Renderer extends JPanel{
 	public void gameInit() {
 		createPlayer();
 		createEnemy();
-		createBullets();
+		System.out.println(bullets.size()+" "+enemy_bullets.size());
+		if (bullets.size() > 30) {
+			enemy_bullets.removeAll(enemy_bullets);
+		}else {
+			createEnemyBullets();	
+		}
+		if ((enemy_bullets.size())> 30) {
+			bullets.removeAll(bullets);
+		}else {
+			createBullets();
+		}
 	}
 	
 	public void createPlayer() {
@@ -407,12 +420,13 @@ public class Renderer extends JPanel{
 			player.setX(player_start_x-player.getWidth());
 			player.setY(player_start_y-player.getHeight());
 		}else {
-			double oldPX, oldPY, oldDir, oldVelX, oldVelY;
+			double oldPX, oldPY, oldDir, oldVelX, oldVelY, oldHealth;
 			oldPX = player.getPX();
 			oldPY = player.getPY();
 			oldVelX = player.getVelx();
 			oldVelY = player.getVely();
 			oldDir = player.getDirection();
+			oldHealth = player.getHealth();
 			player = null;
 			player = new Player(g2,playerSSprite);
 			player.setWidth(player_width);
@@ -422,6 +436,7 @@ public class Renderer extends JPanel{
 			player.setVelx(oldVelX);
 			player.setVely(oldVelY);
 			player.setDirection(oldDir);
+			player.setHealth(oldHealth);
 			player.setSpeed(0.5);
 		}
 		if (isMultiplayer) {
@@ -437,13 +452,14 @@ public class Renderer extends JPanel{
 			enemy.setX(enemy_start_x-enemy.getWidth());
 			enemy.setY(enemy_start_y-enemy.getHeight());
 		}else {
-			double oldPX, oldPY, oldDir, oldVelX, oldVelY, oldSpeed;
+			double oldPX, oldPY, oldDir, oldVelX, oldVelY, oldSpeed, oldHealth;
 			oldPX = enemy.getPX();
 			oldPY = enemy.getPY();
 			oldVelX = enemy.getVelx();
 			oldVelY = enemy.getVely();
 			oldDir = enemy.getDirection();
 			oldSpeed = enemy.getSpeed();
+			oldHealth = enemy.getHealth();
 			enemy = null;
 			enemy = new Enemy(g2,enemySSprite);
 			enemy.setWidth(enemy_width);
@@ -453,6 +469,7 @@ public class Renderer extends JPanel{
 			enemy.setVelx(oldVelX);
 			enemy.setVely(oldVelY);
 			enemy.setDirection(oldDir);
+			enemy.setHealth(oldHealth);
 			enemy.setSpeed(oldSpeed);
 		}
 		if (isMultiplayer) {
@@ -476,19 +493,21 @@ public class Renderer extends JPanel{
 		if (bullets.size() > 0) {
 			double oldX,oldY,oldWidth,oldHeight,oldAngle;
 			for (Bullets b : bullets) {
-				oldX = b.getOX();
-				oldY = b.getOY();
-				oldWidth = b.getOWidth();
-				oldHeight = b.getOHeight();
-				oldAngle = b.getAngle();
-				bullet = new Bullets(g2,bulletSprite);
-				bullet.setX(oldX);
-				bullet.setY(oldY);
-				bullet.setAngle(oldAngle);
-				bullet.setWidth(oldWidth);
-				bullet.setHeight(oldHeight);
-				bullet.setSpeed(2);
-				next_bullets.add(bullet);
+				if (b.isDead() == false) {
+					oldX = b.getOX();
+					oldY = b.getOY();
+					oldWidth = b.getOWidth();
+					oldHeight = b.getOHeight();
+					oldAngle = b.getAngle();
+					bullet = new Bullets(g2,bulletSprite);
+					bullet.setX(oldX);
+					bullet.setY(oldY);
+					bullet.setAngle(oldAngle);
+					bullet.setWidth(oldWidth);
+					bullet.setHeight(oldHeight);
+					bullet.setSpeed(2);
+					next_bullets.add(bullet);
+				}
 			}
 			bullets.removeAll(bullets);
 			
@@ -496,6 +515,38 @@ public class Renderer extends JPanel{
 				bullets.add(b);
 			
 			next_bullets.removeAll(next_bullets);
+		}
+		if (isMultiplayer) {
+			//get data
+		}
+	}
+	
+	public void createEnemyBullets() {
+		if (enemy_bullets.size() > 0) {
+			double oldX,oldY,oldWidth,oldHeight,oldAngle;
+			for (Bullets b : enemy_bullets) {
+				if (b.isDead() == false) {
+					oldX = b.getOX();
+					oldY = b.getOY();
+					oldWidth = b.getOWidth();
+					oldHeight = b.getOHeight();
+					oldAngle = b.getAngle();
+					bullet = new Bullets(g2,bulletSprite);
+					bullet.setX(oldX);
+					bullet.setY(oldY);
+					bullet.setAngle(oldAngle);
+					bullet.setWidth(oldWidth);
+					bullet.setHeight(oldHeight);
+					bullet.setSpeed(2);
+					enemy_next_bullets.add(bullet);
+				}
+			}
+			enemy_bullets.removeAll(enemy_bullets);
+			
+			for (Bullets b : enemy_next_bullets)
+				enemy_bullets.add(b);
+			
+			enemy_next_bullets.removeAll(enemy_next_bullets);
 		}
 		if (isMultiplayer) {
 			//get data
@@ -578,8 +629,27 @@ public class Renderer extends JPanel{
 	
 	public void renderBullets() {
 		for (Bullets bullet : bullets) {
-			bullet.tick();
-			bullet.draw();
+			if (bullet.isDead() == false) {
+				bullet.tick();
+				bullet.draw();	
+			}
+			if (isMultiplayer == false) {
+				if (bullet.oBounds().intersects(enemy.bounds()) && bullet.isDead() == false) {
+					enemy.setHealth(enemy.getHealth()-0.01);
+				}
+			}
+			this.remove(bullet);
+		}
+		for (Bullets bullet : enemy_bullets) {
+			if (bullet.isDead() == false) {
+				bullet.tick();
+				bullet.draw();	
+			}
+			if (isMultiplayer == false) {
+				if (bullet.oBounds().intersects(player.bounds()) && bullet.isDead() == false) {
+					player.setHealth(player.getHealth()-0.01);
+				}
+			}
 			this.remove(bullet);
 		}
 	}
@@ -633,6 +703,18 @@ public class Renderer extends JPanel{
 			if (player != null)
 				enemy.target(player.getPX(),player.getPY(),player.getWidth(),player.getHeight());
 			
+			enemy.shoot();
+			if (enemy.shooting == true){
+				enemy.shooting = false;
+				bullet = new Bullets(g2,bulletSprite);
+				bullet.setX(enemy.getPX());
+				bullet.setY(enemy.getPY());
+				bullet.setAngle(enemy.getDirection());
+				bullet.setWidth(50);
+				bullet.setHeight(50);
+				bullet.setSpeed(2);
+				enemy_bullets.add(bullet);
+			}
 			enemy.tick();
 			enemy.draw();
 			this.remove(enemy);

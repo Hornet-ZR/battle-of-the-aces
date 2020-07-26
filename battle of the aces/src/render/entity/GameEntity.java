@@ -13,9 +13,8 @@ public class GameEntity extends JComponent{
 	protected BufferedImage sprite = null;
 	protected AffineTransform aft;
 	protected int width, height;
-	protected double direction, velx, vely, x, y;
+	protected double direction, velx, vely, x, y, health=100;
 	protected double speed;
-	protected boolean targeting = false;
 	
 	public GameEntity(Graphics2D g2, BufferedImage sprite) {
 		this.g2 = g2;
@@ -115,9 +114,18 @@ public class GameEntity extends JComponent{
 		return speed;
 	}
 
+	public double getHealth() {
+		return health;
+	}
+
+	public void setHealth(double health) {
+		this.health = health;
+	}
+
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
+	
 	public Rectangle bounds() {
 		Rectangle rect = new Rectangle();
 		rect.setBounds((int)x-width/2, (int)y-height/2, (int)width, (int)height);
@@ -135,4 +143,5 @@ public class GameEntity extends JComponent{
 		rect.setBounds((int)x-300, (int)y-200, 900, 700);
 		return rect;
 	}
+	
 }
