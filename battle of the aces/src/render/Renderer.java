@@ -97,11 +97,11 @@ public class Renderer extends JPanel{
 	public boolean choosingServerIP = false;
 	public boolean choosingServerPort = false;
 	private boolean showMainScreen = true;
-	private boolean showingMenu = false;
+	private boolean showingMenu = true;
 	private boolean introDone = false;
 	private boolean startedIntroThread1 = false;
 	private boolean startedIntroThread2 = false;
-	private boolean playerWon = true;
+	private boolean playerWon = false;
 	private boolean enemyWon = false;
 	private BufferedImage playerSSprite = null;
 	private BufferedImage enemySSprite = null;

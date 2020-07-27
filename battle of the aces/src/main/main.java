@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 
+import Server.Client;
+import Server.Server;
 import render.Renderer;
 
 
@@ -20,6 +22,9 @@ public class main extends Canvas implements Runnable{
 	private Renderer renderer = new Renderer();
 	private Window w;
 	
+	private Server server = new Server();
+	private Client client = new Client("localhost");
+	
 	public int fps = 0;
 	
 	public void init() {
@@ -33,6 +38,8 @@ public class main extends Canvas implements Runnable{
 	public void run() {
 		running = true;
 		renderer.init(this);
+		server.start();
+		client.start();
 		loop();
 	}
 	
