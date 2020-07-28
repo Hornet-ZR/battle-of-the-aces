@@ -20,12 +20,14 @@ public class Client extends Thread{
 	}
 	
 	public void run() {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		while (!socket.isClosed()) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			readMessage();
 		}
-		readMessage();
 	}
 	
 	public void sendMessage(String message) {  
@@ -33,6 +35,7 @@ public class Client extends Thread{
 			DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
 			dout.writeUTF(message);
 			dout.flush();  
+			//dout.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}  
@@ -40,10 +43,12 @@ public class Client extends Thread{
 
 	public void readMessage() {
 		try {
-			DataInputStream dis=new DataInputStream(socket.getInputStream());  
+			DataInputStream dis = new DataInputStream(socket.getInputStream());  
 			String message = (String)dis.readUTF();
 			System.out.println("Server : "+message);  
-		} catch (IOException e) {
+			Thread.sleep(1000);
+			//dis.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}  
 	}

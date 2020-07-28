@@ -92,7 +92,6 @@ public class main extends Canvas implements Runnable{
 		if (renderer.gameStarted == false) g.setColor(Color.BLACK);
 		if (renderer.gameStarted == true) g.setColor(Color.CYAN);
 		if (renderer.introStart == true) g.setColor(Color.CYAN);
-		System.out.println(renderer.gameStarted);
 		g.fillRect(0, 0, width, height);
 		
 		if (renderer.gameStarted == true) {	
@@ -112,15 +111,11 @@ public class main extends Canvas implements Runnable{
 		}
 
 		if (renderer.isMultiplayer) {
-			if (renderer.connectingToServer) {
+			if (renderer.connectingToServer && client == null) {
 				client = new Client(renderer.ip);
 				client.sendMessage("Hello, my name is "+renderer.username+" and I have connected to the server");
 				client.start();
 				renderer.connectingToServer = false;
-			}
-			if (renderer.gameStarted && renderer.player != null) {
-				String data = String.valueOf("X"+renderer.player.getPX()+" Y"+renderer.player.getPY()+" W"+renderer.player.getWidth()+" H"+renderer.player.getHeight()+" D"+renderer.player.getDirection());
-				client.sendMessage(data);
 			}
 		}
 		

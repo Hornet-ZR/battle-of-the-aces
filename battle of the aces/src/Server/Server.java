@@ -18,7 +18,7 @@ public class Server extends Thread{
 	}
 	
 	public void run() {
-		while (true) {
+		while (!server.isClosed()) {
 			try {
 				Socket client = server.accept();
 				readMessage(client);
@@ -35,7 +35,9 @@ public class Server extends Thread{
 			DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
 			dout.writeUTF(message);
 			dout.flush();  
-		} catch (IOException e) {
+			Thread.sleep(1000);
+			//dout.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}  
 	}
@@ -45,7 +47,9 @@ public class Server extends Thread{
 			DataInputStream dis=new DataInputStream(client.getInputStream());  
 			String message = (String)dis.readUTF();
 			System.out.println("Client : "+message);  
-		} catch (IOException e) {
+			Thread.sleep(1000);
+			//dis.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}  
 	}

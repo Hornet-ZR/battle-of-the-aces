@@ -35,8 +35,8 @@ public class Renderer extends JPanel{
 	public boolean isMultiplayer = false;
 	public String ip = "";
 	public String username = "";
+	public int keyXpress = 0;
 	private int keyZpress = 0;
-	private int keyXpress = 0;
 	private int plane_preview_x = 100;
 	private int plane_preview_y = 100;
 	
@@ -141,9 +141,7 @@ public class Renderer extends JPanel{
 	public void render(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		this.g2 = g2;
-		
-		System.out.println("eeeeeee");
-		
+
 		if (showMainScreen == true) {
 			renderMainScreen();
 		}
@@ -181,45 +179,45 @@ public class Renderer extends JPanel{
 			keyEvent.keyZ = false;
 			isMultiplayer = false;
 			keyZpress++;
-	
-			switch (keyZpress) {
-			case 1:
-				showingMenu = false;
-				choosingPlayer = true;
-				break;
-				
-			case 2:
-				choosingPlayer = false;
-				choosingEnemy = true;
-				break;
-				
-			case 3:
-				choosingEnemy = false;
-				introStart = true;
-				break;
-			}
 		}else if (keyEvent.keyX == true && keyXpress < 3 && introStart == false) {
 			keyEvent.keyX = false;
 			isMultiplayer = true;
 			keyXpress++;
-	
-			switch (keyXpress) {
-			case 1:
-				showingMenu = false;
-				choosingPlayer = true;
-				break;
-				
-			case 2:
-				choosingPlayer = false;
-				choosingServer = true;
-				break;
-			case 3:
-				choosingServer = false;
-				connectingToServer = true;
-				introStart = true;
-				break;
-				
-			}
+		}
+		
+		switch (keyZpress) {
+		case 1:
+			showingMenu = false;
+			choosingPlayer = true;
+			break;
+			
+		case 2:
+			choosingPlayer = false;
+			choosingEnemy = true;
+			break;
+			
+		case 3:
+			choosingEnemy = false;
+			introStart = true;
+			break;
+		}
+		
+		switch (keyXpress) {
+		case 1:
+			showingMenu = false;
+			choosingPlayer = true;
+			break;
+			
+		case 2:
+			choosingPlayer = false;
+			choosingServer = true;
+			break;
+		case 3:
+			choosingServer = false;
+			connectingToServer = true;
+			introStart = true;
+			keyXpress++;
+			break;	
 		}
 		if (introDone == true) {
 			playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
@@ -398,10 +396,12 @@ public class Renderer extends JPanel{
 				g2.drawString("Username: "+username, 100, 200);
 				
 				if (choosingServerIP) g2.drawRect(200, 65, 1000, 50);
-				if (choosingServerPort) g2.drawRect(225, 165, 1000, 50);
+				if (choosingServerPort) g2.drawRect(210, 165, 1000, 50);
 				
-				if (!ip.equals("") && !username.equals("")) 
-					g2.drawString("Press X to connect to server", 500, 500);
+				if (!username.equals("")) { 
+					g2.drawRect(455, 465, 275, 50);
+					g2.drawString("Connect to server", 500, 500);
+				}
 				
 			}else if (introStart == true) {
 				renderIntro();

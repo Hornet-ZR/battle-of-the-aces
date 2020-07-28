@@ -47,7 +47,7 @@ public class MouseEvents implements MouseListener{
 			}
 		}
 		if (renderer.choosingServer) {
-			if (mx > 225) {
+			if (mx > 200) {
 				if (my > 65 && my < 115) {
 					renderer.choosingServerIP = true;
 					renderer.choosingServerPort = false;
@@ -56,9 +56,10 @@ public class MouseEvents implements MouseListener{
 					renderer.choosingServerPort = true;
 					renderer.choosingServerIP = false;
 				}
-				if (!(my > 65 & my < 115) && !(my > 165 & my < 215)) {
-					renderer.choosingServerPort = false;
-					renderer.choosingServerIP = false;
+			}
+			if (mx > 455 && mx < 730) {
+				if (my > 465 && my < 515) {
+					renderer.keyXpress = 3;
 				}
 			}
 		}
