@@ -3,14 +3,17 @@ package render.events;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import main.main;
 import render.Renderer;
 
 public class KeyEvents implements KeyListener{
 	public boolean upArrow = false, keySpace = false, keyX = false, keyD = false, rightArrow = false, leftArrow = false, keyZ = false;
 	private Renderer renderer;
+	private main main;
 	
-	public void init(Renderer r) {
+	public void init(Renderer r, main m) {
 		this.renderer = r;
+		this.main = m;
 	}
 	
 	public void keyPressed(KeyEvent e) {
@@ -30,6 +33,7 @@ public class KeyEvents implements KeyListener{
 				}
 			}
 		}
+		
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
 			upArrow = true;
 		}

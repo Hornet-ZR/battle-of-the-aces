@@ -56,6 +56,10 @@ public class MouseEvents implements MouseListener{
 					renderer.choosingServerPort = true;
 					renderer.choosingServerIP = false;
 				}
+				if (!(my > 65 & my < 115) && !(my > 165 & my < 215)) {
+					renderer.choosingServerPort = false;
+					renderer.choosingServerIP = false;
+				}
 			}
 		}
 	}

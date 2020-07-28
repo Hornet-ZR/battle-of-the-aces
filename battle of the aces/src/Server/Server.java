@@ -18,12 +18,15 @@ public class Server extends Thread{
 	}
 	
 	public void run() {
-		try {
-			Socket client = server.accept();
-			readMessage(client);
-			sendMessage("Hello Client", client);
-		} catch (IOException e) {
-			e.printStackTrace();
+		while (true) {
+			try {
+				Socket client = server.accept();
+				readMessage(client);
+				sendMessage("Hello Client", client);
+				Thread.sleep(1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -45,5 +48,15 @@ public class Server extends Thread{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}  
+	}
+	
+	public void start_server() {
+		Thread m = new Thread(this);
+		this.start();
+	}
+	
+	public static void main(String args[]) {
+		Server s = new Server();
+		s.start_server();
 	}
 }

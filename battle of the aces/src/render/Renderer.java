@@ -96,6 +96,7 @@ public class Renderer extends JPanel{
 	public boolean choosingServer = false;
 	public boolean choosingServerIP = false;
 	public boolean choosingServerPort = false;
+	public boolean connectingToServer = false;
 	private boolean showMainScreen = true;
 	private boolean showingMenu = true;
 	private boolean introDone = false;
@@ -117,7 +118,7 @@ public class Renderer extends JPanel{
 		this.m = m;
 		m.addKeyListener(keyEvent);
 		mouseEvent.init(this);
-		keyEvent.init(this);
+		keyEvent.init(this, m);
 		m.addMouseListener(mouseEvent);
 		//Set variables
 		try {
@@ -149,7 +150,6 @@ public class Renderer extends JPanel{
 			renderMainScreen();
 		}
 		if (gameStarted == true) {
-			System.out.println("Enemy's health = "+enemy.getHealth());
 			gameInit();
 			
 			//render objects (bullets)
@@ -217,6 +217,7 @@ public class Renderer extends JPanel{
 				break;
 			case 3:
 				choosingServer = false;
+				connectingToServer = true;
 				introStart = true;
 				break;
 				

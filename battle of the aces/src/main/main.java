@@ -16,14 +16,15 @@ public class main extends Canvas implements Runnable{
 	private double game_version = 0.1;
 	private boolean running = false;
 	private boolean UPDATE = false;
+	private boolean created_server = false;
 	private double frame_cap = 1.0/60.0;
 	private int width = 900, height = 700;
 	
 	private Renderer renderer = new Renderer();
 	private Window w;
 	
-	private Server server = new Server();
-	private Client client = new Client("localhost");
+	private Server server;
+	private Client client;
 	
 	public int fps = 0;
 	
@@ -38,8 +39,6 @@ public class main extends Canvas implements Runnable{
 	public void run() {
 		running = true;
 		renderer.init(this);
-		server.start();
-		client.start();
 		loop();
 	}
 	
@@ -108,9 +107,23 @@ public class main extends Canvas implements Runnable{
 		}else if (renderer.gameStarted == false) {
 			renderer.render(g);
 		}
+
+		if (renderer.isMultiplayer && renderer.connectingToServer) {
+			client = new Client(renderer.ip);
+			client.sendMessage("Hello, my name is "+renderer.username+" and I have connected to the server");
+			client.start();
+			renderer.connectingToServer = false;
+		}
+		
 		bs.show();
 		g.dispose();
 	}
+	
+	public void createServer() {
+		server = new Server();
+		server.start();
+	}
+	
 	public static void main (String args[]){
 		main m = new main();
 		m.init();

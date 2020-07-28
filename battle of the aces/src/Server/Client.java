@@ -20,7 +20,11 @@ public class Client extends Thread{
 	}
 	
 	public void run() {
-		sendMessage("Hello Server");
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		readMessage();
 	}
 	
