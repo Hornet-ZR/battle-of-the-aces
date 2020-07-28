@@ -6,10 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -144,7 +141,8 @@ public class Renderer extends JPanel{
 	public void render(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		this.g2 = g2;
-		fps = m.fps;
+		
+		System.out.println("eeeeeee");
 		
 		if (showMainScreen == true) {
 			renderMainScreen();
@@ -234,11 +232,9 @@ public class Renderer extends JPanel{
 	}
 	
 	public void renderUI(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
-		this.g2 = g2;
-		g2.setColor(Color.BLACK);
-		g2.setFont(new Font("Arial",Font.BOLD,30));
-		g2.drawString("UPDATES: "+fps, 10, 50);
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Arial",Font.BOLD,30));
+		g.drawString("UPDATES: "+fps, 10, 50);
 	}
 	
 	public void renderMainScreen() {
@@ -416,13 +412,13 @@ public class Renderer extends JPanel{
 	public void gameInit() {
 		createPlayer();
 		createEnemy();
-		if (enemy_bullets.size() > 30) {
+		if (enemy_bullets.size() > 10) {
 			enemy_next_bullets.removeAll(enemy_bullets);
 			enemy_bullets.removeAll(enemy_bullets);
 		}else {
 			createEnemyBullets();	
 		}
-		if (bullets.size() > 30) {
+		if (bullets.size() > 10) {
 			next_bullets.removeAll(enemy_bullets);
 			bullets.removeAll(bullets);
 		}else {
@@ -456,9 +452,6 @@ public class Renderer extends JPanel{
 			player.setDirection(oldDir);
 			player.setHealth(oldHealth);
 			player.setSpeed(0.5);
-		}
-		if (isMultiplayer) {
-			//send player data
 		}
 	}
 	

@@ -24,9 +24,9 @@ public class main extends Canvas implements Runnable{
 	private Window w;
 	
 	private Server server;
-	private Client client;
 	
 	public int fps = 0;
+	public Client client;
 	
 	public void init() {
 		this.setFocusable(true);
@@ -43,50 +43,52 @@ public class main extends Canvas implements Runnable{
 	}
 	
 	public void loop() {
-		double now = 0;
-		double last = System.nanoTime() / 1000000000.0;
-		double passed = 0;
-		double unporcessed = 0;
-		long timer = System.currentTimeMillis();
-		int pre_fps = 0;
-		while (running) {
-			UPDATE = false;
-			now = System.nanoTime() / 1000000000.0;
-			passed += now - last;
-			last = now;
-			unporcessed += passed;
-			while (unporcessed >= frame_cap) {
-				unporcessed -= frame_cap;
-				UPDATE = true;
-				update();
-				pre_fps++;
-			}
-			if (System.currentTimeMillis() - timer > 1000) {
-				timer += 1000;
-				fps = pre_fps;
-				pre_fps = 0;
-			}
-			if (UPDATE) {
-				update();
-			}else {
-				try {
-					Thread.sleep(1);
-				}catch (Exception e) {
-					
+		try {
+			double now = 0;
+			double last = System.nanoTime() / 1000000000.0;
+			double passed = 0;
+			double unporcessed = 0;
+			while (true) {
+				UPDATE = false;
+				now = System.nanoTime() / 1000000000.0;
+				passed += now - last;
+				last = now;
+				unporcessed += passed;
+				while (unporcessed >= frame_cap) {
+					unporcessed -= frame_cap;
+					UPDATE = true;
+					update();
+				}
+			
+				if (UPDATE) {
+					//update();
+				}else {
+					try {
+						Thread.sleep(1);
+					}catch (Exception e) {
+						
+					}
 				}
 			}
+		}catch(Exception e) {
+			System.out.println(e);
 		}
 	}
 	
 	public void update() {
 		BufferStrategy bs = this.getBufferStrategy();
 		
+		Graphics g = null;
+		Graphics2D g2 = null;
 		if (bs == null) {
 			this.createBufferStrategy(3);
 			return;
 		}
-		Graphics g = bs.getDrawGraphics();
-		Graphics2D g2 = (Graphics2D) g;
+		
+		if (g == null) {
+			g = bs.getDrawGraphics();
+		}
+		
 		if (renderer.gameStarted == false) g.setColor(Color.BLACK);
 		if (renderer.gameStarted == true) g.setColor(Color.CYAN);
 		if (renderer.introStart == true) g.setColor(Color.CYAN);
@@ -108,11 +110,17 @@ public class main extends Canvas implements Runnable{
 			renderer.render(g);
 		}
 
-		if (renderer.isMultiplayer && renderer.connectingToServer) {
-			client = new Client(renderer.ip);
-			client.sendMessage("Hello, my name is "+renderer.username+" and I have connected to the server");
-			client.start();
-			renderer.connectingToServer = false;
+		if (renderer.isMultiplayer) {
+			if (renderer.connectingToServer) {
+				client = new Client(renderer.ip);
+				client.sendMessage("Hello, my name is "+renderer.username+" and I have connected to the server");
+				client.start();
+				renderer.connectingToServer = false;
+			}
+			if (renderer.gameStarted && renderer.player != null) {
+				String data = String.valueOf("X"+renderer.player.getPX()+" Y"+renderer.player.getPY()+" W"+renderer.player.getWidth()+" H"+renderer.player.getHeight()+" D"+renderer.player.getDirection());
+				client.sendMessage(data);
+			}
 		}
 		
 		bs.show();
