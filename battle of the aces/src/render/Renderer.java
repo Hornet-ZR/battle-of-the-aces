@@ -164,16 +164,16 @@ public class Renderer extends JPanel{
 				enemy.setSpeed(0.5);
 			}
 			
-			if (player.getHealth() <= 0) {
-				showMainScreen = true;
-				enemyWon = true;
-				gameStarted = false;
-			}
-			if (enemy.getHealth() <= 0) {
-				showMainScreen = true;
-				playerWon = true;
-				gameStarted = false;
-			}
+//			if (player.getHealth() <= 0) {
+//				showMainScreen = true;
+//				enemyWon = true;
+//				gameStarted = false;
+//			}
+//			if (enemy.getHealth() <= 0) {
+//				showMainScreen = true;
+//				playerWon = true;
+//				gameStarted = false;
+//			}
 			
 		}
 		
