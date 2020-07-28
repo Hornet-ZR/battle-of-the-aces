@@ -17,8 +17,8 @@ public class KeyEvents implements KeyListener{
 		if (renderer.choosingServer) {
 			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && renderer.ip.length() > 0 && renderer.choosingServerIP == true) {
 				renderer.ip = renderer.ip.substring(0, renderer.ip.length() - 1);
-			}else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && renderer.port.length() > 0 && renderer.choosingServerPort == true) {
-				renderer.port = renderer.port.substring(0, renderer.port.length() - 1);
+			}else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && renderer.username.length() > 0 && renderer.choosingServerPort == true) {
+				renderer.username = renderer.username.substring(0, renderer.username.length() - 1);
 			}
 			
 			if (e.getKeyCode() != KeyEvent.VK_BACK_SPACE) {
@@ -26,7 +26,7 @@ public class KeyEvents implements KeyListener{
 					renderer.ip += e.getKeyChar();
 				}
 				if (renderer.choosingServerPort) {
-					renderer.port += e.getKeyChar();
+					renderer.username += e.getKeyChar();
 				}
 			}
 		}

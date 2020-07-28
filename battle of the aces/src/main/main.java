@@ -60,13 +60,13 @@ public class main extends Canvas implements Runnable{
 				unporcessed -= frame_cap;
 				UPDATE = true;
 				update();
-				//pre_fps++;
+				pre_fps++;
 			}
-//			if (System.currentTimeMillis() - timer > 1000) {
-//				timer += 1000;
-//				fps = pre_fps;
-//				pre_fps = 0;
-//			}
+			if (System.currentTimeMillis() - timer > 1000) {
+				timer += 1000;
+				fps = pre_fps;
+				pre_fps = 0;
+			}
 			if (UPDATE) {
 				update();
 			}else {

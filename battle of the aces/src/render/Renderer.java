@@ -37,7 +37,7 @@ public class Renderer extends JPanel{
 	//General menu stuff
 	public boolean isMultiplayer = false;
 	public String ip = "";
-	public String port = "";
+	public String username = "";
 	private int keyZpress = 0;
 	private int keyXpress = 0;
 	private int plane_preview_x = 100;
@@ -217,7 +217,9 @@ public class Renderer extends JPanel{
 				break;
 			case 3:
 				choosingServer = false;
+				introStart = true;
 				break;
+				
 			}
 		}
 		if (introDone == true) {
@@ -396,12 +398,12 @@ public class Renderer extends JPanel{
 				g2.setColor(Color.WHITE);
 				g2.setFont(new Font("Arial",Font.BOLD,22));
 				g2.drawString("Server IP: "+ip, 100, 100);
-				g2.drawString("Server Port: "+port, 100, 200);
+				g2.drawString("Username: "+username, 100, 200);
 				
 				if (choosingServerIP) g2.drawRect(200, 65, 1000, 50);
 				if (choosingServerPort) g2.drawRect(225, 165, 1000, 50);
 				
-				if (!ip.equals("") && !port.equals("")) 
+				if (!ip.equals("") && !username.equals("")) 
 					g2.drawString("Press X to connect to server", 500, 500);
 				
 			}else if (introStart == true) {
@@ -413,13 +415,14 @@ public class Renderer extends JPanel{
 	public void gameInit() {
 		createPlayer();
 		createEnemy();
-		System.out.println(bullets.size()+" "+enemy_bullets.size());
-		if (bullets.size() > 30) {
+		if (enemy_bullets.size() > 30) {
+			enemy_next_bullets.removeAll(enemy_bullets);
 			enemy_bullets.removeAll(enemy_bullets);
 		}else {
 			createEnemyBullets();	
 		}
-		if ((enemy_bullets.size())> 30) {
+		if (bullets.size() > 30) {
+			next_bullets.removeAll(enemy_bullets);
 			bullets.removeAll(bullets);
 		}else {
 			createBullets();
