@@ -17,6 +17,7 @@ public class main extends Canvas implements Runnable{
 	private boolean running = false;
 	private boolean UPDATE = false;
 	private boolean created_server = false;
+	private boolean sending_data = false;
 	private double frame_cap = 1.0/60.0;
 	private int width = 900, height = 700;
 	
@@ -48,7 +49,7 @@ public class main extends Canvas implements Runnable{
 			double last = System.nanoTime() / 1000000000.0;
 			double passed = 0;
 			double unporcessed = 0;
-			while (true) {
+			while (running) {
 				UPDATE = false;
 				now = System.nanoTime() / 1000000000.0;
 				passed += now - last;
@@ -113,10 +114,10 @@ public class main extends Canvas implements Runnable{
 		if (renderer.isMultiplayer) {
 			if (renderer.connectingToServer && client == null) {
 				client = new Client(renderer.ip);
-				client.sendMessage("Hello, my name is "+renderer.username+" and I have connected to the server");
 				client.start();
 				renderer.connectingToServer = false;
 			}
+
 		}
 		
 		bs.show();

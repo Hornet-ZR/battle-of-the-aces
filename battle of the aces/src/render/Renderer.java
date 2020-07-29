@@ -219,13 +219,15 @@ public class Renderer extends JPanel{
 			keyXpress++;
 			break;	
 		}
-		if (introDone == true) {
+		if (introDone == true && gameStarted == false) {
+			System.out.println("eeeee");
 			playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 			enemySSprite = spriteLoader.loadEnemySprite(enemySprites, enemySpriteChosenX, enemySpriteChosenY);
 			cloudSprite = spriteLoader.loadObjectSprite(objectSprites, 1, 1);
 			bulletSprite = spriteLoader.loadObjectSprite(objectSprites, 2, 1);
 			gameStarted = true;
 			introDone = false;
+			introStart = false;
 		}
 	}
 	
@@ -335,8 +337,6 @@ public class Renderer extends JPanel{
 				g2.drawString("Previous",5, 560);
 				g2.drawString("Next",325, 560);
 				g2.drawString("Plane "+enemyPlaneIndex, 165, 560);
-			}else if (introStart == true) {
-				renderIntro();
 			}
 		}else if (isMultiplayer) {
 			if (showingMenu) {
@@ -403,9 +403,10 @@ public class Renderer extends JPanel{
 					g2.drawString("Connect to server", 500, 500);
 				}
 				
-			}else if (introStart == true) {
-				renderIntro();
 			}
+		}
+		if (introStart == true && gameStarted == false) {
+			renderIntro();
 		}
 	}
 	
@@ -453,38 +454,42 @@ public class Renderer extends JPanel{
 			player.setHealth(oldHealth);
 			player.setSpeed(0.5);
 		}
+		if (isMultiplayer) {
+			m.client.sendMessage("Hello buster");
+		}
 	}
 	
 	public void createEnemy() {
-		if (enemy == null) {
-			enemy = new Enemy(g2,enemySSprite);
-			enemy.setWidth(enemy_width);
-			enemy.setHeight(enemy_height);
-			enemy.setX(enemy_start_x-enemy.getWidth());
-			enemy.setY(enemy_start_y-enemy.getHeight());
+		if (!isMultiplayer) {
+			if (enemy == null) {
+				enemy = new Enemy(g2,enemySSprite);
+				enemy.setWidth(enemy_width);
+				enemy.setHeight(enemy_height);
+				enemy.setX(enemy_start_x-enemy.getWidth());
+				enemy.setY(enemy_start_y-enemy.getHeight());
+			}else {
+				double oldPX, oldPY, oldDir, oldVelX, oldVelY, oldSpeed, oldHealth;
+				oldPX = enemy.getPX();
+				oldPY = enemy.getPY();
+				oldVelX = enemy.getVelx();
+				oldVelY = enemy.getVely();
+				oldDir = enemy.getDirection();
+				oldSpeed = enemy.getSpeed();
+				oldHealth = enemy.getHealth();
+				enemy = null;
+				enemy = new Enemy(g2,enemySSprite);
+				enemy.setWidth(enemy_width);
+				enemy.setHeight(enemy_height);
+				enemy.setX(oldPX);
+				enemy.setY(oldPY);
+				enemy.setVelx(oldVelX);
+				enemy.setVely(oldVelY);
+				enemy.setDirection(oldDir);
+				enemy.setHealth(oldHealth);
+				enemy.setSpeed(oldSpeed);
+			}
 		}else {
-			double oldPX, oldPY, oldDir, oldVelX, oldVelY, oldSpeed, oldHealth;
-			oldPX = enemy.getPX();
-			oldPY = enemy.getPY();
-			oldVelX = enemy.getVelx();
-			oldVelY = enemy.getVely();
-			oldDir = enemy.getDirection();
-			oldSpeed = enemy.getSpeed();
-			oldHealth = enemy.getHealth();
-			enemy = null;
-			enemy = new Enemy(g2,enemySSprite);
-			enemy.setWidth(enemy_width);
-			enemy.setHeight(enemy_height);
-			enemy.setX(oldPX);
-			enemy.setY(oldPY);
-			enemy.setVelx(oldVelX);
-			enemy.setVely(oldVelY);
-			enemy.setDirection(oldDir);
-			enemy.setHealth(oldHealth);
-			enemy.setSpeed(oldSpeed);
-		}
-		if (isMultiplayer) {
-			//get data
+			m.client.readMessage();
 		}
 	}
 	

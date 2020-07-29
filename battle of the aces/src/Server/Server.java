@@ -22,8 +22,7 @@ public class Server extends Thread{
 			try {
 				Socket client = server.accept();
 				readMessage(client);
-				sendMessage("Hello Client", client);
-				Thread.sleep(1000);
+				Thread.sleep(10);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
