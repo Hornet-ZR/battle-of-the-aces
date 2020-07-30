@@ -147,21 +147,21 @@ public class Renderer extends JPanel{
 		}
 		if (gameStarted == true) {
 			gameInit();
-			
 			//render objects (bullets)
 			renderBullets();
-			
 			//render entities (player, enemy)
 			renderEnemy();
 			renderPlayer();
-			
 			//collisions
-			if (player.barrier_bounds().intersects(enemy.barrier_bounds())) {
-				enemy.setSpeed(0);
-			}else if (!player.barrier_bounds().intersects(enemy.barrier_bounds())) {
-				enemy.setSpeed(0.5);
+			if (!isMultiplayer) {
+				if (player.barrier_bounds().intersects(enemy.barrier_bounds())) {
+					enemy.setSpeed(0);
+					System.out.println("c5");
+				}else if (!player.barrier_bounds().intersects(enemy.barrier_bounds())) {
+					enemy.setSpeed(0.5);
+					System.out.println("c6");
+				}
 			}
-			
 //			if (player.getHealth() <= 0) {
 //				showMainScreen = true;
 //				enemyWon = true;
@@ -224,9 +224,9 @@ public class Renderer extends JPanel{
 			enemySSprite = spriteLoader.loadEnemySprite(enemySprites, enemySpriteChosenX, enemySpriteChosenY);
 			cloudSprite = spriteLoader.loadObjectSprite(objectSprites, 1, 1);
 			bulletSprite = spriteLoader.loadObjectSprite(objectSprites, 2, 1);
-			gameStarted = true;
 			introDone = false;
 			introStart = false;
+			gameStarted = true;
 		}
 	}
 	

@@ -71,16 +71,11 @@ public class main extends Canvas implements Runnable{
 	public void update() {
 		BufferStrategy bs = this.getBufferStrategy();
 		
-		Graphics g = null;
 		if (bs == null) {
 			this.createBufferStrategy(3);
 			return;
 		}
-		
-		if (g == null) {
-			g = bs.getDrawGraphics();
-		}
-		
+		Graphics g = bs.getDrawGraphics();
 		
 		if (renderer.gameStarted == false) g.setColor(Color.BLACK);
 		if (renderer.gameStarted == true) g.setColor(Color.CYAN);

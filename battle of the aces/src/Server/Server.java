@@ -28,7 +28,6 @@ public class Server extends Thread{
 				while (client != null) {
 					try {
 						readMessage(client);
-						sendMessage("Hello?",client);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
