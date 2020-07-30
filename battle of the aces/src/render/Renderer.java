@@ -146,21 +146,20 @@ public class Renderer extends JPanel{
 		if (showMainScreen == true) {
 			renderMainScreen();
 		}
-		if (gameStarted == true) {
+		if (gameStarted) {
 			gameInit();
 			//render objects (bullets)
 			renderBullets();
 			//render entities (player, enemy)
 			renderEnemy();
 			renderPlayer();
+			
 			//collisions
 			if (enemy != null) {
 				if (player.barrier_bounds().intersects(enemy.barrier_bounds())) {
 					enemy.setSpeed(0);
-					System.out.println("c5");
 				}else if (!player.barrier_bounds().intersects(enemy.barrier_bounds())) {
 					enemy.setSpeed(0.5);
-					System.out.println("c6");
 				}
 			}
 //			if (player.getHealth() <= 0) {

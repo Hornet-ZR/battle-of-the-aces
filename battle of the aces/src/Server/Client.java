@@ -43,7 +43,7 @@ public class Client extends Thread{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			
 			while ((data = reader.readLine()) != null) {
-				data = reader.readLine();
+				System.out.println(data);
 			}
 		} catch (Exception e) {
 
