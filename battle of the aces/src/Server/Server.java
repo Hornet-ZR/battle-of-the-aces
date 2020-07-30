@@ -5,12 +5,16 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Server extends Thread{
 	public ServerSocket server;
+	
+	private ArrayList<Socket> clients = new ArrayList<Socket>(); 
+	
+	int ree = 0;
 	
 	public Server() {
 		try {
@@ -26,13 +30,34 @@ public class Server extends Thread{
 		while (true) {
 			try {
 				Socket client = server.accept();
-				while (client != null) {
-					try {
-						readMessage(client);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+				clients.add(client);
+				System.out.println(clients.size());
+				while (true) {
+					ree++;
+					//2 players
+					System.out.println("eee");
+					String cd1 = readMessage(clients.get(0));
+					String cd2 = readMessage(clients.get(1));
+					System.out.println(cd1+"    "+cd2);
+					sendMessage(cd2,clients.get(0));
+					sendMessage(cd1,clients.get(1));
+					System.out.println(ree);
 				}
+//				}else {
+//					//3 players+
+//					for (Socket c : clients) {
+//										
+//					}
+//				}
+				
+//				while (client != null) {
+//					try {
+//						sendMessage(readMessage(client),client);
+//						
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
 			} catch (IOException e1) {
 	
 			}
@@ -55,7 +80,6 @@ public class Server extends Thread{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			while ((data = reader.readLine()) != null) {
 				data = reader.readLine();
-				System.out.println(reader.readLine());
 			}
 		} catch (Exception e) {
 
