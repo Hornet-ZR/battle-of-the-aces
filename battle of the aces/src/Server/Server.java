@@ -1,5 +1,4 @@
 package Server;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -14,7 +13,7 @@ public class Server extends Thread{
 	
 	private ArrayList<Socket> clients = new ArrayList<Socket>(); 
 	
-	int ree = 0;
+	int loops = 0;
 	
 	public Server() {
 		try {
@@ -32,14 +31,14 @@ public class Server extends Thread{
 				Socket client = server.accept();
 				clients.add(client);
 				System.out.println(clients.size());
-				while (true) {
-					//2 players
+				while (clients.size() > 1) {
 					String cd1 = readMessage(clients.get(0));
 					String cd2 = readMessage(clients.get(1));
+					System.out.println(cd1+" "+cd2);
 					sendMessage(cd2,clients.get(0));
 					sendMessage(cd1,clients.get(1));
 				}
-			} catch (IOException e1) {
+			} catch (Exception e1) {
 	
 			}
 		}
@@ -48,8 +47,8 @@ public class Server extends Thread{
 	public void sendMessage(String message, Socket socket) {
 		try {
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            writer.write(message+"\n");
-            writer.flush();
+			writer.write(message+"\n\r");
+			writer.flush();
 		} catch (Exception e) {
 
 		}  
@@ -59,17 +58,11 @@ public class Server extends Thread{
 		String data = "";
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			while ((data = reader.readLine()) != null) {
-				data = reader.readLine();
-			}
+			data = reader.readLine();
 		} catch (Exception e) {
-
+			
 		}
 		return data;
 	}
-	
-	public static void main(String args[]) {
-		Server s = new Server();
-		s.run();
-	}
+
 }

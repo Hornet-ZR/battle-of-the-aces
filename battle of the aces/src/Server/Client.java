@@ -1,5 +1,4 @@
 package Server;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -7,10 +6,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Random;
 
 public class Client extends Thread{
-	private Socket socket;
+private Socket socket;
 	
+
 	public Client(String ip) {
 		try {
 			this.socket = new Socket(ip,2515);
@@ -22,15 +23,16 @@ public class Client extends Thread{
 	}
 	
 	public void run() {
+		sendMessage("Hello World");
 		while (true) {
-			readMessage();
+			System.out.println(readMessage());
 		}
 	}
 	
 	public void sendMessage(String message) {
 		try {
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-             writer.write(message+"\n");
+             writer.write(message+"\n\r");
              writer.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -41,11 +43,9 @@ public class Client extends Thread{
 		String data = "";
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			while ((data = reader.readLine()) != null) {
-				data = reader.readLine();
-			}
+			data = reader.readLine();
 		} catch (Exception e) {
-
+			
 		}
 		return data;
 	}
