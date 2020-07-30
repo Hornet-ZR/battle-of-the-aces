@@ -94,8 +94,8 @@ public class Renderer extends JPanel{
 	public boolean choosingServerIP = false;
 	public boolean choosingServerPort = false;
 	public boolean connectingToServer = false;
+	public boolean showingMenu = true;
 	private boolean showMainScreen = true;
-	private boolean showingMenu = true;
 	private boolean introDone = false;
 	private boolean startedIntroThread1 = false;
 	private boolean startedIntroThread2 = false;
@@ -179,7 +179,7 @@ public class Renderer extends JPanel{
 			keyEvent.keyZ = false;
 			isMultiplayer = false;
 			keyZpress++;
-		}else if (keyEvent.keyX == true && keyXpress < 3 && introStart == false) {
+		}else if (keyEvent.keyX == true && keyXpress < 2 && introStart == false) {
 			keyEvent.keyX = false;
 			isMultiplayer = true;
 			keyXpress++;
@@ -212,6 +212,7 @@ public class Renderer extends JPanel{
 			choosingPlayer = false;
 			choosingServer = true;
 			break;
+			
 		case 3:
 			choosingServer = false;
 			connectingToServer = true;
@@ -453,8 +454,9 @@ public class Renderer extends JPanel{
 			player.setHealth(oldHealth);
 			player.setSpeed(0.5);
 		}
-		if (isMultiplayer && m.client != null) {
-			String data = String.valueOf("X"+player.getPX()+" Y"+player.getPY()+" A"+player.getDirection()+" SX"+playerSpriteChosenX+" SY"+playerSpriteChosenY);
+		if (isMultiplayer) {
+			//String data = String.valueOf("X"+player.getPX()+" Y"+player.getPY()+" A"+player.getDirection()+" N"+username+" SX"+playerSpriteChosenX+" SY"+playerSpriteChosenY);
+			String data = String.valueOf("N"+username);
 			m.client.sendMessage(data);
 		}
 	}
@@ -489,8 +491,7 @@ public class Renderer extends JPanel{
 				enemy.setSpeed(oldSpeed);
 			}
 		}else {
-			enemies.removeAll(enemies);
-			enemy = new Enemy(g2,enemySSprite);
+			
 		}
 	}
 	

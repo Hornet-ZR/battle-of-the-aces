@@ -5,11 +5,12 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server extends Thread{
-	private ServerSocket server;
+	public ServerSocket server;
 	
 	public Server() {
 		try {
@@ -40,35 +41,30 @@ public class Server extends Thread{
 	
 	public void sendMessage(String message, Socket socket) {
 		try {
-             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-             writer.write(message+"\n\r");
-             writer.flush();
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            writer.write(message+"\n");
+            writer.flush();
 		} catch (Exception e) {
 
 		}  
 	}
 	
-	public String readMessage(Socket client) {
+	public String readMessage(Socket socket) {
 		String data = "";
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			
+			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			while ((data = reader.readLine()) != null) {
 				data = reader.readLine();
+				System.out.println(reader.readLine());
 			}
 		} catch (Exception e) {
 
-		}  
+		}
 		return data;
 	}
 	
 	public void start_server() {
 		new Thread(this);
 		this.start();
-	}
-	
-	public static void main(String args[]) {
-		Server s = new Server();
-		s.start_server();
 	}
 }

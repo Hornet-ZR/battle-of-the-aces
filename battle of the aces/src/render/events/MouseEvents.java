@@ -57,9 +57,11 @@ public class MouseEvents implements MouseListener{
 					renderer.choosingServerIP = false;
 				}
 			}
-			if (mx > 455 && mx < 730) {
-				if (my > 465 && my < 515) {
-					renderer.keyXpress = 3;
+			if (!renderer.username.equals("")) {
+				if (mx > 455 && mx < 730) {
+					if (my > 465 && my < 515) {
+						renderer.keyXpress = 3;
+					}
 				}
 			}
 		}

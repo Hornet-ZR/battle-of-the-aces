@@ -30,7 +30,7 @@ public class Client extends Thread{
 	public void sendMessage(String message) {
 		try {
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-             writer.write(message+"\n\r");
+             writer.write(message+"\n");
              writer.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -41,13 +41,12 @@ public class Client extends Thread{
 		String data = "";
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			
 			while ((data = reader.readLine()) != null) {
-				System.out.println(data);
+				data = reader.readLine();
 			}
 		} catch (Exception e) {
 
-		}  
+		}
 		return data;
 	}
 }

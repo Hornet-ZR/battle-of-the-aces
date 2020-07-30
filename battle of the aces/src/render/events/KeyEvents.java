@@ -46,6 +46,11 @@ public class KeyEvents implements KeyListener{
 			keyX = true;
 		}
 		
+		if (e.getKeyCode() == KeyEvent.VK_W && main.server == null && renderer.showingMenu) {
+			System.out.println("eee");
+			main.create_server();
+		}
+		
 		if (renderer.gameStarted) {
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 				rightArrow = true;

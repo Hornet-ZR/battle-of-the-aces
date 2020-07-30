@@ -2,10 +2,14 @@ package main;
 
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
+import javax.swing.*;
+
 import Server.Client;
+import Server.Server;
 import render.Renderer;
 
 
@@ -21,6 +25,7 @@ public class main extends Canvas implements Runnable{
 	
 	public int fps = 0;
 	public Client client;
+	public Server server;
 	
 	public void init() {
 		this.setFocusable(true);
@@ -104,11 +109,43 @@ public class main extends Canvas implements Runnable{
 				client.start();
 				renderer.connectingToServer = false;
 			}
-
 		}
 		
 		bs.show();
 		g.dispose();
+	}
+	
+	public void create_server() {
+		server = new Server();
+		server.start();
+		
+		JFrame frame = new JFrame("Server info");
+		JPanel panel = new JPanel();
+		JLabel server_status = new JLabel();
+		Font font = new Font("Arial",Font.PLAIN,24);
+		
+		frame.setSize(500,500);
+		frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		
+		if (server.server.isBound()) {
+			server_status.setText("Server is bound, server running");
+		}else {
+			server_status.setText("Server error");
+		}
+		
+		panel.setBackground(Color.BLACK);
+		
+		server_status.setFont(font);
+		server_status.setForeground(Color.WHITE);
+		
+		panel.add(server_status);
+		frame.add(panel);
+		
+		frame.invalidate();
+		frame.revalidate();
+		frame.repaint();
 	}
 	
 	public static void main(String args[]){
