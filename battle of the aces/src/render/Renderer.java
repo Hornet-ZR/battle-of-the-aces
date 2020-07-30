@@ -455,8 +455,7 @@ public class Renderer extends JPanel{
 			player.setSpeed(0.5);
 		}
 		if (isMultiplayer) {
-			//String data = String.valueOf("X"+player.getPX()+" Y"+player.getPY()+" A"+player.getDirection()+" N"+username+" SX"+playerSpriteChosenX+" SY"+playerSpriteChosenY);
-			String data = String.valueOf("N"+username);
+			String data = String.valueOf(","+player.getPX()+","+player.getPY()+","+player.getDirection()+","+username+","+playerSpriteChosenX+","+playerSpriteChosenY);
 			m.client.sendMessage(data);
 		}
 	}
@@ -491,7 +490,23 @@ public class Renderer extends JPanel{
 				enemy.setSpeed(oldSpeed);
 			}
 		}else {
-			
+			double nPX, nPY, nDir;
+			String name;
+			String data =  m.client.readMessage();
+			String[] arrayData = data.split(",",-1);
+			System.out.println("eee");
+			if (arrayData.length > 1) {
+				nPX = Double.valueOf(arrayData[1]);
+				nPY = Double.valueOf(arrayData[2]);
+				nDir = Double.valueOf(arrayData[3]);
+				BufferedImage enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[5]), Integer.valueOf(arrayData[6]));
+				enemy = new Enemy(g2,enemySSSprite);
+				enemy.setWidth(enemy_width);
+				enemy.setHeight(enemy_height);
+				enemy.setX(nPX);
+				enemy.setY(nPY);
+				enemy.setDirection(nDir);
+			}
 		}
 	}
 	
@@ -710,7 +725,7 @@ public class Renderer extends JPanel{
 	
 	public void renderEnemy() {
 		if (isMultiplayer) {
-			//render other player
+			enemy.draw();
 		}else {
 			this.add(enemy);
 			

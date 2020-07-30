@@ -34,7 +34,7 @@ public class Server extends Thread{
 				while (clients.size() > 1) {
 					String cd1 = readMessage(clients.get(0));
 					String cd2 = readMessage(clients.get(1));
-					System.out.println(cd1+" "+cd2);
+					//System.out.println(cd1+" "+cd2);
 					sendMessage(cd2,clients.get(0));
 					sendMessage(cd1,clients.get(1));
 				}

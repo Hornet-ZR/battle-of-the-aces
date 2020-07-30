@@ -24,9 +24,6 @@ private Socket socket;
 	
 	public void run() {
 		sendMessage("Hello World");
-		while (true) {
-			System.out.println(readMessage());
-		}
 	}
 	
 	public void sendMessage(String message) {
