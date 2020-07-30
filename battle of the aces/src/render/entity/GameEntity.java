@@ -14,6 +14,7 @@ public class GameEntity extends JComponent{
 	protected int width, height;
 	protected double direction, velx, vely, x, y, health=100;
 	protected double speed;
+	protected String name;
 	
 	public GameEntity(Graphics2D g2, BufferedImage sprite) {
 		this.g2 = g2;
@@ -125,6 +126,14 @@ public class GameEntity extends JComponent{
 		this.speed = speed;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public Rectangle bounds() {
 		Rectangle rect = new Rectangle();
 		rect.setBounds((int)x-width/2, (int)y-height/2, (int)width, (int)height);

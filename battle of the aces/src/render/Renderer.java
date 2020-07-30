@@ -26,6 +26,7 @@ public class Renderer extends JPanel{
 	private static final long serialVersionUID = 1L;
 
 	private Graphics2D g2;
+	private Graphics g;
 	
 	//Main vars
 	private main m;
@@ -142,6 +143,7 @@ public class Renderer extends JPanel{
 	public void render(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		this.g2 = g2;
+		this.g = g;
 		
 		if (showMainScreen == true) {
 			renderMainScreen();
@@ -494,11 +496,11 @@ public class Renderer extends JPanel{
 			String name;
 			String data =  m.client.readMessage();
 			String[] arrayData = data.split(",",-1);
-			System.out.println("eee");
 			if (arrayData.length > 1) {
 				nPX = Double.valueOf(arrayData[1]);
 				nPY = Double.valueOf(arrayData[2]);
 				nDir = Double.valueOf(arrayData[3]);
+				name = arrayData[4];
 				BufferedImage enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[5]), Integer.valueOf(arrayData[6]));
 				enemy = new Enemy(g2,enemySSSprite);
 				enemy.setWidth(enemy_width);
@@ -506,6 +508,7 @@ public class Renderer extends JPanel{
 				enemy.setX(nPX);
 				enemy.setY(nPY);
 				enemy.setDirection(nDir);
+				enemy.setName(name);
 			}
 		}
 	}
@@ -550,7 +553,7 @@ public class Renderer extends JPanel{
 			next_bullets.removeAll(next_bullets);
 		}
 		if (isMultiplayer) {
-			//get data
+			//send data
 		}
 	}
 	
@@ -725,6 +728,10 @@ public class Renderer extends JPanel{
 	
 	public void renderEnemy() {
 		if (isMultiplayer) {
+			g.setFont(new Font("Arial",Font.PLAIN,48));
+			int tw = g.getFontMetrics().stringWidth(enemy.getName());		
+			g2.drawString(enemy.getName(), (int)enemy.getPX()+enemy.getWidth()/2-tw/2, (int)enemy.getPY()-50);
+			
 			enemy.draw();
 		}else {
 			this.add(enemy);
@@ -748,6 +755,7 @@ public class Renderer extends JPanel{
 				bullet.setSpeed(2);
 				enemy_bullets.add(bullet);
 			}
+			
 			enemy.tick();
 			enemy.draw();
 			this.remove(enemy);
