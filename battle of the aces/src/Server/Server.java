@@ -33,31 +33,12 @@ public class Server extends Thread{
 				clients.add(client);
 				System.out.println(clients.size());
 				while (true) {
-					ree++;
 					//2 players
-					System.out.println("eee");
 					String cd1 = readMessage(clients.get(0));
 					String cd2 = readMessage(clients.get(1));
-					System.out.println(cd1+"    "+cd2);
 					sendMessage(cd2,clients.get(0));
 					sendMessage(cd1,clients.get(1));
-					System.out.println(ree);
 				}
-//				}else {
-//					//3 players+
-//					for (Socket c : clients) {
-//										
-//					}
-//				}
-				
-//				while (client != null) {
-//					try {
-//						sendMessage(readMessage(client),client);
-//						
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
-//				}
 			} catch (IOException e1) {
 	
 			}
@@ -87,8 +68,8 @@ public class Server extends Thread{
 		return data;
 	}
 	
-	public void start_server() {
-		new Thread(this);
-		this.start();
+	public static void main(String args[]) {
+		Server s = new Server();
+		s.run();
 	}
 }
