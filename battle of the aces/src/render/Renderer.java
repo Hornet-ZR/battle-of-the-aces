@@ -107,6 +107,7 @@ public class Renderer extends JPanel{
 	private BufferedImage bulletSprite = null;
 	private ArrayList<Cloud> clouds = new ArrayList<Cloud>();
 	private ArrayList<Bullets> bullets = new ArrayList<Bullets>();
+	private ArrayList<Bullets> enemies = new ArrayList<Bullets>();
 	private ArrayList<Bullets> next_bullets = new ArrayList<Bullets>();
 	private ArrayList<Bullets> enemy_bullets = new ArrayList<Bullets>();
 	private ArrayList<Bullets> enemy_next_bullets = new ArrayList<Bullets>();
@@ -153,7 +154,7 @@ public class Renderer extends JPanel{
 			renderEnemy();
 			renderPlayer();
 			//collisions
-			if (!isMultiplayer) {
+			if (enemy != null) {
 				if (player.barrier_bounds().intersects(enemy.barrier_bounds())) {
 					enemy.setSpeed(0);
 					System.out.println("c5");
@@ -454,7 +455,8 @@ public class Renderer extends JPanel{
 			player.setSpeed(0.5);
 		}
 		if (isMultiplayer && m.client != null) {
-			m.client.sendMessage("hello?");
+			String data = String.valueOf("X"+player.getPX()+" Y"+player.getPY()+" A"+player.getDirection()+" SX"+playerSpriteChosenX+" SY"+playerSpriteChosenY);
+			m.client.sendMessage(data);
 		}
 	}
 	
@@ -487,6 +489,9 @@ public class Renderer extends JPanel{
 				enemy.setHealth(oldHealth);
 				enemy.setSpeed(oldSpeed);
 			}
+		}else {
+			enemies.removeAll(enemies);
+			enemy = new Enemy(g2,enemySSprite);
 		}
 	}
 	

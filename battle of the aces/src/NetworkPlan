@@ -1,0 +1,15 @@
+Networking plan
+
+Client send:
+self sprite x
+self sprite y
+self x
+self y
+self angle
+
+Client get:
+other sprite x
+other sprite y
+other x
+other y
+other angle
