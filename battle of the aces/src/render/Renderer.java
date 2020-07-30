@@ -141,7 +141,7 @@ public class Renderer extends JPanel{
 	public void render(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		this.g2 = g2;
-
+		
 		if (showMainScreen == true) {
 			renderMainScreen();
 		}
@@ -220,7 +220,6 @@ public class Renderer extends JPanel{
 			break;	
 		}
 		if (introDone == true && gameStarted == false) {
-			System.out.println("eeeee");
 			playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 			enemySSprite = spriteLoader.loadEnemySprite(enemySprites, enemySpriteChosenX, enemySpriteChosenY);
 			cloudSprite = spriteLoader.loadObjectSprite(objectSprites, 1, 1);
@@ -454,8 +453,8 @@ public class Renderer extends JPanel{
 			player.setHealth(oldHealth);
 			player.setSpeed(0.5);
 		}
-		if (isMultiplayer) {
-			m.client.sendMessage("Hello buster");
+		if (isMultiplayer && m.client != null) {
+			m.client.sendMessage("hello?");
 		}
 	}
 	
@@ -488,8 +487,6 @@ public class Renderer extends JPanel{
 				enemy.setHealth(oldHealth);
 				enemy.setSpeed(oldSpeed);
 			}
-		}else {
-			m.client.readMessage();
 		}
 	}
 	

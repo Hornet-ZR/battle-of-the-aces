@@ -3,28 +3,21 @@ package main;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 
 import Server.Client;
-import Server.Server;
 import render.Renderer;
 
 
 public class main extends Canvas implements Runnable{
 	private Thread mainLoop;
 	private double game_version = 0.1;
-	private boolean running = false;
 	private boolean UPDATE = false;
-	private boolean created_server = false;
-	private boolean sending_data = false;
 	private double frame_cap = 1.0/60.0;
 	private int width = 900, height = 700;
 	
 	private Renderer renderer = new Renderer();
 	private Window w;
-	
-	private Server server;
 	
 	public int fps = 0;
 	public Client client;
@@ -32,13 +25,12 @@ public class main extends Canvas implements Runnable{
 	public void init() {
 		this.setFocusable(true);
 		this.setFocusTraversalKeysEnabled(false);
-		w = new Window(this,width,height,"Battle of The Aces "+game_version,false);
+		w = new Window(this, width, height, "Battle of The Aces "+game_version, false);
 		mainLoop = new Thread(this);
 		mainLoop.run();
 	}
 	
 	public void run() {
-		running = true;
 		renderer.init(this);
 		loop();
 	}
@@ -49,7 +41,7 @@ public class main extends Canvas implements Runnable{
 			double last = System.nanoTime() / 1000000000.0;
 			double passed = 0;
 			double unporcessed = 0;
-			while (running) {
+			while (true) {
 				UPDATE = false;
 				now = System.nanoTime() / 1000000000.0;
 				passed += now - last;
@@ -80,7 +72,6 @@ public class main extends Canvas implements Runnable{
 		BufferStrategy bs = this.getBufferStrategy();
 		
 		Graphics g = null;
-		Graphics2D g2 = null;
 		if (bs == null) {
 			this.createBufferStrategy(3);
 			return;
@@ -89,6 +80,7 @@ public class main extends Canvas implements Runnable{
 		if (g == null) {
 			g = bs.getDrawGraphics();
 		}
+		
 		
 		if (renderer.gameStarted == false) g.setColor(Color.BLACK);
 		if (renderer.gameStarted == true) g.setColor(Color.CYAN);
@@ -124,12 +116,7 @@ public class main extends Canvas implements Runnable{
 		g.dispose();
 	}
 	
-	public void createServer() {
-		server = new Server();
-		server.start();
-	}
-	
-	public static void main (String args[]){
+	public static void main(String args[]){
 		main m = new main();
 		m.init();
 	}

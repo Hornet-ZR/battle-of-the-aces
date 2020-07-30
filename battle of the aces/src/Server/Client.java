@@ -1,8 +1,10 @@
 package Server;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -20,34 +22,28 @@ public class Client extends Thread{
 	}
 	
 	public void run() {
-		while (!socket.isClosed()) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		while (true) {
 			readMessage();
 		}
 	}
 	
-	public void sendMessage(String message) {  
+	public void sendMessage(String message) {
 		try {
-			DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-			dout.writeUTF(message);
-			dout.flush();  
-			//dout.close();
-		} catch (IOException e) {
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+             writer.write(message+"\n\r");
+             writer.flush();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}  
 	}
-
+	
 	public void readMessage() {
 		try {
-			DataInputStream dis = new DataInputStream(socket.getInputStream());  
-			String message = (String)dis.readUTF();
-			System.out.println("Server : "+message);  
-			Thread.sleep(1000);
-			//dis.close();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			String data;
+			while ((data = reader.readLine()) != null) {
+				System.out.println(data);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}  
