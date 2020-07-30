@@ -37,15 +37,17 @@ public class Client extends Thread{
 		}  
 	}
 	
-	public void readMessage() {
+	public String readMessage() {
+		String data = "";
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			String data;
+			
 			while ((data = reader.readLine()) != null) {
-				System.out.println(data);
+				data = reader.readLine();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		}  
+		return data;
 	}
 }

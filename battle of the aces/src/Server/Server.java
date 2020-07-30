@@ -48,16 +48,18 @@ public class Server extends Thread{
 		}  
 	}
 	
-	public void readMessage(Socket client) {
+	public String readMessage(Socket client) {
+		String data = "";
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-			String data;
+			
 			while ((data = reader.readLine()) != null) {
-				System.out.println(data);
+				data = reader.readLine();
 			}
 		} catch (Exception e) {
 
 		}  
+		return data;
 	}
 	
 	public void start_server() {
