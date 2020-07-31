@@ -23,7 +23,7 @@ public class Client extends Thread{
 	}
 	
 	public void run() {
-		sendMessage(String.valueOf(1));
+		sendMessage(String.valueOf("Connected"));
 	}
 	
 	public void sendMessage(String message) {

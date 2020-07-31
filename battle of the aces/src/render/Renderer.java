@@ -42,6 +42,9 @@ public class Renderer extends JPanel{
 	private int plane_preview_x = 100;
 	private int plane_preview_y = 100;
 	
+	//Multiplayer stuff
+	private String data = "";
+	
 	//Player stuff
 	private int player_width = 250;
 	private int player_height = 250;
@@ -146,6 +149,7 @@ public class Renderer extends JPanel{
 			introStart = false;
 			
 			gameInit();
+			
 			
 			//render objects (bullets)
 			renderBullets();
@@ -496,8 +500,6 @@ public class Renderer extends JPanel{
 	}
 	
 	public void gameInit() {
-		createPlayer();
-		createEnemy();
 		if (enemy_bullets.size() > 10) {
 			enemy_next_bullets.removeAll(enemy_bullets);
 			enemy_bullets.removeAll(enemy_bullets);
@@ -510,6 +512,8 @@ public class Renderer extends JPanel{
 		}else {
 			createBullets();
 		}
+		createPlayer();
+		createEnemy();
 	}
 	
 	public void createPlayer() {
@@ -540,7 +544,13 @@ public class Renderer extends JPanel{
 			player.setSpeed(0.5);
 		}
 		if (isMultiplayer) {
-			String data = String.valueOf(","+player.getPX()+","+player.getPY()+","+player.getDirection()+","+username+","+playerSpriteChosenX+","+playerSpriteChosenY);
+			if (bullets.size() > 1) {
+				for (Bullets b : bullets) {
+					data = String.valueOf(","+player.getPX()+","+player.getPY()+","+player.getDirection()+","+username+","+playerSpriteChosenX+","+playerSpriteChosenY+","+b.getOX()+","+b.getOY()+","+b.getAngle());
+				}
+			}else {
+				data = String.valueOf(","+player.getPX()+","+player.getPY()+","+player.getDirection()+","+username+","+playerSpriteChosenX+","+playerSpriteChosenY);
+			}
 			m.client.sendMessage(data);
 		}
 	}
@@ -579,7 +589,8 @@ public class Renderer extends JPanel{
 			String name;
 			String data =  m.client.readMessage();
 			String[] arrayData = data.split(",",-1);
-			if (arrayData.length > 1) {
+
+			if (arrayData.length == 7) {
 				nPX = Double.valueOf(arrayData[1]);
 				nPY = Double.valueOf(arrayData[2]);
 				nDir = Double.valueOf(arrayData[3]);
@@ -595,6 +606,30 @@ public class Renderer extends JPanel{
 				enemy.setY(nPY);
 				enemy.setDirection(nDir);
 				enemy.setName(name);
+			}
+			if (arrayData.length > 7) {
+				nPX = Double.valueOf(arrayData[1]);
+				nPY = Double.valueOf(arrayData[2]);
+				nDir = Double.valueOf(arrayData[3]);
+				name = arrayData[4];
+				
+				if (enemySSSprite == null)
+					enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[5]), Integer.valueOf(arrayData[6]));
+				
+				enemy = new Enemy(g2,enemySSSprite);
+				enemy.setWidth(enemy_width);
+				enemy.setHeight(enemy_height);
+				enemy.setX(nPX);
+				enemy.setY(nPY);
+				enemy.setDirection(nDir);
+				enemy.setName(name);
+				
+				bullet = new Bullets(g2,bulletSprite);
+				bullet.setX(Double.valueOf(arrayData[7]));
+				bullet.setY(Double.valueOf(arrayData[8]));
+				bullet.setAngle(Double.valueOf(arrayData[9]));
+				bullet.setSpeed(2);
+				enemy_bullets.add(bullet);
 			}
 		}
 	}
@@ -612,7 +647,6 @@ public class Renderer extends JPanel{
 	}
 	
 	public void createBullets() {
-		String data = "";
 		if (bullets.size() > 0) {
 			double oldX,oldY,oldWidth,oldHeight,oldAngle;
 			for (Bullets b : bullets) {
@@ -630,7 +664,6 @@ public class Renderer extends JPanel{
 					bullet.setHeight(oldHeight);
 					bullet.setSpeed(2);
 					next_bullets.add(bullet);
-					//data += String.valueOf(bullet.getOX()+","+bullet.getOY()+","+bullet.getAngle())+",";
 				}
 			}
 			bullets.removeAll(bullets);
@@ -639,9 +672,6 @@ public class Renderer extends JPanel{
 				bullets.add(b);
 			
 			next_bullets.removeAll(next_bullets);
-		}
-		if (isMultiplayer) {
-			//m.client.sendMessage(data);
 		}
 	}
 	
@@ -672,26 +702,6 @@ public class Renderer extends JPanel{
 			
 			enemy_next_bullets.removeAll(enemy_next_bullets);
 		}
-//		if (isMultiplayer) {
-//			String data = m.client.readMessage();
-//			String[] dataParts = data.split(",",-1);
-//			if (dataParts.length > 1) {
-//				for (int i = 1; i < 11; i++) {
-//					double x, y, angle;
-//					x = Double.valueOf(dataParts[i]);
-//					y = Double.valueOf(dataParts[i+1]);
-//					angle = Double.valueOf(dataParts[i+2]);
-//					bullet = new Bullets(g2,bulletSprite);
-//					bullet.setX(x);
-//					bullet.setY(y);
-//					bullet.setAngle(angle);
-//					bullet.setWidth(50);
-//					bullet.setHeight(50);
-//					bullet.setSpeed(2);
-//					enemy_bullets.add(bullet);
-//				}
-//			}
-//		}
 	}
 	
 	public void renderIntro() {
