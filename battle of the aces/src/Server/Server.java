@@ -11,9 +11,9 @@ import java.util.ArrayList;
 public class Server extends Thread{
 	public ServerSocket server;
 	
-	private ArrayList<Socket> clients = new ArrayList<Socket>(); 
+	public ArrayList<Socket> clients = new ArrayList<Socket>(); 
+	private ArrayList<Socket> heldClients = new ArrayList<Socket>(); 
 	
-	int loops = 0;
 	
 	public Server() {
 		try {
@@ -27,20 +27,20 @@ public class Server extends Thread{
 	
 	public void run() {
 		while (true) {
+			Socket client = null;
 			try {
-				Socket client = server.accept();
-				clients.add(client);
-				System.out.println(clients.size());
-				while (clients.size() > 1) {
-					String cd1 = readMessage(clients.get(0));
-					String cd2 = readMessage(clients.get(1));
-					//System.out.println(cd1+" "+cd2);
-					sendMessage(cd2,clients.get(0));
-					sendMessage(cd1,clients.get(1));
-				}
-			} catch (Exception e1) {
-	
+				client = server.accept();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+			clients.add(client);
+			while (clients.size() == 2) {
+				String cd1 = readMessage(clients.get(0));
+				String cd2 = readMessage(clients.get(1));
+				sendMessage(cd2,clients.get(0));
+				sendMessage(cd1,clients.get(1));
+			}
+			
 		}
 	}
 	

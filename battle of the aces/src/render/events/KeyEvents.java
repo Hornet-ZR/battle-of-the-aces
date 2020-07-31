@@ -47,7 +47,6 @@ public class KeyEvents implements KeyListener{
 		}
 		
 		if (e.getKeyCode() == KeyEvent.VK_W && main.server == null && renderer.showingMenu) {
-			System.out.println("eee");
 			main.create_server();
 		}
 		

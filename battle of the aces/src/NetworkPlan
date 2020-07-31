@@ -13,3 +13,20 @@ other sprite y
 other x
 other y
 other angle
+
+
+---------- Old / testing network code ----------
+//					if (clients.size() > 2) {
+//						System.out.println("AHHHHHHHHHH");
+//						String message = "";
+//						for (int i = 0; i < clients.size(); i++) {
+//							message = readMessage(clients.get(i));
+//							heldClients.add(clients.get(i));
+//							clients.remove(i);
+//							for (Socket c : clients) {
+//								sendMessage(message,c);
+//							}
+//							clients.add(heldClients.get(0));
+//							heldClients.removeAll(heldClients);
+//						}
+//					} 

@@ -59,7 +59,7 @@ public class main extends Canvas implements Runnable{
 				}
 			
 				if (UPDATE) {
-					//update();
+					update();
 				}else {
 					try {
 						Thread.sleep(1);

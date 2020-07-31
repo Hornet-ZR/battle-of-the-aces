@@ -64,6 +64,7 @@ public class Renderer extends JPanel{
 	public int enemySpriteChosenX = 1;
 	public int enemySpriteChosenY = 1;
 	public int enemyPlaneIndex = 1;
+	
 	//Classes
 	private KeyEvents keyEvent = new KeyEvents();
 	private MouseEvents mouseEvent = new MouseEvents();
@@ -104,6 +105,7 @@ public class Renderer extends JPanel{
 	private boolean enemyWon = false;
 	private BufferedImage playerSSprite = null;
 	private BufferedImage enemySSprite = null;
+	private BufferedImage enemySSSprite = null;
 	private BufferedImage cloudSprite = null;
 	private BufferedImage bulletSprite = null;
 	private ArrayList<Cloud> clouds = new ArrayList<Cloud>();
@@ -164,6 +166,7 @@ public class Renderer extends JPanel{
 					enemy.setSpeed(0.5);
 				}
 			}
+			
 //			if (player.getHealth() <= 0) {
 //				showMainScreen = true;
 //				enemyWon = true;
@@ -501,7 +504,10 @@ public class Renderer extends JPanel{
 				nPY = Double.valueOf(arrayData[2]);
 				nDir = Double.valueOf(arrayData[3]);
 				name = arrayData[4];
-				BufferedImage enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[5]), Integer.valueOf(arrayData[6]));
+				
+				if (enemySSSprite == null)
+					enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[5]), Integer.valueOf(arrayData[6]));
+				
 				enemy = new Enemy(g2,enemySSSprite);
 				enemy.setWidth(enemy_width);
 				enemy.setHeight(enemy_height);
@@ -592,9 +598,11 @@ public class Renderer extends JPanel{
 	public void renderIntro() {
 		BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 		AffineTransform runway_transform = AffineTransform.getTranslateInstance(intro_runway_x, 225);
+		
 		runway_transform.rotate(Math.toRadians(90));
 		g2.drawImage(intro_runway, runway_transform, this);
 		g2.drawImage(plane_image, (int)Math.round(intro_plane_x), (int)Math.round(intro_plane_y), (int)Math.round(intro_plane_width), (int)Math.round(intro_plane_height), this);
+		
 		final Thread gainAltitude = new Thread(new Runnable() {
 			public void run() {
 				while (true) {
@@ -731,7 +739,6 @@ public class Renderer extends JPanel{
 			g.setFont(new Font("Arial",Font.PLAIN,48));
 			int tw = g.getFontMetrics().stringWidth(enemy.getName());		
 			g2.drawString(enemy.getName(), (int)enemy.getPX()+enemy.getWidth()/2-tw/2, (int)enemy.getPY()-50);
-			
 			enemy.draw();
 		}else {
 			this.add(enemy);

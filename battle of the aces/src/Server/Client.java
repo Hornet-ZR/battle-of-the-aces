@@ -9,8 +9,8 @@ import java.net.UnknownHostException;
 import java.util.Random;
 
 public class Client extends Thread{
-private Socket socket;
 	
+	private Socket socket;
 
 	public Client(String ip) {
 		try {
@@ -23,7 +23,7 @@ private Socket socket;
 	}
 	
 	public void run() {
-		sendMessage("Hello World");
+		sendMessage(String.valueOf(1));
 	}
 	
 	public void sendMessage(String message) {
