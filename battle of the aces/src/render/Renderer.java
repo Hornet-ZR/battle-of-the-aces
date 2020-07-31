@@ -180,65 +180,83 @@ public class Renderer extends JPanel{
 			
 		}
 		
-		if (keyEvent.keyZ == true && keyZpress < 4 && introStart == false) {
-			keyEvent.keyZ = false;
-			isMultiplayer = false;
-			keyZpress++;
-		}else if (keyEvent.keyX == true && keyXpress < 2 && introStart == false) {
-			keyEvent.keyX = false;
-			isMultiplayer = true;
-			keyXpress++;
-		}
-		
-		switch (keyZpress) {
-		case 1:
-			showingMenu = false;
-			choosingPlayer = true;
-			break;
+		if (!gameStarted) {
+			if (keyEvent.keyZ == true && keyZpress < 4 && introStart == false) {
+				keyEvent.keyZ = false;
+				isMultiplayer = false;
+				keyZpress++;
+			}else if (keyEvent.keyX == true && keyXpress < 4 && introStart == false) {
+				keyEvent.keyX = false;
+				isMultiplayer = true;
+				keyXpress++;
+			}
 			
-		case 2:
-			choosingPlayer = false;
-			choosingEnemy = true;
-			break;
+			switch (keyZpress) {
+			case 1:
+				showingMenu = false;
+				choosingPlayer = true;
+				break;
+				
+			case 2:
+				choosingPlayer = false;
+				choosingEnemy = true;
+				break;
+				
+			case 3:
+				choosingEnemy = false;
+				introStart = true;
+				break;
+				
+			case 4:
+				enemyWon = false;
+				playerWon = false;
+				intro_plane_width = 50;
+				intro_plane_height = 50;
+				intro_plane_x = 450;
+				intro_plane_y = 250;
+				intro_runway_x = 950;
+				startedIntroThread1 = false;
+				startedIntroThread2 = false;
+				player = null;
+				enemy = null;
+				showingMenu = true;
+				keyZpress = 0;
+				break;
+			}
 			
-		case 3:
-			choosingEnemy = false;
-			introStart = true;
-			break;
-		case 4:
-			enemyWon = false;
-			playerWon = false;
-			intro_plane_width = 50;
-			intro_plane_height = 50;
-			intro_plane_x = 450;
-			intro_plane_y = 250;
-			intro_runway_x = 950;
-			startedIntroThread1 = false;
-			startedIntroThread2 = false;
-			player = null;
-			enemy = null;
-			showingMenu = true;
-			keyZpress = 0;
-			break;
-		}
-		
-		switch (keyXpress) {
-		case 1:
-			showingMenu = false;
-			choosingPlayer = true;
-			break;
-			
-		case 2:
-			choosingPlayer = false;
-			choosingServer = true;
-			break;
-			
-		case 3:
-			choosingServer = false;
-			connectingToServer = true;
-			introStart = true;
-			keyXpress++;
-			break;	
+			switch (keyXpress) {
+			case 1:
+				showingMenu = false;
+				choosingPlayer = true;
+				break;
+				
+			case 2:
+				choosingPlayer = false;
+				choosingServer = true;
+				break;
+				
+			case 3:
+				choosingServer = false;
+				connectingToServer = true;
+				introStart = true;
+				keyXpress++;
+				break;
+				
+			case 5:
+				enemyWon = false;
+				playerWon = false;
+				intro_plane_width = 50;
+				intro_plane_height = 50;
+				intro_plane_x = 450;
+				intro_plane_y = 250;
+				intro_runway_x = 950;
+				startedIntroThread1 = false;
+				startedIntroThread2 = false;
+				player = null;
+				enemy = null;
+				showingMenu = true;
+				keyXpress = 1;
+			}
 		}
 		if (introDone == true && gameStarted == false) {
 			playerSSprite = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
@@ -259,7 +277,6 @@ public class Renderer extends JPanel{
 	
 	public void renderMainScreen() {
 		if (isMultiplayer == false) {
-			System.out.println();
 			if (playerWon) {
 				introStart = false;
 				BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
@@ -270,6 +287,7 @@ public class Renderer extends JPanel{
 				g2.setColor(Color.WHITE);
 				g2.setFont(new Font("Arial",Font.BOLD,48));
 				g2.drawString("You won!", 100, 500);
+				g2.drawString("Press \"Z\" to go to main menu.", 400, 100);
 				g2.drawString("Your remaining health: "+(int)player.getHealth(), 100, 550);
 				g2.drawString("Enemy's remaining health: "+(int)enemy.getHealth(), 100, 600);
 			}else if (enemyWon) {
@@ -282,6 +300,7 @@ public class Renderer extends JPanel{
 				g2.setColor(Color.BLACK);
 				g2.setFont(new Font("Arial",Font.BOLD,48));
 				g2.drawString("Enemy won", 100, 500);
+				g2.drawString("Press \"Z\" to go to main menu.", 150, 50);
 				g2.drawString("Your remaining health: "+(int)player.getHealth(), 100, 550);
 				g2.drawString("Enemy's remaining health: "+(int)enemy.getHealth(), 100, 600);
 			}
@@ -374,6 +393,34 @@ public class Renderer extends JPanel{
 				g2.drawString("Plane "+enemyPlaneIndex, 165, 560);
 			}
 		}else if (isMultiplayer) {
+			if (playerWon) {
+				introStart = false;
+				BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
+				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
+				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+				g2.drawImage(plane_image, pos, this);
+				
+				g2.setColor(Color.WHITE);
+				g2.setFont(new Font("Arial",Font.BOLD,48));
+				g2.drawString("You won!", 100, 500);
+				g2.drawString("Press \"X\" to choose player.", 400, 100);
+				g2.drawString("Your remaining health: "+(int)player.getHealth(), 100, 550);
+				g2.drawString("Enemy's remaining health: "+(int)enemy.getHealth(), 100, 600);
+			}else if (enemyWon) {
+				introStart = false;
+				BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
+				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
+				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+				g2.drawImage(plane_image, pos, this);
+				
+				g2.setColor(Color.BLACK);
+				g2.setFont(new Font("Arial",Font.BOLD,48));
+				g2.drawString(enemy.getName()+" won", 100, 500);
+				g2.drawString("Press \"X\" to choose player.", 150, 50);
+				g2.drawString("Your remaining health: "+(int)player.getHealth(), 100, 550);
+				g2.drawString(enemy.getName()+"'s remaining health: "+(int)enemy.getHealth(), 100, 600);
+			}
+			
 			if (showingMenu) {
 				g2.setColor(Color.RED);
 				g2.setFont(new Font("Arial",Font.BOLD,30));
@@ -441,6 +488,9 @@ public class Renderer extends JPanel{
 			}
 		}
 		if (introStart == true && gameStarted == false) {
+			choosingPlayer = false;
+			choosingEnemy = false;
+			showingMenu = false;
 			renderIntro();
 		}
 	}
@@ -562,6 +612,7 @@ public class Renderer extends JPanel{
 	}
 	
 	public void createBullets() {
+		String data = "";
 		if (bullets.size() > 0) {
 			double oldX,oldY,oldWidth,oldHeight,oldAngle;
 			for (Bullets b : bullets) {
@@ -579,6 +630,7 @@ public class Renderer extends JPanel{
 					bullet.setHeight(oldHeight);
 					bullet.setSpeed(2);
 					next_bullets.add(bullet);
+					//data += String.valueOf(bullet.getOX()+","+bullet.getOY()+","+bullet.getAngle())+",";
 				}
 			}
 			bullets.removeAll(bullets);
@@ -589,7 +641,7 @@ public class Renderer extends JPanel{
 			next_bullets.removeAll(next_bullets);
 		}
 		if (isMultiplayer) {
-			//send data
+			//m.client.sendMessage(data);
 		}
 	}
 	
@@ -620,9 +672,26 @@ public class Renderer extends JPanel{
 			
 			enemy_next_bullets.removeAll(enemy_next_bullets);
 		}
-		if (isMultiplayer) {
-			//get data
-		}
+//		if (isMultiplayer) {
+//			String data = m.client.readMessage();
+//			String[] dataParts = data.split(",",-1);
+//			if (dataParts.length > 1) {
+//				for (int i = 1; i < 11; i++) {
+//					double x, y, angle;
+//					x = Double.valueOf(dataParts[i]);
+//					y = Double.valueOf(dataParts[i+1]);
+//					angle = Double.valueOf(dataParts[i+2]);
+//					bullet = new Bullets(g2,bulletSprite);
+//					bullet.setX(x);
+//					bullet.setY(y);
+//					bullet.setAngle(angle);
+//					bullet.setWidth(50);
+//					bullet.setHeight(50);
+//					bullet.setSpeed(2);
+//					enemy_bullets.add(bullet);
+//				}
+//			}
+//		}
 	}
 	
 	public void renderIntro() {
