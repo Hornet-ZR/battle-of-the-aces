@@ -276,7 +276,7 @@ public class Renderer extends JPanel{
 	public void renderUI(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Arial",Font.BOLD,30));
-		g.drawString("UPDATES: "+fps, 10, 50);
+		g.drawString("HEALTH: "+(int)player.getHealth(), 10, 50);
 	}
 	
 	public void renderMainScreen() {
@@ -546,10 +546,10 @@ public class Renderer extends JPanel{
 		if (isMultiplayer) {
 			if (bullets.size() > 1) {
 				for (Bullets b : bullets) {
-					data = String.valueOf(","+player.getPX()+","+player.getPY()+","+player.getDirection()+","+username+","+playerSpriteChosenX+","+playerSpriteChosenY+","+b.getOX()+","+b.getOY()+","+b.getAngle());
+					data = String.valueOf(","+player.getPX()+","+player.getPY()+","+player.getDirection()+","+player.getHealth()+","+username+","+playerSpriteChosenX+","+playerSpriteChosenY+","+b.getOX()+","+b.getOY()+","+b.getAngle());
 				}
 			}else {
-				data = String.valueOf(","+player.getPX()+","+player.getPY()+","+player.getDirection()+","+username+","+playerSpriteChosenX+","+playerSpriteChosenY);
+				data = String.valueOf(","+player.getPX()+","+player.getPY()+","+player.getDirection()+","+player.getHealth()+","+username+","+playerSpriteChosenX+","+playerSpriteChosenY);
 			}
 			m.client.sendMessage(data);
 		}
@@ -585,19 +585,20 @@ public class Renderer extends JPanel{
 				enemy.setSpeed(oldSpeed);
 			}
 		}else {
-			double nPX, nPY, nDir;
+			double nPX, nPY, nDir, nHealth;
 			String name;
 			String data =  m.client.readMessage();
 			String[] arrayData = data.split(",",-1);
-
-			if (arrayData.length == 7) {
+			System.out.println(arrayData.length);
+			if (arrayData.length == 8) {
 				nPX = Double.valueOf(arrayData[1]);
 				nPY = Double.valueOf(arrayData[2]);
 				nDir = Double.valueOf(arrayData[3]);
-				name = arrayData[4];
+				nHealth = Double.valueOf(arrayData[4]);
+				name = arrayData[5];
 				
 				if (enemySSSprite == null)
-					enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[5]), Integer.valueOf(arrayData[6]));
+					enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[6]), Integer.valueOf(arrayData[7]));
 				
 				enemy = new Enemy(g2,enemySSSprite);
 				enemy.setWidth(enemy_width);
@@ -605,16 +606,18 @@ public class Renderer extends JPanel{
 				enemy.setX(nPX);
 				enemy.setY(nPY);
 				enemy.setDirection(nDir);
+				enemy.setHealth(nHealth);
 				enemy.setName(name);
 			}
-			if (arrayData.length > 7) {
+			if (arrayData.length > 8) {
 				nPX = Double.valueOf(arrayData[1]);
 				nPY = Double.valueOf(arrayData[2]);
 				nDir = Double.valueOf(arrayData[3]);
-				name = arrayData[4];
+				nHealth = Double.valueOf(arrayData[4]);
+				name = arrayData[5];
 				
 				if (enemySSSprite == null)
-					enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[5]), Integer.valueOf(arrayData[6]));
+					enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[6]), Integer.valueOf(arrayData[7]));
 				
 				enemy = new Enemy(g2,enemySSSprite);
 				enemy.setWidth(enemy_width);
@@ -622,12 +625,13 @@ public class Renderer extends JPanel{
 				enemy.setX(nPX);
 				enemy.setY(nPY);
 				enemy.setDirection(nDir);
+				enemy.setHealth(nHealth);
 				enemy.setName(name);
 				
 				bullet = new Bullets(g2,bulletSprite);
-				bullet.setX(Double.valueOf(arrayData[7]));
-				bullet.setY(Double.valueOf(arrayData[8]));
-				bullet.setAngle(Double.valueOf(arrayData[9]));
+				bullet.setX(Double.valueOf(arrayData[8]));
+				bullet.setY(Double.valueOf(arrayData[9]));
+				bullet.setAngle(Double.valueOf(arrayData[10]));
 				bullet.setSpeed(2);
 				enemy_bullets.add(bullet);
 			}
@@ -866,8 +870,8 @@ public class Renderer extends JPanel{
 				bullet.setX(enemy.getPX());
 				bullet.setY(enemy.getPY());
 				bullet.setAngle(enemy.getDirection());
-				bullet.setWidth(50);
-				bullet.setHeight(50);
+				bullet.setWidth(250);
+				bullet.setHeight(250);
 				bullet.setSpeed(2);
 				enemy_bullets.add(bullet);
 			}
