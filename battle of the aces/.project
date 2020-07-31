@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>res</name>
+			<type>2</type>
+			<location>G:/git/battle-of-the-aces/battle of the aces/src/res</location>
+		</link>
+	</linkedResources>
 </projectDescription>

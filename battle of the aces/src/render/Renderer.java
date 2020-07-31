@@ -18,6 +18,7 @@ import render.entity.Enemy;
 import render.entity.Player;
 import render.events.KeyEvents;
 import render.events.MouseEvents;
+import render.imageUtil.ResLoader;
 import render.imageUtil.SpriteLoader;
 import render.object.Bullets;
 import render.object.Cloud;
@@ -69,7 +70,7 @@ public class Renderer extends JPanel{
 	private KeyEvents keyEvent = new KeyEvents();
 	private MouseEvents mouseEvent = new MouseEvents();
 	private SpriteLoader spriteLoader = new SpriteLoader();
-	
+	private ResLoader loader = new ResLoader();
 	//Entities
 	public Player player;
 	public Enemy enemy;
@@ -77,11 +78,6 @@ public class Renderer extends JPanel{
 	public Cloud cloud;
 	public Bullets bullet;
 	//Images / files
-	private File playerSpritesF;
-	private File enemySpritesF;
-	private File guiSpritesF;
-	private File objectSpritesF;
-	private File intro_runwayF;
 	private BufferedImage playerSprites;
 	private BufferedImage enemySprites;
 	private BufferedImage guiSprites;
@@ -123,20 +119,15 @@ public class Renderer extends JPanel{
 		m.addMouseListener(mouseEvent);
 		//Set variables
 		try {
-			playerSpritesF = new File(this.getClass().getResource("res/playerSprites.png").toURI());
-			playerSprites = ImageIO.read(playerSpritesF);
+			playerSprites = ImageIO.read(loader.load("res/playerSprites.png"));
 			
-			enemySpritesF = new File(this.getClass().getResource("res/enemySprites.png").toURI());
-			enemySprites = ImageIO.read(enemySpritesF);
+			enemySprites = ImageIO.read(loader.load("res/enemySprites.png"));
 			
-			guiSpritesF = new File(this.getClass().getResource("res/guiSprites.png").toURI());
-			guiSprites = ImageIO.read(guiSpritesF);
+			guiSprites = ImageIO.read(loader.load("res/guiSprites.png"));
 			
-			intro_runwayF = new File(this.getClass().getResource("res/runway.png").toURI());
-			intro_runway = ImageIO.read(intro_runwayF);
+			intro_runway = ImageIO.read(loader.load("res/runway.png"));
 			
-			objectSpritesF = new File(this.getClass().getResource("res/objectSprites.png").toURI());
-			objectSprites = ImageIO.read(objectSpritesF);
+			objectSprites = ImageIO.read(loader.load("res/objectSprites.png"));
 		}catch (Exception e) {
 			System.out.println("Resource loading error");
 		}
