@@ -141,16 +141,21 @@ public class Renderer extends JPanel{
 		if (showMainScreen == true) {
 			renderMainScreen();
 		}
+		
 		if (gameStarted) {
+			introStart = false;
+			
 			gameInit();
+			
 			//render objects (bullets)
 			renderBullets();
+			
 			//render entities (player, enemy)
 			renderEnemy();
 			renderPlayer();
 			
 			//collisions
-			if (enemy != null) {
+			if (enemy != null && !isMultiplayer) {
 				if (player.barrier_bounds().intersects(enemy.barrier_bounds())) {
 					enemy.setSpeed(0);
 				}else if (!player.barrier_bounds().intersects(enemy.barrier_bounds())) {
@@ -158,16 +163,20 @@ public class Renderer extends JPanel{
 				}
 			}
 			
-//			if (player.getHealth() <= 0) {
-//				showMainScreen = true;
-//				enemyWon = true;
-//				gameStarted = false;
-//			}
-//			if (enemy.getHealth() <= 0) {
-//				showMainScreen = true;
-//				playerWon = true;
-//				gameStarted = false;
-//			}
+			if (player.getHealth() <= 0) {
+				showMainScreen = true;
+				enemyWon = true;
+				introStart = false;
+				introDone = false;
+				gameStarted = false;
+			}
+			if (enemy.getHealth() <= 0) {
+				showMainScreen = true;
+				playerWon = true;
+				introStart = false;
+				introDone = false;
+				gameStarted = false;
+			}
 			
 		}
 		
@@ -195,6 +204,21 @@ public class Renderer extends JPanel{
 		case 3:
 			choosingEnemy = false;
 			introStart = true;
+			break;
+		case 4:
+			enemyWon = false;
+			playerWon = false;
+			intro_plane_width = 50;
+			intro_plane_height = 50;
+			intro_plane_x = 450;
+			intro_plane_y = 250;
+			intro_runway_x = 950;
+			startedIntroThread1 = false;
+			startedIntroThread2 = false;
+			player = null;
+			enemy = null;
+			showingMenu = true;
+			keyZpress = 0;
 			break;
 		}
 		
@@ -235,7 +259,9 @@ public class Renderer extends JPanel{
 	
 	public void renderMainScreen() {
 		if (isMultiplayer == false) {
-			if (playerWon == true) {
+			System.out.println();
+			if (playerWon) {
+				introStart = false;
 				BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
 				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
 				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
@@ -245,8 +271,21 @@ public class Renderer extends JPanel{
 				g2.setFont(new Font("Arial",Font.BOLD,48));
 				g2.drawString("You won!", 100, 500);
 				g2.drawString("Your remaining health: "+(int)player.getHealth(), 100, 550);
-				g2.drawString("Enemy's remaining health: "+(int)enemy.getHealth(), 100, 550);
+				g2.drawString("Enemy's remaining health: "+(int)enemy.getHealth(), 100, 600);
+			}else if (enemyWon) {
+				introStart = false;
+				BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
+				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
+				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+				g2.drawImage(plane_image, pos, this);
+				
+				g2.setColor(Color.BLACK);
+				g2.setFont(new Font("Arial",Font.BOLD,48));
+				g2.drawString("Enemy won", 100, 500);
+				g2.drawString("Your remaining health: "+(int)player.getHealth(), 100, 550);
+				g2.drawString("Enemy's remaining health: "+(int)enemy.getHealth(), 100, 600);
 			}
+			
 			if (showingMenu) {
 				g2.setColor(Color.RED);
 				g2.setFont(new Font("Arial",Font.BOLD,30));
