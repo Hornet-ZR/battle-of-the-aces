@@ -670,6 +670,7 @@ public class Renderer extends JPanel{
 					next_bullets.add(bullet);
 				}
 			}
+			
 			bullets.removeAll(bullets);
 			
 			for (Bullets b : next_bullets)
@@ -745,6 +746,7 @@ public class Renderer extends JPanel{
 						}catch(Exception e) {
 							
 						}
+						
 						introDone = true;
 						introStart = false;
 						break;
@@ -759,6 +761,7 @@ public class Renderer extends JPanel{
 					try {
 						Thread.sleep(1);
 						intro_runway_x--;
+						
 						if (intro_runway_x <= -200 && startedIntroThread2 == false) {
 							startedIntroThread2 = true;
 							gainAltitude.start();
