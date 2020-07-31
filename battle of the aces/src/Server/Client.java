@@ -36,6 +36,16 @@ public class Client extends Thread{
 		}  
 	}
 	
+	public void enemyDamageRequest(String message) {
+		try {
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+			writer.write(message+"\n\r");
+			writer.flush();
+		} catch (Exception e) {
+
+		}
+	}
+	
 	public String readMessage() {
 		String data = "";
 		try {

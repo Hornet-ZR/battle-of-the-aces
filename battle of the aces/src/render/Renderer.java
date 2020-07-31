@@ -790,11 +790,14 @@ public class Renderer extends JPanel{
 				bullet.tick();
 				bullet.draw();	
 			}
-			if (isMultiplayer == false) {
+			
+			if (!isMultiplayer) {
 				if (bullet.oBounds().intersects(enemy.bounds()) && bullet.isDead() == false) {
 					enemy.setHealth(enemy.getHealth()-0.01);
+					bullet.setDead(true);
 				}
 			}
+			
 			this.remove(bullet);
 		}
 		for (Bullets bullet : enemy_bullets) {
@@ -805,6 +808,7 @@ public class Renderer extends JPanel{
 			if (isMultiplayer == false) {
 				if (bullet.oBounds().intersects(player.bounds()) && bullet.isDead() == false) {
 					player.setHealth(player.getHealth()-0.01);
+					bullet.setDead(true);
 				}
 			}
 			this.remove(bullet);
@@ -841,7 +845,14 @@ public class Renderer extends JPanel{
 		if (Math.abs(player.getDirection()) >= 360.0f) {
 			player.setDirection(0);
 		}
-				
+		
+		for (Bullets b : enemy_bullets) {
+			if (b.oBounds().intersects(player.bounds()) && !b.isDead()) {
+				player.setHealth(player.getHealth()-0.01);
+				b.setDead(true);
+			}
+		}
+		
 		player.tick();
 		player.draw();
 		this.remove(player);
