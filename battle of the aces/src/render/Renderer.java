@@ -172,6 +172,23 @@ public class Renderer extends JPanel{
 					enemy.setSpeed(0.5);
 				}
 			}
+			//end of game checks (none multiplayer)
+			if (!isMultiplayer) {
+				if (enemy.getHealth() <= 0) {
+					playerWon = true;
+					introStart = false;
+					introDone = false;
+					showMainScreen = true;
+					gameStarted = false;
+				}
+				if (player.getHealth() <= 0) {
+					enemyWon = true;
+					introStart = false;
+					introDone = false;
+					showMainScreen = true;
+					gameStarted = false;				
+				}
+			}
 			
 		}
 		
@@ -839,6 +856,7 @@ public class Renderer extends JPanel{
 					bullet.setDead(true);
 				}
 			}
+			
 			this.remove(bullet);
 		}
 	}
