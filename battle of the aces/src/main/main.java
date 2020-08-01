@@ -15,6 +15,7 @@ import render.Renderer;
 
 public class main extends Canvas implements Runnable{
 	private Thread mainLoop;
+	private JFrame frame;
 	private double game_version = 0.1;
 	private boolean UPDATE = false;
 	private double frame_cap = 1.0/60.0;
@@ -119,7 +120,7 @@ public class main extends Canvas implements Runnable{
 		server = new Server();
 		server.start();
 		
-		JFrame frame = new JFrame("Server info");
+		frame = new JFrame("Server info");
 		JPanel panel = new JPanel();
 		JLabel server_status = new JLabel();
 		Font font = new Font("Arial",Font.PLAIN,24);
@@ -143,6 +144,14 @@ public class main extends Canvas implements Runnable{
 		panel.add(server_status);
 		frame.add(panel);
 		
+		frame.invalidate();
+		frame.revalidate();
+		frame.repaint();
+	}
+	
+	public void reload_server() {
+		server = new Server();
+		server.start();
 		frame.invalidate();
 		frame.revalidate();
 		frame.repaint();

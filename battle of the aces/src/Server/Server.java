@@ -17,9 +17,7 @@ public class Server extends Thread{
 	
 	public Server() {
 		try {
-			System.out.println("Creating server...");
 			server = new ServerSocket(2515);
-			System.out.println("Created server");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

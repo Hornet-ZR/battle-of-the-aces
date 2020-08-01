@@ -182,7 +182,10 @@ public class Renderer extends JPanel{
 			gameStarted = false;
 			try {
 				m.client.socket.close();
-				m.client.socket = new Socket(ip,2515);
+				m.client = null;
+				m.server.server.close();
+				m.server = null;
+				m.reload_server();
 			}catch (Exception e) {
 				
 			}
