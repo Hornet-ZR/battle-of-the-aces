@@ -7,12 +7,15 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import Server.Client;
 import main.main;
 import render.entity.Enemy;
 import render.entity.Player;
@@ -32,6 +35,7 @@ public class Renderer extends JPanel{
 	//Main vars
 	private main m;
 	private int fps = 0;
+	private String[] arrayData = {};
 	
 	//General menu stuff
 	public boolean isMultiplayer = false;
@@ -102,6 +106,7 @@ public class Renderer extends JPanel{
 	private boolean startedIntroThread2 = false;
 	private boolean playerWon = false;
 	private boolean enemyWon = false;
+	private boolean dataSent = false;
 	private BufferedImage playerSSprite = null;
 	private BufferedImage enemySSprite = null;
 	private BufferedImage enemySSSprite = null;
@@ -147,10 +152,11 @@ public class Renderer extends JPanel{
 		
 		if (gameStarted) {
 			introStart = false;
+			showMainScreen = false;
+			showingMenu = false;
 			
 			gameInit();
-			
-			
+
 			//render objects (bullets)
 			renderBullets();
 			
@@ -167,29 +173,27 @@ public class Renderer extends JPanel{
 				}
 			}
 			
-			if (player.getHealth() <= 0) {
-				showMainScreen = true;
-				enemyWon = true;
-				introStart = false;
-				introDone = false;
-				gameStarted = false;
+		}
+		
+		if (playerWon || enemyWon) {
+			introStart = false;
+			introDone = false;
+			showMainScreen = true;
+			gameStarted = false;
+			try {
+				m.client.socket.close();
+				m.client.socket = new Socket(ip,2515);
+			}catch (Exception e) {
+				
 			}
-			if (enemy.getHealth() <= 0) {
-				showMainScreen = true;
-				playerWon = true;
-				introStart = false;
-				introDone = false;
-				gameStarted = false;
-			}
-			
 		}
 		
 		if (!gameStarted) {
-			if (keyEvent.keyZ == true && keyZpress < 4 && introStart == false) {
+			if (keyEvent.keyZ == true && introStart == false) {
 				keyEvent.keyZ = false;
 				isMultiplayer = false;
 				keyZpress++;
-			}else if (keyEvent.keyX == true && keyXpress < 4 && introStart == false) {
+			}else if (keyEvent.keyX == true && introStart == false) {
 				keyEvent.keyX = false;
 				isMultiplayer = true;
 				keyXpress++;
@@ -288,7 +292,7 @@ public class Renderer extends JPanel{
 				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 				g2.drawImage(plane_image, pos, this);
 				
-				g2.setColor(Color.WHITE);
+				g2.setColor(Color.BLACK);
 				g2.setFont(new Font("Arial",Font.BOLD,48));
 				g2.drawString("You won!", 100, 500);
 				g2.drawString("Press \"Z\" to go to main menu.", 400, 100);
@@ -407,9 +411,9 @@ public class Renderer extends JPanel{
 				g2.setColor(Color.WHITE);
 				g2.setFont(new Font("Arial",Font.BOLD,48));
 				g2.drawString("You won!", 100, 500);
-				g2.drawString("Press \"X\" to choose player.", 400, 100);
+				g2.drawString("Press \"X\" to choose player.", 300, 100);
 				g2.drawString("Your remaining health: "+(int)player.getHealth(), 100, 550);
-				g2.drawString("Enemy's remaining health: "+(int)enemy.getHealth(), 100, 600);
+				g2.drawString(enemy.getName()+"'s remaining health: "+(int)enemy.getHealth(), 100, 600);
 			}else if (enemyWon) {
 				introStart = false;
 				BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
@@ -417,7 +421,7 @@ public class Renderer extends JPanel{
 				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 				g2.drawImage(plane_image, pos, this);
 				
-				g2.setColor(Color.BLACK);
+				g2.setColor(Color.WHITE);
 				g2.setFont(new Font("Arial",Font.BOLD,48));
 				g2.drawString(enemy.getName()+" won", 100, 500);
 				g2.drawString("Press \"X\" to choose player.", 150, 50);
@@ -546,11 +550,21 @@ public class Renderer extends JPanel{
 		if (isMultiplayer) {
 			if (bullets.size() > 1) {
 				for (Bullets b : bullets) {
-					data = String.valueOf(","+player.getPX()+","+player.getPY()+","+player.getDirection()+","+player.getHealth()+","+username+","+playerSpriteChosenX+","+playerSpriteChosenY+","+b.getOX()+","+b.getOY()+","+b.getAngle());
+					data = String.valueOf(","+player.getPX()+","+player.getPY()+","+player.getDirection()+","+player.getHealth()+","+username+","+playerSpriteChosenX+","+playerSpriteChosenY+","+playerWon+","+b.getOX()+","+b.getOY()+","+b.getAngle());
 				}
 			}else {
-				data = String.valueOf(","+player.getPX()+","+player.getPY()+","+player.getDirection()+","+player.getHealth()+","+username+","+playerSpriteChosenX+","+playerSpriteChosenY);
+				data = String.valueOf(","+player.getPX()+","+player.getPY()+","+player.getDirection()+","+player.getHealth()+","+username+","+playerSpriteChosenX+","+playerSpriteChosenY+","+playerWon);
 			}
+			
+			if (enemy != null && enemy.getHealth() <= 0) {
+				playerWon = true;
+				introStart = false;
+				introDone = false;
+				showMainScreen = true;
+				gameStarted = false;
+				data = String.valueOf(true);
+			}
+			
 			m.client.sendMessage(data);
 		}
 	}
@@ -588,52 +602,60 @@ public class Renderer extends JPanel{
 			double nPX, nPY, nDir, nHealth;
 			String name;
 			String data =  m.client.readMessage();
-			String[] arrayData = data.split(",",-1);
-			System.out.println(arrayData.length);
-			if (arrayData.length == 8) {
-				nPX = Double.valueOf(arrayData[1]);
-				nPY = Double.valueOf(arrayData[2]);
-				nDir = Double.valueOf(arrayData[3]);
-				nHealth = Double.valueOf(arrayData[4]);
-				name = arrayData[5];
-				
-				if (enemySSSprite == null)
-					enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[6]), Integer.valueOf(arrayData[7]));
-				
-				enemy = new Enemy(g2,enemySSSprite);
-				enemy.setWidth(enemy_width);
-				enemy.setHeight(enemy_height);
-				enemy.setX(nPX);
-				enemy.setY(nPY);
-				enemy.setDirection(nDir);
-				enemy.setHealth(nHealth);
-				enemy.setName(name);
+			if (data.contains(",")) {
+				arrayData = data.split(",",-1);
+			
+				if (arrayData.length == 9) {
+					dataSent = true;
+					nPX = Double.valueOf(arrayData[1]);
+					nPY = Double.valueOf(arrayData[2]);
+					nDir = Double.valueOf(arrayData[3]);
+					nHealth = Double.valueOf(arrayData[4]);
+					name = arrayData[5];
+					
+					if (enemySSSprite == null)
+						enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[6]), Integer.valueOf(arrayData[7]));
+					
+					enemy = new Enemy(g2,enemySSSprite);
+					enemy.setWidth(enemy_width);
+					enemy.setHeight(enemy_height);
+					enemy.setX(nPX);
+					enemy.setY(nPY);
+					enemy.setDirection(nDir);
+					enemy.setHealth(nHealth);
+					enemy.setName(name);
+				}
+				if (arrayData.length > 9) {
+					dataSent = true;
+					nPX = Double.valueOf(arrayData[1]);
+					nPY = Double.valueOf(arrayData[2]);
+					nDir = Double.valueOf(arrayData[3]);
+					nHealth = Double.valueOf(arrayData[4]);
+					name = arrayData[5];
+					
+					if (enemySSSprite == null)
+						enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[6]), Integer.valueOf(arrayData[7]));
+					
+					enemy = new Enemy(g2,enemySSSprite);
+					enemy.setWidth(enemy_width);
+					enemy.setHeight(enemy_height);
+					enemy.setX(nPX);
+					enemy.setY(nPY);
+					enemy.setDirection(nDir);
+					enemy.setHealth(nHealth);
+					enemy.setName(name);
+					
+					bullet = new Bullets(g2,bulletSprite);
+					bullet.setX(Double.valueOf(arrayData[9]));
+					bullet.setY(Double.valueOf(arrayData[10]));
+					bullet.setAngle(Double.valueOf(arrayData[11]));
+					bullet.setSpeed(2);
+					enemy_bullets.add(bullet);
+				}
 			}
-			if (arrayData.length > 8) {
-				nPX = Double.valueOf(arrayData[1]);
-				nPY = Double.valueOf(arrayData[2]);
-				nDir = Double.valueOf(arrayData[3]);
-				nHealth = Double.valueOf(arrayData[4]);
-				name = arrayData[5];
-				
-				if (enemySSSprite == null)
-					enemySSSprite = spriteLoader.loadEnemySprite(enemySprites, Integer.valueOf(arrayData[6]), Integer.valueOf(arrayData[7]));
-				
-				enemy = new Enemy(g2,enemySSSprite);
-				enemy.setWidth(enemy_width);
-				enemy.setHeight(enemy_height);
-				enemy.setX(nPX);
-				enemy.setY(nPY);
-				enemy.setDirection(nDir);
-				enemy.setHealth(nHealth);
-				enemy.setName(name);
-				
-				bullet = new Bullets(g2,bulletSprite);
-				bullet.setX(Double.valueOf(arrayData[8]));
-				bullet.setY(Double.valueOf(arrayData[9]));
-				bullet.setAngle(Double.valueOf(arrayData[10]));
-				bullet.setSpeed(2);
-				enemy_bullets.add(bullet);
+			
+			if (data.equals("true") || data.equals("false")) {
+				enemyWon = Boolean.valueOf(data);
 			}
 		}
 	}

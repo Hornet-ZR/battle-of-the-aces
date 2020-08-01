@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class Client extends Thread{
 	
-	private Socket socket;
+	public Socket socket;
 
 	public Client(String ip) {
 		try {
