@@ -821,7 +821,7 @@ public class Renderer extends JPanel{
 			
 			if (!isMultiplayer) {
 				if (bullet.oBounds().intersects(enemy.bounds()) && bullet.isDead() == false) {
-					enemy.setHealth(enemy.getHealth()-0.01);
+					enemy.setHealth(enemy.getHealth()-1);
 					bullet.setDead(true);
 				}
 			}
@@ -835,7 +835,7 @@ public class Renderer extends JPanel{
 			}
 			if (isMultiplayer == false) {
 				if (bullet.oBounds().intersects(player.bounds()) && bullet.isDead() == false) {
-					player.setHealth(player.getHealth()-0.01);
+					player.setHealth(player.getHealth()-1);
 					bullet.setDead(true);
 				}
 			}
@@ -876,7 +876,7 @@ public class Renderer extends JPanel{
 		
 		for (Bullets b : enemy_bullets) {
 			if (b.oBounds().intersects(player.bounds()) && !b.isDead()) {
-				player.setHealth(player.getHealth()-0.01);
+				player.setHealth(player.getHealth()-1);
 				b.setDead(true);
 			}
 		}
