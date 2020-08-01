@@ -28,7 +28,7 @@ public class KeyEvents implements KeyListener{
 				if (renderer.choosingServerIP) {
 					renderer.ip += e.getKeyChar();
 				}
-				if (renderer.choosingServerPort) {
+				if (renderer.choosingServerPort && renderer.username.length() <= 15) {
 					renderer.username += e.getKeyChar();
 				}
 			}

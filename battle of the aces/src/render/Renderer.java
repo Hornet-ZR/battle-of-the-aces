@@ -411,9 +411,9 @@ public class Renderer extends JPanel{
 				g2.setColor(Color.WHITE);
 				g2.setFont(new Font("Arial",Font.BOLD,48));
 				g2.drawString("You won!", 100, 500);
-				g2.drawString("Press \"X\" to choose player.", 300, 100);
-				g2.drawString("Your remaining health: "+(int)player.getHealth(), 100, 550);
-				g2.drawString(enemy.getName()+"'s remaining health: "+(int)enemy.getHealth(), 100, 600);
+				g2.drawString("Press \"X\" to choose player.", 150, 50);
+				g2.drawString("Your remaining health: "+(int)player.getHealth(), 10, 550);
+				g2.drawString(enemy.getName()+"'s remaining health: "+(int)enemy.getHealth(), 10, 600);
 			}else if (enemyWon) {
 				introStart = false;
 				BufferedImage plane_image = spriteLoader.loadPlayerSprite(playerSprites, playerSpriteChosenX, playerSpriteChosenY);
@@ -425,8 +425,8 @@ public class Renderer extends JPanel{
 				g2.setFont(new Font("Arial",Font.BOLD,48));
 				g2.drawString(enemy.getName()+" won", 100, 500);
 				g2.drawString("Press \"X\" to choose player.", 150, 50);
-				g2.drawString("Your remaining health: "+(int)player.getHealth(), 100, 550);
-				g2.drawString(enemy.getName()+"'s remaining health: "+(int)enemy.getHealth(), 100, 600);
+				g2.drawString("Your remaining health: "+(int)player.getHealth(), 10, 550);
+				g2.drawString(enemy.getName()+"'s remaining health: "+(int)enemy.getHealth(), 10, 600);
 			}
 			
 			if (showingMenu) {
