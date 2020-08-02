@@ -42,7 +42,7 @@ public class Renderer extends JPanel{
 	public String ip = "";
 	public String username = "";
 	public int keyXpress = 0;
-	private int keyZpress = 0;
+	public int keyZpress = 0;
 	private int plane_preview_x = 100;
 	private int plane_preview_y = 100;
 	
@@ -208,16 +208,18 @@ public class Renderer extends JPanel{
 			}
 		}
 		
-		if (!gameStarted) {
-			if (keyEvent.keyZ == true && introStart == false) {
+		if (!gameStarted && introStart == false) {
+			if (keyEvent.keyZ == true && keyXpress == 0) {
 				keyEvent.keyZ = false;
 				isMultiplayer = false;
 				keyZpress++;
-			}else if (keyEvent.keyX == true && introStart == false) {
+			}else if (keyEvent.keyX == true && keyZpress == 0 && keyXpress != 2) {
 				keyEvent.keyX = false;
 				isMultiplayer = true;
 				keyXpress++;
 			}
+			
+			if ((keyZpress & keyXpress) == 0) showingMenu = true;
 			
 			switch (keyZpress) {
 			case 1:
@@ -514,12 +516,17 @@ public class Renderer extends JPanel{
 				}
 				
 			}
+			
 		}
 		if (introStart == true && gameStarted == false) {
 			choosingPlayer = false;
 			choosingEnemy = false;
 			showingMenu = false;
 			renderIntro();
+		}
+		if (introStart == false && showingMenu == false) {
+			g2.drawRect(450, 590, 150, 50);
+			g2.drawString("Back", 495, 625);
 		}
 	}
 	

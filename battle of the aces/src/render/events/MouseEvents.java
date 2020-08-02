@@ -15,9 +15,10 @@ public class MouseEvents implements MouseListener{
 		int mx,my;
 		mx = e.getX();
 		my = e.getY();
+		
 		if (renderer.choosingPlayer) {
-			if (mx > 0 && mx < 100) {
-				if (my > 500 && my < 600) {
+			if (mx >= 0 && mx <= 100) {
+				if (my >= 500 && my <= 600) {
 					if (renderer.playerSpriteChosenX > 1) {
 						renderer.playerSpriteChosenX--;
 					}
@@ -25,14 +26,14 @@ public class MouseEvents implements MouseListener{
 				}
 			}
 			if (mx > 300 && mx < 400) {
-				if (my > 500 && my < 600) {
+				if (my >= 500 && my <= 600) {
 					back = false;
 					renderer.playerSpriteChosenX++;
 				}
 			}
 		}else if (renderer.choosingEnemy) {
-			if (mx > 0 && mx < 100) {
-				if (my > 500 && my < 600) {
+			if (mx >= 0 && mx <= 100) {
+				if (my >= 500 && my <= 600) {
 					if (renderer.enemySpriteChosenX > 1) {
 						renderer.enemySpriteChosenX--;
 					}
@@ -40,7 +41,7 @@ public class MouseEvents implements MouseListener{
 				}
 			}
 			if (mx > 300 && mx < 400) {
-				if (my > 500 && my < 600) {
+				if (my >= 500 && my <= 600) {
 					back = false;
 					renderer.enemySpriteChosenX++;
 				}
@@ -48,19 +49,31 @@ public class MouseEvents implements MouseListener{
 		}
 		if (renderer.choosingServer) {
 			if (mx > 200) {
-				if (my > 65 && my < 115) {
+				if (my >= 65 && my <= 115) {
 					renderer.choosingServerIP = true;
 					renderer.choosingServerPort = false;
 				}
-				if (my > 165 && my < 215) {
+				if (my >= 165 && my <= 215) {
 					renderer.choosingServerPort = true;
 					renderer.choosingServerIP = false;
 				}
 			}
 			if (!renderer.username.equals("")) {
-				if (mx > 455 && mx < 730) {
-					if (my > 465 && my < 515) {
+				if (mx >= 455 && mx <= 730) {
+					if (my >= 465 && my <= 515) {
 						renderer.keyXpress = 3;
+					}
+				}
+			}
+		}
+		if (renderer.gameStarted == false && renderer.introStart == false) {
+			if (mx >= 450 && mx <= 600) {
+				if (my >= 590 && my <= 640) {
+					if (renderer.keyXpress > 0) {
+						renderer.keyXpress--;
+					}
+					if (renderer.keyZpress > 0) {
+						renderer.keyZpress--;
 					}
 				}
 			}
