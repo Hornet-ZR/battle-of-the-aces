@@ -90,6 +90,7 @@ public class Renderer extends JPanel{
 	private BufferedImage guiSprites;
 	private BufferedImage objectSprites;
 	private BufferedImage intro_runway;
+	private BufferedImage arrow_to_enemy;
 	//Game settings
 	public boolean gameStarted = false;
 	public boolean introStart = false;
@@ -128,13 +129,9 @@ public class Renderer extends JPanel{
 		//Set variables
 		try {
 			playerSprites = ImageIO.read(loader.load("res/playerSprites.png"));
-			
 			enemySprites = ImageIO.read(loader.load("res/enemySprites.png"));
-			
 			guiSprites = ImageIO.read(loader.load("res/guiSprites.png"));
-			
 			intro_runway = ImageIO.read(loader.load("res/runway.png"));
-			
 			objectSprites = ImageIO.read(loader.load("res/objectSprites.png"));
 		}catch (Exception e) {
 			System.out.println("Resource loading error");
@@ -172,6 +169,7 @@ public class Renderer extends JPanel{
 					enemy.setSpeed(0.5);
 				}
 			}
+			
 			//end of game checks (none multiplayer)
 			if (!isMultiplayer) {
 				if (enemy.getHealth() <= 0) {
@@ -190,11 +188,24 @@ public class Renderer extends JPanel{
 				}
 			}
 			
+			double radius = 0, angle = 0;
+			radius = 250;//((player.getPX() - enemy.getPX()) * (player.getPX() - enemy.getPX()) + (player.getPY() - enemy.getPY()) * (player.getPY() - enemy.getPY()));
+			angle = -player.target(enemy.getPX(), enemy.getPY(), enemy.getWidth(), enemy.getHeight());
+			
+			double x = 0, y = 0;
+			x = player.getPX();//((player.getPX()) + radius*Math.cos(angle));
+			y = player.getPY();//((player.getPY()) + radius*Math.sin(angle));
+			
+			AffineTransform arrow_pos = AffineTransform.getTranslateInstance(x, y);
+			arrow_pos.rotate(angle, arrow_to_enemy.getWidth()/2, arrow_to_enemy.getHeight()/2);
+			g2.drawImage(arrow_to_enemy, arrow_pos, this);
+			g2.fillRect((int)x, (int)y, 50, 50);
 		}
 		
 		if (playerWon || enemyWon) {
 			introStart = false;
 			introDone = false;
+			showingMenu = false;
 			showMainScreen = true;
 			gameStarted = false;
 			try {
@@ -219,7 +230,7 @@ public class Renderer extends JPanel{
 				keyXpress++;
 			}
 			
-			if ((keyZpress & keyXpress) == 0) showingMenu = true;
+			if ((keyZpress + keyXpress) == 0) showingMenu = true;
 			
 			switch (keyZpress) {
 			case 1:
@@ -293,6 +304,7 @@ public class Renderer extends JPanel{
 			enemySSprite = spriteLoader.loadEnemySprite(enemySprites, enemySpriteChosenX, enemySpriteChosenY);
 			cloudSprite = spriteLoader.loadObjectSprite(objectSprites, 1, 1);
 			bulletSprite = spriteLoader.loadObjectSprite(objectSprites, 2, 1);
+			arrow_to_enemy = spriteLoader.loadGUISprite(guiSprites, 2, 1);
 			introDone = false;
 			introStart = false;
 			gameStarted = true;
@@ -859,7 +871,7 @@ public class Renderer extends JPanel{
 			}
 			if (isMultiplayer == false) {
 				if (bullet.oBounds().intersects(player.bounds()) && bullet.isDead() == false) {
-					player.setHealth(player.getHealth()-1);
+					//player.setHealth(player.getHealth()-1);
 					bullet.setDead(true);
 				}
 			}
@@ -925,7 +937,7 @@ public class Renderer extends JPanel{
 			}
 			
 			if (player != null)
-				enemy.target(player.getPX(),player.getPY(),player.getWidth(),player.getHeight());
+				enemy.setDirection(enemy.target(player.getPX(),player.getPY(),player.getWidth(),player.getHeight()));
 			
 			enemy.shoot();
 			if (enemy.shooting == true){
