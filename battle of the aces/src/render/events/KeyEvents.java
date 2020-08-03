@@ -34,6 +34,10 @@ public class KeyEvents implements KeyListener{
 			}
 		}
 		
+		if (e.getKeyCode() == KeyEvent.VK_C) {
+			renderer.showingControls = !renderer.showingControls;
+		}
+		
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
 			upArrow = true;
 		}

@@ -101,13 +101,13 @@ public class Renderer extends JPanel{
 	public boolean choosingServerPort = false;
 	public boolean connectingToServer = false;
 	public boolean showingMenu = true;
+	public boolean showingControls = false;
 	private boolean showMainScreen = true;
 	private boolean introDone = false;
 	private boolean startedIntroThread1 = false;
 	private boolean startedIntroThread2 = false;
 	private boolean playerWon = false;
 	private boolean enemyWon = false;
-	private boolean dataSent = false;
 	private BufferedImage playerSSprite = null;
 	private BufferedImage enemySSprite = null;
 	private BufferedImage enemySSSprite = null;
@@ -115,7 +115,6 @@ public class Renderer extends JPanel{
 	private BufferedImage bulletSprite = null;
 	private ArrayList<Cloud> clouds = new ArrayList<Cloud>();
 	private ArrayList<Bullets> bullets = new ArrayList<Bullets>();
-	private ArrayList<Bullets> enemies = new ArrayList<Bullets>();
 	private ArrayList<Bullets> next_bullets = new ArrayList<Bullets>();
 	private ArrayList<Bullets> enemy_bullets = new ArrayList<Bullets>();
 	private ArrayList<Bullets> enemy_next_bullets = new ArrayList<Bullets>();
@@ -154,14 +153,11 @@ public class Renderer extends JPanel{
 			
 			gameInit();
 
-			//render objects (bullets)
 			renderBullets();
 			
-			//render entities (player, enemy)
 			renderEnemy();
 			renderPlayer();
 			
-			//collisions
 			if (enemy != null && !isMultiplayer) {
 				if (player.barrier_bounds().intersects(enemy.barrier_bounds())) {
 					enemy.setSpeed(0);
@@ -170,7 +166,6 @@ public class Renderer extends JPanel{
 				}
 			}
 			
-			//end of game checks (none multiplayer)
 			if (!isMultiplayer) {
 				if (enemy.getHealth() <= 0) {
 					playerWon = true;
@@ -229,7 +224,7 @@ public class Renderer extends JPanel{
 				keyXpress++;
 			}
 			
-			if ((keyZpress + keyXpress) == 0) showingMenu = true;
+			if ((keyZpress + keyXpress) == 0 && !showingControls) showingMenu = true;
 			
 			switch (keyZpress) {
 			case 1:
@@ -346,21 +341,7 @@ public class Renderer extends JPanel{
 				g2.drawString("Enemy's remaining health: "+(int)enemy.getHealth(), 100, 600);
 			}
 			
-			if (showingMenu) {
-				g2.setColor(Color.RED);
-				g2.setFont(new Font("Arial",Font.BOLD,30));
-				g2.drawString("DOGFIGHTER 8.0: Battle of the aces", 190, 50);
-				g2.drawString("Press Z to choose player", 500, 400);
-				g2.drawString("Press X to choose player (Multiplayer)", 320, 500);
-				
-				if (guiSprites == null)
-					return;
-				
-				BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
-				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
-				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
-				g2.drawImage(plane_image, pos, this);
-			}else if (choosingPlayer) {
+			if (choosingPlayer) {
 				g2.setColor(Color.RED);
 				g2.setFont(new Font("Arial",Font.BOLD,30));
 				g2.drawString("Choose your player", 190, 50);
@@ -462,21 +443,7 @@ public class Renderer extends JPanel{
 				g2.drawString(enemy.getName()+"'s remaining health: "+(int)enemy.getHealth(), 10, 600);
 			}
 			
-			if (showingMenu) {
-				g2.setColor(Color.RED);
-				g2.setFont(new Font("Arial",Font.BOLD,30));
-				g2.drawString("DOGFIGHTER 8.0: Battle of the aces", 190, 50);
-				g2.drawString("Press Z to choose player", 500, 400);
-				g2.drawString("Press X to choose player (Multiplayer)", 320, 500);
-				
-				if (guiSprites == null)
-					return;
-				
-				BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
-				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
-				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
-				g2.drawImage(plane_image, pos, this);
-			}else if (choosingPlayer) {
+			if (choosingPlayer) {
 				g2.setColor(Color.RED);
 				g2.setFont(new Font("Arial",Font.BOLD,30));
 				g2.drawString("Choose your player", 190, 50);
@@ -529,15 +496,46 @@ public class Renderer extends JPanel{
 			}
 			
 		}
-		if (introStart == true && gameStarted == false) {
+		
+		if (showingMenu) {
+			g2.setColor(Color.RED);
+			g2.setFont(new Font("Arial",Font.PLAIN,30));
+			g2.drawString("DOGFIGHTER 8.0: Battle of the aces", 190, 50);
+			g2.drawString("Press Z to choose player", 500, 400);
+			g2.drawString("Press X to choose player (Multiplayer)", 320, 500);
+			g2.drawString("Press C to toggle controls", 490, 600);
+			
+			if (guiSprites == null)
+				return;
+			
+			BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
+			AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
+			pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
+			g2.drawImage(plane_image, pos, this);
+		}
+		
+		if (introStart == true && !gameStarted) {
 			choosingPlayer = false;
 			choosingEnemy = false;
 			showingMenu = false;
 			renderIntro();
 		}
-		if (introStart == false && showingMenu == false && playerWon == false && enemyWon == false) {
+		
+		if (!introStart && !showingMenu && !playerWon && !enemyWon) {
 			g2.drawRect(450, 590, 150, 50);
 			g2.drawString("Back", 495, 625);
+		}
+		
+		if (showingControls) {
+			showingMenu = false;
+			g2.setFont(new Font("Arial",Font.PLAIN,30));
+			g2.setColor(Color.red);
+			g2.drawString("X : Single Menu", 10, 50);
+			g2.drawString("Z : Multiplayer Menu", 10, 100);
+			g2.drawString("X : Toggle control menu", 10, 150);
+			g2.drawString("Left + Right arrows : Player movement (Roatation left and right)", 10, 200);
+			g2.drawString("Space : Shoot bullets", 10, 250);
+			g2.drawString("W : Create server", 10, 300);
 		}
 	}
 	
@@ -644,7 +642,6 @@ public class Renderer extends JPanel{
 				arrayData = data.split(",",-1);
 			
 				if (arrayData.length == 9) {
-					dataSent = true;
 					nPX = Double.valueOf(arrayData[1]);
 					nPY = Double.valueOf(arrayData[2]);
 					nDir = Double.valueOf(arrayData[3]);
@@ -664,7 +661,6 @@ public class Renderer extends JPanel{
 					enemy.setName(name);
 				}
 				if (arrayData.length > 9) {
-					dataSent = true;
 					nPX = Double.valueOf(arrayData[1]);
 					nPY = Double.valueOf(arrayData[2]);
 					nDir = Double.valueOf(arrayData[3]);
