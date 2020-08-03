@@ -640,7 +640,7 @@ public class Renderer extends JPanel{
 			String data =  m.client.readMessage();
 			if (data.contains(",")) {
 				arrayData = data.split(",",-1);
-			
+				
 				if (arrayData.length == 9) {
 					nPX = Double.valueOf(arrayData[1]);
 					nPY = Double.valueOf(arrayData[2]);
