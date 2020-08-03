@@ -189,17 +189,16 @@ public class Renderer extends JPanel{
 			}
 			
 			double radius = 0, angle = 0;
-			radius = 250;//((player.getPX() - enemy.getPX()) * (player.getPX() - enemy.getPX()) + (player.getPY() - enemy.getPY()) * (player.getPY() - enemy.getPY()));
+			radius = 250;
 			angle = -player.target(enemy.getPX(), enemy.getPY(), enemy.getWidth(), enemy.getHeight());
 			
 			double x = 0, y = 0;
-			x = player.getPX();//((player.getPX()) + radius*Math.cos(angle));
-			y = player.getPY();//((player.getPY()) + radius*Math.sin(angle));
+			x = ((player.getPX()) + radius*Math.cos(angle * Math.PI / 180));
+			y = ((player.getPY()) + radius*Math.sin(-angle * Math.PI / 180));
 			
 			AffineTransform arrow_pos = AffineTransform.getTranslateInstance(x, y);
-			arrow_pos.rotate(angle, arrow_to_enemy.getWidth()/2, arrow_to_enemy.getHeight()/2);
+			arrow_pos.rotate(-Math.toRadians(angle), arrow_to_enemy.getWidth()/2, arrow_to_enemy.getHeight()/2);
 			g2.drawImage(arrow_to_enemy, arrow_pos, this);
-			g2.fillRect((int)x, (int)y, 50, 50);
 		}
 		
 		if (playerWon || enemyWon) {
