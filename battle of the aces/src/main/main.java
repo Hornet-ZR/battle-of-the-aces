@@ -16,7 +16,7 @@ import render.Renderer;
 public class main extends Canvas implements Runnable{
 	private Thread mainLoop;
 	private JFrame frame;
-	private double game_version = 0.1;
+	private double game_version = 0.6;
 	private boolean UPDATE = false;
 	private double frame_cap = 1.0/60.0;
 	private int width = 900, height = 700;
@@ -31,7 +31,7 @@ public class main extends Canvas implements Runnable{
 	public void init() {
 		this.setFocusable(true);
 		this.setFocusTraversalKeysEnabled(false);
-		w = new Window(this, width, height, "Battle of The Aces "+game_version, false);
+		w = new Window(this, width, height, "Battle of The Aces [BETA "+game_version+"]", false);
 		mainLoop = new Thread(this);
 		mainLoop.run();
 	}
@@ -90,9 +90,6 @@ public class main extends Canvas implements Runnable{
 		
 		if (renderer.gameStarted == true) {	
 			renderer.gameInit();
-			
-//			renderer.createClouds(g);
-//			renderer.renderClouds(g);
 			
 			renderer.renderUI(g);
 			g.translate((int)-renderer.player.getPX()+renderer.player.getWidth()+50,(int)-renderer.player.getPY()+renderer.player.getHeight()-50);

@@ -34,7 +34,6 @@ public class Renderer extends JPanel{
 	
 	//Main vars
 	private main m;
-	private int fps = 0;
 	private String[] arrayData = {};
 	
 	//General menu stuff
@@ -224,7 +223,11 @@ public class Renderer extends JPanel{
 				keyXpress++;
 			}
 			
-			if ((keyZpress + keyXpress) == 0 && !showingControls) showingMenu = true;
+			if ((keyZpress + keyXpress) == 0 && !showingControls) {
+				choosingPlayer = false;
+				choosingEnemy = false;
+				showingMenu = true;
+			}
 			
 			switch (keyZpress) {
 			case 1:
@@ -384,16 +387,16 @@ public class Renderer extends JPanel{
 				g2.drawString("Press Z to start", 500, 400);
 				
 				
-				if (guiSprites == null)
+				if (enemySprites == null)
 					return;
 				
 				
-				if (playerSpriteChosenX > 10) { 
+				if (enemySpriteChosenX > 10) { 
 					enemySpriteChosenX = 1;
 					enemySpriteChosenY++;
 				}
 				
-				if (mouseEvent.back == true && playerSpriteChosenY > 1 && playerSpriteChosenX == 1) {
+				if (mouseEvent.back == true && enemySpriteChosenY > 1 && enemySpriteChosenX == 1) {
 					mouseEvent.back = false;
 					enemySpriteChosenY--;
 					enemySpriteChosenX = 10;
@@ -401,7 +404,7 @@ public class Renderer extends JPanel{
 				
 				enemyPlaneIndex = 10*(enemySpriteChosenY-1)+enemySpriteChosenX;
 				
-				BufferedImage plane_image = spriteLoader.loadGUISprite(guiSprites, 1, 1);
+				BufferedImage plane_image = spriteLoader.loadEnemySprite(enemySprites, enemySpriteChosenX, enemySpriteChosenY);
 				AffineTransform pos = AffineTransform.getTranslateInstance(plane_preview_x, plane_preview_y);
 				pos.rotate(Math.toRadians(angle+=0.1),plane_image.getWidth()/2,plane_image.getHeight()/2);
 				g2.drawImage(plane_image, pos, this);
