@@ -535,7 +535,7 @@ public class Renderer extends JPanel{
 			showingMenu = false;
 			renderIntro();
 		}
-		if (introStart == false && showingMenu == false) {
+		if (introStart == false && showingMenu == false && playerWon == false && enemyWon == false) {
 			g2.drawRect(450, 590, 150, 50);
 			g2.drawString("Back", 495, 625);
 		}
@@ -854,11 +854,9 @@ public class Renderer extends JPanel{
 				bullet.draw();	
 			}
 			
-			if (!isMultiplayer) {
-				if (bullet.oBounds().intersects(enemy.bounds()) && bullet.isDead() == false) {
-					enemy.setHealth(enemy.getHealth()-1);
-					bullet.setDead(true);
-				}
+			if (bullet.oBounds().intersects(enemy.bounds()) && bullet.isDead() == false) {
+				enemy.setHealth(enemy.getHealth()-0.5);
+				bullet.setDead(true);
 			}
 			
 			this.remove(bullet);
@@ -868,11 +866,10 @@ public class Renderer extends JPanel{
 				bullet.tick();
 				bullet.draw();	
 			}
-			if (isMultiplayer == false) {
-				if (bullet.oBounds().intersects(player.bounds()) && bullet.isDead() == false) {
-					//player.setHealth(player.getHealth()-1);
-					bullet.setDead(true);
-				}
+			
+			if (bullet.oBounds().intersects(player.bounds()) && bullet.isDead() == false) {
+				player.setHealth(player.getHealth()-0.5);
+				bullet.setDead(true);
 			}
 			
 			this.remove(bullet);
