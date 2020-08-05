@@ -16,7 +16,7 @@ import render.Renderer;
 public class main extends Canvas implements Runnable{
 	private Thread mainLoop;
 	private JFrame frame;
-	private double game_version = 0.6;
+	private double game_version = 0.8;
 	private boolean UPDATE = false;
 	private double frame_cap = 1.0/60.0;
 	private int width = 900, height = 700;
