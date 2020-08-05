@@ -113,6 +113,8 @@ public class Renderer extends JPanel{
 	private BufferedImage cloudSprite = null;
 	private BufferedImage bulletSprite = null;
 	private ArrayList<Cloud> clouds = new ArrayList<Cloud>();
+	private ArrayList<Cloud> new_clouds = new ArrayList<Cloud>();
+	private ArrayList<Cloud> out_clouds = new ArrayList<Cloud>();
 	private ArrayList<Bullets> bullets = new ArrayList<Bullets>();
 	private ArrayList<Bullets> next_bullets = new ArrayList<Bullets>();
 	private ArrayList<Bullets> enemy_bullets = new ArrayList<Bullets>();
@@ -544,14 +546,14 @@ public class Renderer extends JPanel{
 	
 	public void gameInit() {
 		if (enemy_bullets.size() > 10) {
-			enemy_next_bullets.removeAll(enemy_bullets);
-			enemy_bullets.removeAll(enemy_bullets);
+			enemy_next_bullets.clear();
+			enemy_bullets.clear();
 		}else {
 			createEnemyBullets();	
 		}
 		if (bullets.size() > 10) {
-			next_bullets.removeAll(enemy_bullets);
-			bullets.removeAll(bullets);
+			next_bullets.clear();
+			bullets.clear();
 		}else {
 			createBullets();
 		}
@@ -698,7 +700,7 @@ public class Renderer extends JPanel{
 	}
 	
 	public void createClouds(Graphics g) {
-		for (int i = 0; i < 100; i++) {
+		for (int i = clouds.size(); i < 25; i++) {
 			cloud = new Cloud((Graphics2D) g,cloudSprite);
 			Random r = new Random();
 			cloud.setX(r.nextInt((900-0)+0));
@@ -707,6 +709,25 @@ public class Renderer extends JPanel{
 			cloud.setHeight(100);
 			clouds.add(cloud);
 		}
+		
+		for (Cloud cl : clouds) {
+			cloud = new Cloud((Graphics2D) g,cloudSprite);
+			cloud.setX(cl.getOX());
+			cloud.setY(cl.getOY());
+			cloud.setWidth(100);
+			cloud.setHeight(100);
+			cloud.setVelx(cl.getVelx());
+			cloud.setVely(cl.getVely());
+			new_clouds.add(cloud);
+		}
+		
+		clouds.clear();
+		
+		for (Cloud cln : new_clouds) {
+			clouds.add(cln);
+		}
+
+		new_clouds.clear();
 	}
 	
 	public void createBullets() {
@@ -730,12 +751,12 @@ public class Renderer extends JPanel{
 				}
 			}
 			
-			bullets.removeAll(bullets);
+			bullets.clear();
 			
 			for (Bullets b : next_bullets)
 				bullets.add(b);
 			
-			next_bullets.removeAll(next_bullets);
+			next_bullets.clear();
 		}
 	}
 	
@@ -759,12 +780,12 @@ public class Renderer extends JPanel{
 					enemy_next_bullets.add(bullet);
 				}
 			}
-			enemy_bullets.removeAll(enemy_bullets);
+			enemy_bullets.clear();
 			
 			for (Bullets b : enemy_next_bullets)
 				enemy_bullets.add(b);
 			
-			enemy_next_bullets.removeAll(enemy_next_bullets);
+			enemy_next_bullets.clear();
 		}
 	}
 	
@@ -841,15 +862,29 @@ public class Renderer extends JPanel{
 	
 	public void renderClouds(Graphics g) {
 		for (Cloud cl : clouds) {
-			cl.draw();
+			if (cl.getOX() > 0 && cl.getOX() < 900 && cl.getOY() > 0 && cl.getOY() < 700) {
+				cl.setVelx(-player.getVelx());
+				cl.setVely(-player.getVely());
+				
+				cl.gtick();
+				cl.draw();
+			}else {
+				out_clouds.add(cl);
+			}
+			
 		}
-		clouds.removeAll(clouds);
+		
+		for (Cloud oc : out_clouds) {
+			clouds.remove(oc);
+		}
+		
+		out_clouds.clear();
 	}
 	
 	public void renderBullets() {
 		for (Bullets bullet : bullets) {
 			if (bullet.isDead() == false) {
-				bullet.tick();
+				bullet.btick();
 				bullet.draw();	
 			}
 			
@@ -862,12 +897,12 @@ public class Renderer extends JPanel{
 		}
 		for (Bullets bullet : enemy_bullets) {
 			if (bullet.isDead() == false) {
-				bullet.tick();
+				bullet.btick();
 				bullet.draw();	
 			}
 			
 			if (bullet.oBounds().intersects(player.bounds()) && bullet.isDead() == false) {
-				player.setHealth(player.getHealth()-0.5);
+				//player.setHealth(player.getHealth()-0.5);
 				bullet.setDead(true);
 			}
 			

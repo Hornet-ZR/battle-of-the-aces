@@ -25,7 +25,12 @@ public class GameObject extends JComponent{
 		g2.drawImage(sprite, aft, this);
 	}
 	
-	public void tick() {
+	public void gtick() {
+		x += velx;
+		y += vely;
+	}
+	
+	public void btick() {
 		velx = ((Math.cos(((angle/180)* Math.PI))*speed));
 	    vely = ((Math.sin(((angle/180)* Math.PI))*speed));
 	    x += velx;
