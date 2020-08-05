@@ -7,7 +7,7 @@ import main.main;
 import render.Renderer;
 
 public class KeyEvents implements KeyListener{
-	public boolean keySpace = false, keyX = false, keyD = false, rightArrow = false, leftArrow = false, keyZ = false;
+	public boolean keyEscape = false, keySpace = false, keyX = false, keyD = false, rightArrow = false, leftArrow = false, keyZ = false;
 	private Renderer renderer;
 	private main main;
 	
@@ -34,20 +34,30 @@ public class KeyEvents implements KeyListener{
 			}
 		}
 		
-		if (e.getKeyCode() == KeyEvent.VK_C) {
-			renderer.showingControls = !renderer.showingControls;
-		}
-
-		if (e.getKeyCode() == KeyEvent.VK_Z) {
-			keyZ = true;
-		}
-		
-		if (e.getKeyCode() == KeyEvent.VK_X) {
-			keyX = true;
-		}
-		
-		if (e.getKeyCode() == KeyEvent.VK_W && main.server == null && renderer.showingMenu) {
+		switch(e.getKeyCode()) {
+		case KeyEvent.VK_ESCAPE:
+			keyEscape = true;
+			break;
+			
+		case KeyEvent.VK_W:
 			main.create_server();
+			break;
+			
+		case KeyEvent.VK_X:
+			keyX = true;
+			break;
+			
+		case KeyEvent.VK_Z:
+			keyZ = true;
+			break;
+		
+		case KeyEvent.VK_C:
+			renderer.showingControls = !renderer.showingControls;
+			break;
+		
+		case KeyEvent.VK_D:
+			keyD = true;
+			break;
 		}
 		
 		if (renderer.gameStarted) {
@@ -65,26 +75,26 @@ public class KeyEvents implements KeyListener{
 				break;
 			}
 		}
-		
-		if (e.getKeyCode() == KeyEvent.VK_D) {
-			keyD = true;
-		}
 	}
 
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_D) {
-			keyD = false;
-		}
-		
-		if (e.getKeyCode() == KeyEvent.VK_Z) {
-			keyZ = false;
-		}
-		
-		if (e.getKeyCode() == KeyEvent.VK_X) {
-			keyX = false;
-		}
-		
 		switch(e.getKeyCode()) {
+		case KeyEvent.VK_ESCAPE:
+			keyEscape = false;
+			break;
+			
+		case KeyEvent.VK_D:
+			keyD = false;
+			break;
+		
+		case KeyEvent.VK_Z:
+			keyZ = false;
+			break;
+			
+		case KeyEvent.VK_X:
+			keyX = false;
+			break;
+			
 		case KeyEvent.VK_RIGHT:
 			rightArrow = false;
 			break;

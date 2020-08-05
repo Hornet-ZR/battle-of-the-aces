@@ -170,6 +170,15 @@ public class Renderer extends JPanel{
 			}
 			
 			if (!isMultiplayer) {
+				if (keyEvent.keySpace) {
+					introStart = false;
+					introDone = false;
+					showingMenu = false;
+					showMainScreen = true;
+					gameStarted = false;
+					explosionStarted = false;
+				}
+				
 				if (enemy.getHealth() <= 0 && !(enemyWon || playerWon)) {
 					g2.drawImage(explosion, (int)enemy.getPX()-enemy.getWidth()/2, (int)enemy.getPY()-enemy.getHeight()/2, 400, 400, this);
 					Thread change_true = new Thread(new Runnable() {
@@ -210,6 +219,22 @@ public class Renderer extends JPanel{
 						}
 					});
 					change_true.start();
+				}
+			}else {
+				if (keyEvent.keyEscape) {
+					introStart = false;
+					introDone = false;
+					showingMenu = false;
+					showMainScreen = true;
+					gameStarted = false;
+					explosionStarted = false;
+					
+					try {
+						m.server.clients.remove(m.client.socket);
+						m.client.socket.close();
+					}catch (Exception e) {
+						
+					}
 				}
 			}
 			
@@ -578,6 +603,8 @@ public class Renderer extends JPanel{
 			g2.drawString("Left + Right arrows : Player movement (Roatation left and right)", 10, 200);
 			g2.drawString("Space : Shoot bullets", 10, 250);
 			g2.drawString("W : Create server", 10, 300);
+			g2.drawString("Escape : Leave multiplayer / singleplayer game (reccomended exit ", 10, 350);
+			g2.drawString("method)", 10, 380);
 		}
 	}
 	

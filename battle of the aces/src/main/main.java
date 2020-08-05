@@ -117,36 +117,38 @@ public class main extends Canvas implements Runnable{
 	}
 	
 	public void create_server() {
-		server = new Server();
-		server.start();
-		
-		frame = new JFrame("Server info");
-		JPanel panel = new JPanel();
-		JLabel server_status = new JLabel();
-		Font font = new Font("Arial",Font.PLAIN,24);
-		
-		frame.setSize(500,500);
-		frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
-		
-		if (server.server.isBound()) {
-			server_status.setText("Server is bound, server running");
-		}else {
-			server_status.setText("Server error");
+		if (server != null && renderer.showingMenu) {
+			server = new Server();
+			server.start();
+			
+			frame = new JFrame("Server info");
+			JPanel panel = new JPanel();
+			JLabel server_status = new JLabel();
+			Font font = new Font("Arial",Font.PLAIN,24);
+			
+			frame.setSize(500,500);
+			frame.setResizable(false);
+			frame.setLocationRelativeTo(null);
+			frame.setVisible(true);
+			
+			if (server.server.isBound()) {
+				server_status.setText("Server is bound, server running");
+			}else {
+				server_status.setText("Server error");
+			}
+			
+			panel.setBackground(Color.BLACK);
+			
+			server_status.setFont(font);
+			server_status.setForeground(Color.WHITE);
+			
+			panel.add(server_status);
+			frame.add(panel);
+			
+			frame.invalidate();
+			frame.revalidate();
+			frame.repaint();
 		}
-		
-		panel.setBackground(Color.BLACK);
-		
-		server_status.setFont(font);
-		server_status.setForeground(Color.WHITE);
-		
-		panel.add(server_status);
-		frame.add(panel);
-		
-		frame.invalidate();
-		frame.revalidate();
-		frame.repaint();
 	}
 	
 	public void reload_server() {
