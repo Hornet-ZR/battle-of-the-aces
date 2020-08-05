@@ -4,18 +4,17 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import Server.Client;
 import main.main;
 import render.entity.Enemy;
 import render.entity.Player;
@@ -90,6 +89,7 @@ public class Renderer extends JPanel{
 	private BufferedImage objectSprites;
 	private BufferedImage intro_runway;
 	private BufferedImage arrow_to_enemy;
+	private Image explosion;
 	//Game settings
 	public boolean gameStarted = false;
 	public boolean introStart = false;
@@ -107,6 +107,7 @@ public class Renderer extends JPanel{
 	private boolean startedIntroThread2 = false;
 	private boolean playerWon = false;
 	private boolean enemyWon = false;
+	private boolean explosionStarted = false;
 	private BufferedImage playerSSprite = null;
 	private BufferedImage enemySSprite = null;
 	private BufferedImage enemySSSprite = null;
@@ -133,6 +134,7 @@ public class Renderer extends JPanel{
 			guiSprites = ImageIO.read(loader.load("res/guiSprites.png"));
 			intro_runway = ImageIO.read(loader.load("res/runway.png"));
 			objectSprites = ImageIO.read(loader.load("res/objectSprites.png"));
+			explosion = Toolkit.getDefaultToolkit().getImage("G:\\git\\battle-of-the-aces\\battle of the aces\\src\\res\\explosion.gif");
 		}catch (Exception e) {
 			System.out.println("Resource loading error");
 		}
@@ -143,10 +145,10 @@ public class Renderer extends JPanel{
 		this.g2 = g2;
 		this.g = g;
 		
-		if (showMainScreen == true) {
+		if (showMainScreen) {
 			renderMainScreen();
 		}
-		
+	
 		if (gameStarted) {
 			introStart = false;
 			showMainScreen = false;
@@ -161,26 +163,53 @@ public class Renderer extends JPanel{
 			
 			if (enemy != null && !isMultiplayer) {
 				if (player.barrier_bounds().intersects(enemy.barrier_bounds())) {
-					enemy.setSpeed(0);
+					enemy.setSpeed(0.2);
 				}else if (!player.barrier_bounds().intersects(enemy.barrier_bounds())) {
 					enemy.setSpeed(0.5);
 				}
 			}
 			
 			if (!isMultiplayer) {
-				if (enemy.getHealth() <= 0) {
-					playerWon = true;
-					introStart = false;
-					introDone = false;
-					showMainScreen = true;
-					gameStarted = false;
+				if (enemy.getHealth() <= 0 && !(enemyWon || playerWon)) {
+					g2.drawImage(explosion, (int)enemy.getPX()-enemy.getWidth()/2, (int)enemy.getPY()-enemy.getHeight()/2, 400, 400, this);
+					Thread change_true = new Thread(new Runnable() {
+						public void run() {
+							explosionStarted = true;
+							
+							enemy.setVelx(0);
+							enemy.setVely(0);
+							
+							try {
+								Thread.sleep(1500);
+							}catch(Exception e) {
+								
+							}
+							
+							playerWon = true;
+						}
+					});
+					change_true.start();
 				}
-				if (player.getHealth() <= 0) {
-					enemyWon = true;
-					introStart = false;
-					introDone = false;
-					showMainScreen = true;
-					gameStarted = false;				
+				
+				if (player.getHealth() <= 0 && !(enemyWon || playerWon)) {
+					g2.drawImage(explosion, (int)player.getPX()-player.getWidth()/2, (int)player.getPY()-player.getHeight()/2, 400, 400, this);			
+					Thread change_true = new Thread(new Runnable() {
+						public void run() {
+							explosionStarted = true;
+							
+							player.setVelx(0);
+							player.setVely(0);
+							
+							try {
+								Thread.sleep(1500);
+							}catch(Exception e) {
+								
+							}
+							
+							enemyWon = true;
+						}
+					});
+					change_true.start();
 				}
 			}
 			
@@ -197,12 +226,13 @@ public class Renderer extends JPanel{
 			g2.drawImage(arrow_to_enemy, arrow_pos, this);
 		}
 		
-		if (playerWon || enemyWon) {
+		if ((playerWon || enemyWon) && isMultiplayer) {
 			introStart = false;
 			introDone = false;
 			showingMenu = false;
 			showMainScreen = true;
 			gameStarted = false;
+			explosionStarted = false;
 			try {
 				m.client.socket.close();
 				m.client = null;
@@ -212,6 +242,13 @@ public class Renderer extends JPanel{
 			}catch (Exception e) {
 				
 			}
+		}else if (playerWon || enemyWon) {
+			introStart = false;
+			introDone = false;
+			showingMenu = false;
+			showMainScreen = true;
+			gameStarted = false;
+			explosionStarted = false;
 		}
 		
 		if (!gameStarted && introStart == false) {
@@ -551,12 +588,14 @@ public class Renderer extends JPanel{
 		}else {
 			createEnemyBullets();	
 		}
+		
 		if (bullets.size() > 10) {
 			next_bullets.clear();
 			bullets.clear();
 		}else {
 			createBullets();
 		}
+		
 		createPlayer();
 		createEnemy();
 	}
@@ -588,6 +627,7 @@ public class Renderer extends JPanel{
 			player.setHealth(oldHealth);
 			player.setSpeed(0.5);
 		}
+		
 		if (isMultiplayer) {
 			if (bullets.size() > 1) {
 				for (Bullets b : bullets) {
@@ -665,6 +705,7 @@ public class Renderer extends JPanel{
 					enemy.setHealth(nHealth);
 					enemy.setName(name);
 				}
+				
 				if (arrayData.length > 9) {
 					nPX = Double.valueOf(arrayData[1]);
 					nPY = Double.valueOf(arrayData[2]);
@@ -700,13 +741,13 @@ public class Renderer extends JPanel{
 	}
 	
 	public void createClouds(Graphics g) {
-		for (int i = clouds.size(); i < 25; i++) {
+		for (int i = clouds.size(); i < 15; i++) {
 			cloud = new Cloud((Graphics2D) g,cloudSprite);
 			Random r = new Random();
-			cloud.setX(r.nextInt((900-0)+0));
-			cloud.setY(r.nextInt((700-0)+0));
-			cloud.setWidth(100);
-			cloud.setHeight(100);
+			cloud.setX(r.nextInt(900)-150);
+			cloud.setY(r.nextInt(700)-150);
+			cloud.setWidth(r.nextInt(50));
+			cloud.setHeight(r.nextInt(50));
 			clouds.add(cloud);
 		}
 		
@@ -780,6 +821,7 @@ public class Renderer extends JPanel{
 					enemy_next_bullets.add(bullet);
 				}
 			}
+			
 			enemy_bullets.clear();
 			
 			for (Bullets b : enemy_next_bullets)
@@ -862,7 +904,7 @@ public class Renderer extends JPanel{
 	
 	public void renderClouds(Graphics g) {
 		for (Cloud cl : clouds) {
-			if (cl.getOX() > 0 && cl.getOX() < 900 && cl.getOY() > 0 && cl.getOY() < 700) {
+			if (cl.getOX() > -200 && cl.getOX() < 900 && cl.getOY() > -200 && cl.getOY() < 700) {
 				cl.setVelx(-player.getVelx());
 				cl.setVely(-player.getVely());
 				
@@ -902,7 +944,7 @@ public class Renderer extends JPanel{
 			}
 			
 			if (bullet.oBounds().intersects(player.bounds()) && bullet.isDead() == false) {
-				//player.setHealth(player.getHealth()-0.5);
+				player.setHealth(player.getHealth()-0.5);
 				bullet.setDead(true);
 			}
 			
@@ -949,7 +991,10 @@ public class Renderer extends JPanel{
 		}
 		
 		player.tick();
-		player.draw();
+		
+		if (!enemyWon && !explosionStarted)
+			player.draw();
+		
 		this.remove(player);
 	}
 	
@@ -958,7 +1003,6 @@ public class Renderer extends JPanel{
 			g.setFont(new Font("Arial",Font.PLAIN,48));
 			int tw = g.getFontMetrics().stringWidth(enemy.getName());		
 			g2.drawString(enemy.getName(), (int)enemy.getPX()+enemy.getWidth()/2-tw/2, (int)enemy.getPY()-50);
-			enemy.draw();
 		}else {
 			this.add(enemy);
 			
@@ -966,11 +1010,11 @@ public class Renderer extends JPanel{
 				enemy.setDirection(0);
 			}
 			
-			if (player != null)
+			if (player != null && !explosionStarted)
 				enemy.setDirection(enemy.target(player.getPX(),player.getPY(),player.getWidth(),player.getHeight()));
 			
 			enemy.shoot();
-			if (enemy.shooting == true){
+			if (enemy.shooting == true && !explosionStarted) {
 				enemy.shooting = false;
 				bullet = new Bullets(g2,bulletSprite);
 				bullet.setX(enemy.getPX());
@@ -983,7 +1027,10 @@ public class Renderer extends JPanel{
 			}
 			
 			enemy.tick();
-			enemy.draw();
+			
+			if (!playerWon && !explosionStarted)
+				enemy.draw();
+			
 			this.remove(enemy);
 		}
 	}

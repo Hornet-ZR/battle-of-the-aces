@@ -7,7 +7,7 @@ import main.main;
 import render.Renderer;
 
 public class KeyEvents implements KeyListener{
-	public boolean upArrow = false, keySpace = false, keyX = false, keyD = false, rightArrow = false, leftArrow = false, keyZ = false;
+	public boolean keySpace = false, keyX = false, keyD = false, rightArrow = false, leftArrow = false, keyZ = false;
 	private Renderer renderer;
 	private main main;
 	
@@ -37,11 +37,7 @@ public class KeyEvents implements KeyListener{
 		if (e.getKeyCode() == KeyEvent.VK_C) {
 			renderer.showingControls = !renderer.showingControls;
 		}
-		
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			upArrow = true;
-		}
-		
+
 		if (e.getKeyCode() == KeyEvent.VK_Z) {
 			keyZ = true;
 		}
@@ -55,17 +51,19 @@ public class KeyEvents implements KeyListener{
 		}
 		
 		if (renderer.gameStarted) {
-			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			switch(e.getKeyCode()) {
+			case KeyEvent.VK_RIGHT:
 				rightArrow = true;
-			}
-			
-			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+				break;
+				
+			case KeyEvent.VK_SPACE:
 				keySpace = true;
+				break;
+				
+			case KeyEvent.VK_LEFT:
+				leftArrow = true;
+				break;
 			}
-		}
-		
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			leftArrow = true;
 		}
 		
 		if (e.getKeyCode() == KeyEvent.VK_D) {
@@ -74,18 +72,6 @@ public class KeyEvents implements KeyListener{
 	}
 
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			upArrow = false;
-		}
-		
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			rightArrow = false;
-		}
-		
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			leftArrow = false;
-		}
-		
 		if (e.getKeyCode() == KeyEvent.VK_D) {
 			keyD = false;
 		}
@@ -98,8 +84,18 @@ public class KeyEvents implements KeyListener{
 			keyX = false;
 		}
 		
-		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+		switch(e.getKeyCode()) {
+		case KeyEvent.VK_RIGHT:
+			rightArrow = false;
+			break;
+			
+		case KeyEvent.VK_SPACE:
 			keySpace = false;
+			break;
+			
+		case KeyEvent.VK_LEFT:
+			leftArrow = false;
+			break;
 		}
 	}
 
