@@ -12,7 +12,7 @@ public class GameEntity extends JComponent{
 	protected BufferedImage sprite = null;
 	protected AffineTransform aft;
 	protected int width, height;
-	protected double direction, velx, vely, x, y, health=100;
+	protected double direction, velx, vely, x, y, health = 10;
 	protected double speed;
 	protected String name;
 	

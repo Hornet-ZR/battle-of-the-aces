@@ -18,6 +18,7 @@ public class main extends Canvas implements Runnable{
 	private JFrame frame;
 	private double game_version = 0.8;
 	private boolean UPDATE = false;
+	private boolean running = true;
 	private double frame_cap = 1.0/60.0;
 	private int width = 900, height = 700;
 	
@@ -38,6 +39,7 @@ public class main extends Canvas implements Runnable{
 	
 	public void run() {
 		renderer.init(this);
+		running = true;
 		loop();
 	}
 	
@@ -47,18 +49,23 @@ public class main extends Canvas implements Runnable{
 			double last = System.nanoTime() / 1000000000.0;
 			double passed = 0;
 			double unporcessed = 0;
-			while (true) {
+			while (running) {
 				UPDATE = false;
 				now = System.nanoTime() / 1000000000.0;
 				passed += now - last;
 				last = now;
 				unporcessed += passed;
+				
+				if (w.closing && renderer.isMultiplayer) {
+					server.clients.remove(client);
+				}
+				
 				while (unporcessed >= frame_cap) {
 					unporcessed -= frame_cap;
 					UPDATE = true;
 					update();
 				}
-			
+				
 				if (UPDATE) {
 					update();
 				}else {
@@ -117,11 +124,11 @@ public class main extends Canvas implements Runnable{
 	}
 	
 	public void create_server() {
-		if (server != null && renderer.showingMenu) {
+		if (server == null && renderer.showingMenu) {
 			server = new Server();
 			server.start();
 			
-			frame = new JFrame("Server info");
+			JFrame frame = new JFrame("Server info");
 			JPanel panel = new JPanel();
 			JLabel server_status = new JLabel();
 			Font font = new Font("Arial",Font.PLAIN,24);

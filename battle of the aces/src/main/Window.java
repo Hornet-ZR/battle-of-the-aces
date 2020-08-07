@@ -1,10 +1,14 @@
 package main;
 
 import java.awt.Dimension;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
-public class Window extends JFrame{
+public class Window extends JFrame implements WindowListener{
+	public boolean closing = false;
+	
 	public Window(main m, int width, int height, String title, boolean resizable) {
 		Dimension size = new Dimension(width,height);
 		this.setSize(size);
@@ -17,5 +21,41 @@ public class Window extends JFrame{
 		this.setLocationRelativeTo(null);
 		this.add(m);
 		this.setVisible(true);
+		this.addWindowListener(this);
+	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) {
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent arg0) {
+		
+	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		closing = true;
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) {
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) {
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent arg0) {
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent arg0) {
+		
 	}
 }

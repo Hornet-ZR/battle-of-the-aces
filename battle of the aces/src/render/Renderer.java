@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import main.main;
@@ -127,14 +126,14 @@ public class Renderer extends JPanel{
 		mouseEvent.init(this);
 		keyEvent.init(this, m);
 		m.addMouseListener(mouseEvent);
-		//Set variables
+
 		try {
 			playerSprites = ImageIO.read(loader.load("res/playerSprites.png"));
 			enemySprites = ImageIO.read(loader.load("res/enemySprites.png"));
 			guiSprites = ImageIO.read(loader.load("res/guiSprites.png"));
 			intro_runway = ImageIO.read(loader.load("res/runway.png"));
 			objectSprites = ImageIO.read(loader.load("res/objectSprites.png"));
-			explosion = Toolkit.getDefaultToolkit().getImage("G:\\git\\battle-of-the-aces\\battle of the aces\\src\\res\\explosion.gif");
+			explosion = Toolkit.getDefaultToolkit().getImage("src/res/explosion.gif");
 		}catch (Exception e) {
 			System.out.println("Resource loading error");
 		}
@@ -181,44 +180,38 @@ public class Renderer extends JPanel{
 				
 				if (enemy.getHealth() <= 0 && !(enemyWon || playerWon)) {
 					g2.drawImage(explosion, (int)enemy.getPX()-enemy.getWidth()/2, (int)enemy.getPY()-enemy.getHeight()/2, 400, 400, this);
-					Thread change_true = new Thread(new Runnable() {
-						public void run() {
-							explosionStarted = true;
+					new Thread(()->{
+						explosionStarted = true;
+						
+						enemy.setVelx(0);
+						enemy.setVely(0);
+						
+						try {
+							Thread.sleep(1500);
+						}catch(Exception e) {
 							
-							enemy.setVelx(0);
-							enemy.setVely(0);
-							
-							try {
-								Thread.sleep(1500);
-							}catch(Exception e) {
-								
-							}
-							
-							playerWon = true;
 						}
-					});
-					change_true.start();
+						
+						playerWon = true;
+					}).start();
 				}
 				
 				if (player.getHealth() <= 0 && !(enemyWon || playerWon)) {
 					g2.drawImage(explosion, (int)player.getPX()-player.getWidth()/2, (int)player.getPY()-player.getHeight()/2, 400, 400, this);			
-					Thread change_true = new Thread(new Runnable() {
-						public void run() {
-							explosionStarted = true;
+					new Thread(()->{
+						explosionStarted = true;
+						
+						player.setVelx(0);
+						player.setVely(0);
+						
+						try {
+							Thread.sleep(1500);
+						}catch(Exception e) {
 							
-							player.setVelx(0);
-							player.setVely(0);
-							
-							try {
-								Thread.sleep(1500);
-							}catch(Exception e) {
-								
-							}
-							
-							enemyWon = true;
 						}
-					});
-					change_true.start();
+						
+						enemyWon = true;
+					}).start();
 				}
 			}else {
 				if (keyEvent.keyEscape) {
@@ -323,6 +316,7 @@ public class Renderer extends JPanel{
 				enemy = null;
 				showingMenu = true;
 				keyZpress = 0;
+				explosion.flush();
 				break;
 			}
 			
@@ -358,6 +352,8 @@ public class Renderer extends JPanel{
 				enemy = null;
 				showingMenu = true;
 				keyXpress = 1;
+				explosion.flush();
+				break;
 			}
 		}
 		if (introDone == true && gameStarted == false) {
@@ -1030,6 +1026,7 @@ public class Renderer extends JPanel{
 			g.setFont(new Font("Arial",Font.PLAIN,48));
 			int tw = g.getFontMetrics().stringWidth(enemy.getName());		
 			g2.drawString(enemy.getName(), (int)enemy.getPX()+enemy.getWidth()/2-tw/2, (int)enemy.getPY()-50);
+			enemy.draw();
 		}else {
 			this.add(enemy);
 			
