@@ -49,7 +49,8 @@ public class main extends Canvas implements Runnable{
 			double last = System.nanoTime() / 1000000000.0;
 			double passed = 0;
 			double unporcessed = 0;
-			while (running) {
+			
+			while (true) {
 				UPDATE = false;
 				now = System.nanoTime() / 1000000000.0;
 				passed += now - last;
@@ -99,6 +100,7 @@ public class main extends Canvas implements Runnable{
 			renderer.gameInit();
 			
 			renderer.createClouds(g);
+			
 			renderer.renderClouds(g);
 			
 			renderer.renderUI(g);

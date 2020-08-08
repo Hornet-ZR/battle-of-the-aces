@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -80,6 +81,7 @@ public class Renderer extends JPanel{
 	public Enemy enemy;
 	//Objects
 	public Cloud cloud;
+	public Cloud smoke;
 	public Bullets bullet;
 	//Images / files
 	private BufferedImage playerSprites;
@@ -90,6 +92,8 @@ public class Renderer extends JPanel{
 	private BufferedImage arrow_to_enemy;
 	private Image explosion;
 	//Game settings
+	private int enemySmokeLevel = 0;
+	private int playerSmokeLevel = 0;
 	public boolean gameStarted = false;
 	public boolean introStart = false;
 	public boolean choosingPlayer = false;
@@ -106,15 +110,21 @@ public class Renderer extends JPanel{
 	private boolean startedIntroThread2 = false;
 	private boolean playerWon = false;
 	private boolean enemyWon = false;
+	private boolean clearingSmokeThread = false;
 	private boolean explosionStarted = false;
 	private BufferedImage playerSSprite = null;
 	private BufferedImage enemySSprite = null;
 	private BufferedImage enemySSSprite = null;
 	private BufferedImage cloudSprite = null;
+	private BufferedImage smokeSprite = null;
 	private BufferedImage bulletSprite = null;
 	private ArrayList<Cloud> clouds = new ArrayList<Cloud>();
 	private ArrayList<Cloud> new_clouds = new ArrayList<Cloud>();
 	private ArrayList<Cloud> out_clouds = new ArrayList<Cloud>();
+	private ArrayList<Cloud> smokel = new ArrayList<Cloud>();
+	private ArrayList<Cloud> new_smokel = new ArrayList<Cloud>();
+	private ArrayList<Cloud> enemy_smokel = new ArrayList<Cloud>();
+	private ArrayList<Cloud> new_enemy_smokel = new ArrayList<Cloud>();
 	private ArrayList<Bullets> bullets = new ArrayList<Bullets>();
 	private ArrayList<Bullets> next_bullets = new ArrayList<Bullets>();
 	private ArrayList<Bullets> enemy_bullets = new ArrayList<Bullets>();
@@ -147,7 +157,7 @@ public class Renderer extends JPanel{
 		if (showMainScreen) {
 			renderMainScreen();
 		}
-	
+		
 		if (gameStarted) {
 			introStart = false;
 			showMainScreen = false;
@@ -160,6 +170,8 @@ public class Renderer extends JPanel{
 			renderEnemy();
 			renderPlayer();
 			
+			renderSmoke();
+			
 			if (enemy != null && !isMultiplayer) {
 				if (player.barrier_bounds().intersects(enemy.barrier_bounds())) {
 					enemy.setSpeed(0.2);
@@ -167,6 +179,20 @@ public class Renderer extends JPanel{
 					enemy.setSpeed(0.5);
 				}
 			}
+			
+			if (player.getHealth() == 75) 
+				playerSmokeLevel = 1;
+			else if (player.getHealth() == 50) 
+				playerSmokeLevel = 2;
+			else if (player.getHealth() == 25) 
+				playerSmokeLevel = 3;
+
+			if (enemy.getHealth() == 75) 
+				enemySmokeLevel = 1;
+			else if (enemy.getHealth() == 50) 
+				enemySmokeLevel = 2;
+			else if (enemy.getHealth() == 25) 
+				enemySmokeLevel = 3;
 			
 			if (!isMultiplayer) {
 				if (keyEvent.keySpace) {
@@ -242,6 +268,7 @@ public class Renderer extends JPanel{
 			AffineTransform arrow_pos = AffineTransform.getTranslateInstance(x, y);
 			arrow_pos.rotate(-Math.toRadians(angle), arrow_to_enemy.getWidth()/2, arrow_to_enemy.getHeight()/2);
 			g2.drawImage(arrow_to_enemy, arrow_pos, this);
+		
 		}
 		
 		if ((playerWon || enemyWon) && isMultiplayer) {
@@ -362,6 +389,7 @@ public class Renderer extends JPanel{
 			cloudSprite = spriteLoader.loadObjectSprite(objectSprites, 1, 1);
 			bulletSprite = spriteLoader.loadObjectSprite(objectSprites, 2, 1);
 			arrow_to_enemy = spriteLoader.loadGUISprite(guiSprites, 2, 1);
+			smokeSprite = spriteLoader.loadObjectSprite(objectSprites, 3, 1);
 			introDone = false;
 			introStart = false;
 			gameStarted = true;
@@ -619,6 +647,24 @@ public class Renderer extends JPanel{
 			createBullets();
 		}
 		
+		if (!clearingSmokeThread) {
+			clearingSmokeThread = true;
+			new Thread(()->{
+				while (true) {
+					try {
+						Thread.sleep(100);
+					}catch(Exception e) {
+						
+					}
+					
+					smokel.clear();
+					enemy_smokel.clear();
+					createPlayerSmoke();
+					createEnemySmoke();
+				}
+			}).start();
+		}
+		
 		createPlayer();
 		createEnemy();
 	}
@@ -778,8 +824,8 @@ public class Renderer extends JPanel{
 			cloud = new Cloud((Graphics2D) g,cloudSprite);
 			cloud.setX(cl.getOX());
 			cloud.setY(cl.getOY());
-			cloud.setWidth(100);
-			cloud.setHeight(100);
+			cloud.setWidth(cl.getOWidth());
+			cloud.setHeight(cl.getOHeight());
 			cloud.setVelx(cl.getVelx());
 			cloud.setVely(cl.getVely());
 			new_clouds.add(cloud);
@@ -792,6 +838,82 @@ public class Renderer extends JPanel{
 		}
 
 		new_clouds.clear();
+	}
+	
+	public void createPlayerSmoke() {
+		for (int i = smokel.size(); i < playerSmokeLevel; i++) {
+			smoke = new Cloud(g2, smokeSprite);
+			smoke.setWidth(100);
+			smoke.setHeight(100);
+			smoke.setX(450);
+			smoke.setX(350);
+			smokel.add(smoke);
+		}
+		
+		if (smokel.size() <= 0) {
+			for (int i = smokel.size(); i < playerSmokeLevel; i++) {
+				smoke = new Cloud(g2, smokeSprite);
+				smoke.setWidth(100);
+				smoke.setHeight(100);
+				smokel.add(smoke);
+			}
+		}else {
+			for (Cloud s : smokel) {
+				smoke = new Cloud(g2, smokeSprite);
+				smoke.setX(s.getOX());
+				smoke.setY(s.getOY());
+				smoke.setWidth(s.getOWidth());
+				smoke.setHeight(s.getOHeight());
+				smoke.setVelx(s.getVelx());
+				smoke.setVely(s.getVely());
+				new_smokel.add(smoke);
+			}
+			
+			smokel.clear();
+			
+			for (Cloud s : new_smokel) {
+				smokel.add(s);
+			}
+			
+			new_smokel.clear();
+		}
+	}
+	
+	public void createEnemySmoke() {
+		for (int i = enemy_smokel.size(); i < enemySmokeLevel; i++) {
+			smoke = new Cloud(g2, smokeSprite);
+			smoke.setWidth(100);
+			smoke.setHeight(100);
+			enemy_smokel.add(smoke);
+		}
+		
+		if (enemy_smokel.size() <= 0) {
+			for (int i = enemy_smokel.size(); i < enemySmokeLevel; i++) {
+				smoke = new Cloud(g2, smokeSprite);
+				smoke.setWidth(100);
+				smoke.setHeight(100);
+				enemy_smokel.add(smoke);
+			}
+		}
+		
+		for (Cloud s : enemy_smokel) {
+			smoke = new Cloud(g2, smokeSprite);
+			smoke.setX(s.getOX());
+			smoke.setY(s.getOY());
+			smoke.setWidth(s.getOWidth());
+			smoke.setHeight(s.getOHeight());
+			smoke.setVelx(s.getVelx());
+			smoke.setVely(s.getVely());
+			new_enemy_smokel.add(smoke);
+		}
+		
+		enemy_smokel.clear();
+		
+		for (Cloud s : new_enemy_smokel) {
+			smokel.add(s);
+		}
+		
+		new_enemy_smokel.clear();
 	}
 	
 	public void createBullets() {
@@ -946,6 +1068,14 @@ public class Renderer extends JPanel{
 		out_clouds.clear();
 	}
 	
+	public void renderSmoke() {
+		for (Cloud s : smokel) {
+			s.setX(player.getPX());
+			s.setY(player.getPY());
+			s.draw();
+		}
+	}
+	
 	public void renderBullets() {
 		for (Bullets bullet : bullets) {
 			if (bullet.isDead() == false) {
@@ -960,6 +1090,7 @@ public class Renderer extends JPanel{
 			
 			this.remove(bullet);
 		}
+		
 		for (Bullets bullet : enemy_bullets) {
 			if (bullet.isDead() == false) {
 				bullet.btick();
