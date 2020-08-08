@@ -4,13 +4,15 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JComponent;
 
 public class GameObject extends JComponent{
 	private Graphics2D g2;
 	private BufferedImage sprite = null;
-	protected double width=100, height=100, x=0, y=0, angle=0, velx=0, vely=0, speed=0, life_time = 100000.0;
+	protected double width=100, height=100, x=0, y=0, angle=0, velx=0, vely=0, speed=0;
 	protected AffineTransform aft;
 	protected boolean dead = false;
 
@@ -30,6 +32,7 @@ public class GameObject extends JComponent{
 		y += vely;
 	}
 	
+
 	public void btick() {
 		velx = ((Math.cos(((angle/180)* Math.PI))*speed));
 	    vely = ((Math.sin(((angle/180)* Math.PI))*speed));

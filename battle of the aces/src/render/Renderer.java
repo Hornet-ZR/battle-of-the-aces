@@ -9,7 +9,6 @@ import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -104,13 +103,15 @@ public class Renderer extends JPanel{
 	public boolean connectingToServer = false;
 	public boolean showingMenu = true;
 	public boolean showingControls = false;
+	public boolean clearingSmokeThread = false;
+	public ArrayList<Cloud> smokel = new ArrayList<Cloud>();
+	public ArrayList<Cloud> enemy_smokel = new ArrayList<Cloud>();
 	private boolean showMainScreen = true;
 	private boolean introDone = false;
 	private boolean startedIntroThread1 = false;
 	private boolean startedIntroThread2 = false;
 	private boolean playerWon = false;
 	private boolean enemyWon = false;
-	private boolean clearingSmokeThread = false;
 	private boolean explosionStarted = false;
 	private BufferedImage playerSSprite = null;
 	private BufferedImage enemySSprite = null;
@@ -121,9 +122,7 @@ public class Renderer extends JPanel{
 	private ArrayList<Cloud> clouds = new ArrayList<Cloud>();
 	private ArrayList<Cloud> new_clouds = new ArrayList<Cloud>();
 	private ArrayList<Cloud> out_clouds = new ArrayList<Cloud>();
-	private ArrayList<Cloud> smokel = new ArrayList<Cloud>();
 	private ArrayList<Cloud> new_smokel = new ArrayList<Cloud>();
-	private ArrayList<Cloud> enemy_smokel = new ArrayList<Cloud>();
 	private ArrayList<Cloud> new_enemy_smokel = new ArrayList<Cloud>();
 	private ArrayList<Bullets> bullets = new ArrayList<Bullets>();
 	private ArrayList<Bullets> next_bullets = new ArrayList<Bullets>();
@@ -169,8 +168,6 @@ public class Renderer extends JPanel{
 			
 			renderEnemy();
 			renderPlayer();
-			
-			renderSmoke();
 			
 			if (enemy != null && !isMultiplayer) {
 				if (player.barrier_bounds().intersects(enemy.barrier_bounds())) {
@@ -647,24 +644,6 @@ public class Renderer extends JPanel{
 			createBullets();
 		}
 		
-		if (!clearingSmokeThread) {
-			clearingSmokeThread = true;
-			new Thread(()->{
-				while (true) {
-					try {
-						Thread.sleep(100);
-					}catch(Exception e) {
-						
-					}
-					
-					smokel.clear();
-					enemy_smokel.clear();
-					createPlayerSmoke();
-					createEnemySmoke();
-				}
-			}).start();
-		}
-		
 		createPlayer();
 		createEnemy();
 	}
@@ -840,26 +819,37 @@ public class Renderer extends JPanel{
 		new_clouds.clear();
 	}
 	
-	public void createPlayerSmoke() {
+	public void createPlayerSmoke(Graphics g) {
 		for (int i = smokel.size(); i < playerSmokeLevel; i++) {
-			smoke = new Cloud(g2, smokeSprite);
-			smoke.setWidth(100);
-			smoke.setHeight(100);
-			smoke.setX(450);
-			smoke.setX(350);
+			smoke = new Cloud((Graphics2D)g, smokeSprite);
+			smoke.setWidth(500);
+			smoke.setHeight(500);
+			
+			if (player != null) {
+				smoke.setX(player.getPX());
+				smoke.setY(player.getPY());
+			}
+			
 			smokel.add(smoke);
 		}
 		
 		if (smokel.size() <= 0) {
 			for (int i = smokel.size(); i < playerSmokeLevel; i++) {
-				smoke = new Cloud(g2, smokeSprite);
-				smoke.setWidth(100);
-				smoke.setHeight(100);
+				smoke = new Cloud((Graphics2D)g, smokeSprite);
+				smoke.setWidth(500);
+				smoke.setHeight(500);
+				
+				if (player != null) {
+					smoke.setX(player.getPX());
+					smoke.setY(player.getPY());
+				}
+				
 				smokel.add(smoke);
 			}
 		}else {
-			for (Cloud s : smokel) {
-				smoke = new Cloud(g2, smokeSprite);
+			for (int i = 0; i < smokel.size(); i++) {
+				Cloud s = smokel.get(i);
+				smoke = new Cloud((Graphics2D)g, smokeSprite);
 				smoke.setX(s.getOX());
 				smoke.setY(s.getOY());
 				smoke.setWidth(s.getOWidth());
@@ -879,41 +869,54 @@ public class Renderer extends JPanel{
 		}
 	}
 	
-	public void createEnemySmoke() {
+	public void createEnemySmoke(Graphics g) {
 		for (int i = enemy_smokel.size(); i < enemySmokeLevel; i++) {
-			smoke = new Cloud(g2, smokeSprite);
-			smoke.setWidth(100);
-			smoke.setHeight(100);
+			smoke = new Cloud((Graphics2D)g, smokeSprite);
+			smoke.setWidth(500);
+			smoke.setHeight(500);
+			
+			if (enemy != null) {
+				smoke.setX(enemy.getPX());
+				smoke.setY(enemy.getPY());
+			}
+			
 			enemy_smokel.add(smoke);
 		}
 		
 		if (enemy_smokel.size() <= 0) {
 			for (int i = enemy_smokel.size(); i < enemySmokeLevel; i++) {
-				smoke = new Cloud(g2, smokeSprite);
-				smoke.setWidth(100);
-				smoke.setHeight(100);
+				smoke = new Cloud((Graphics2D)g, smokeSprite);
+				smoke.setWidth(500);
+				smoke.setHeight(500);
+				
+				if (enemy != null) {
+					smoke.setX(enemy.getPX());
+					smoke.setY(enemy.getPY());
+				}
+				
 				enemy_smokel.add(smoke);
 			}
+		}else {
+			for (int i = 0; i < enemy_smokel.size(); i++) {
+				Cloud s = enemy_smokel.get(i);
+				smoke = new Cloud((Graphics2D)g, smokeSprite);
+				smoke.setX(s.getOX());
+				smoke.setY(s.getOY());
+				smoke.setWidth(s.getOWidth());
+				smoke.setHeight(s.getOHeight());
+				smoke.setVelx(s.getVelx());
+				smoke.setVely(s.getVely());
+				new_enemy_smokel.add(smoke);
+			}
+			
+			enemy_smokel.clear();
+			
+			for (Cloud s : new_enemy_smokel) {
+				smokel.add(s);
+			}
+			
+			new_enemy_smokel.clear();
 		}
-		
-		for (Cloud s : enemy_smokel) {
-			smoke = new Cloud(g2, smokeSprite);
-			smoke.setX(s.getOX());
-			smoke.setY(s.getOY());
-			smoke.setWidth(s.getOWidth());
-			smoke.setHeight(s.getOHeight());
-			smoke.setVelx(s.getVelx());
-			smoke.setVely(s.getVely());
-			new_enemy_smokel.add(smoke);
-		}
-		
-		enemy_smokel.clear();
-		
-		for (Cloud s : new_enemy_smokel) {
-			smokel.add(s);
-		}
-		
-		new_enemy_smokel.clear();
 	}
 	
 	public void createBullets() {
@@ -1068,11 +1071,17 @@ public class Renderer extends JPanel{
 		out_clouds.clear();
 	}
 	
-	public void renderSmoke() {
-		for (Cloud s : smokel) {
-			s.setX(player.getPX());
-			s.setY(player.getPY());
-			s.draw();
+	public void renderSmoke(Graphics g) {
+		for (int i = 0; i < smokel.size(); i++) {
+			Cloud smoke = smokel.get(i);
+			smoke.gtick();
+			smoke.draw();
+		}
+		
+		for (int i = 0; i < enemy_smokel.size(); i++) {
+			Cloud smoke = enemy_smokel.get(i);
+			smoke.gtick();
+			smoke.draw();		
 		}
 	}
 	

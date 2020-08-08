@@ -104,9 +104,30 @@ public class main extends Canvas implements Runnable{
 			renderer.renderClouds(g);
 			
 			renderer.renderUI(g);
+			
 			g.translate((int)-renderer.player.getPX()+renderer.player.getWidth()+50,(int)-renderer.player.getPY()+renderer.player.getHeight()-50);
 			
 			renderer.render(g);
+			
+			if (!renderer.clearingSmokeThread) {
+				renderer.clearingSmokeThread = true;
+				new Thread(()->{
+					while (true) {
+						try {
+							Thread.sleep(100);
+						}catch(Exception e) {
+							
+						}
+						
+						renderer.smokel.clear();
+						renderer.enemy_smokel.clear();
+					}
+				}).start();
+			}
+			
+			renderer.createPlayerSmoke(g);
+			renderer.createEnemySmoke(g);
+			renderer.renderSmoke(g);
 			
 			g.translate((int)renderer.player.getPX()+renderer.player.getWidth()+50,(int)renderer.player.getPY()+renderer.player.getHeight()-50);
 		}else if (renderer.gameStarted == false) {
