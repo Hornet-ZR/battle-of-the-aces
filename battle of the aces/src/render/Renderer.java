@@ -91,8 +91,6 @@ public class Renderer extends JPanel{
 	private BufferedImage arrow_to_enemy;
 	private Image explosion;
 	//Game settings
-	private int enemySmokeLevel = 0;
-	private int playerSmokeLevel = 0;
 	public boolean gameStarted = false;
 	public boolean introStart = false;
 	public boolean choosingPlayer = false;
@@ -106,6 +104,8 @@ public class Renderer extends JPanel{
 	public boolean clearingSmokeThread = false;
 	public ArrayList<Cloud> smokel = new ArrayList<Cloud>();
 	public ArrayList<Cloud> enemy_smokel = new ArrayList<Cloud>();
+	private int enemySmokeLevel = 0;
+	private int playerSmokeLevel = 0;
 	private boolean showMainScreen = true;
 	private boolean introDone = false;
 	private boolean startedIntroThread1 = false;
@@ -329,6 +329,8 @@ public class Renderer extends JPanel{
 			case 4:
 				enemyWon = false;
 				playerWon = false;
+				playerSmokeLevel = 0;
+				enemySmokeLevel = 0;
 				intro_plane_width = 50;
 				intro_plane_height = 50;
 				intro_plane_x = 450;
@@ -365,6 +367,8 @@ public class Renderer extends JPanel{
 			case 5:
 				enemyWon = false;
 				playerWon = false;
+				playerSmokeLevel = 0;
+				enemySmokeLevel = 0;
 				intro_plane_width = 50;
 				intro_plane_height = 50;
 				intro_plane_x = 450;
@@ -397,6 +401,8 @@ public class Renderer extends JPanel{
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Arial",Font.BOLD,30));
 		g.drawString("HEALTH: "+(int)player.getHealth(), 10, 50);
+		if (!isMultiplayer && enemy != null)
+			g.drawString("ENEMY'S HEALTH: "+(int)enemy.getHealth(), 500, 50);
 	}
 	
 	public void renderMainScreen() {
@@ -828,6 +834,8 @@ public class Renderer extends JPanel{
 			if (player != null) {
 				smoke.setX(player.getPX());
 				smoke.setY(player.getPY());
+				smoke.setVelx(-player.getVelx());
+				smoke.setVely(-player.getVely());
 			}
 			
 			smokel.add(smoke);
@@ -842,6 +850,8 @@ public class Renderer extends JPanel{
 				if (player != null) {
 					smoke.setX(player.getPX());
 					smoke.setY(player.getPY());
+					smoke.setVelx(-player.getVelx());
+					smoke.setVely(-player.getVely());
 				}
 				
 				smokel.add(smoke);
@@ -875,16 +885,18 @@ public class Renderer extends JPanel{
 			smoke.setWidth(500);
 			smoke.setHeight(500);
 			
-			if (enemy != null) {
+			if (player != null) {
 				smoke.setX(enemy.getPX());
 				smoke.setY(enemy.getPY());
+				smoke.setVelx(-enemy.getVelx());
+				smoke.setVely(-enemy.getVely());
 			}
 			
 			enemy_smokel.add(smoke);
 		}
 		
 		if (enemy_smokel.size() <= 0) {
-			for (int i = enemy_smokel.size(); i < enemySmokeLevel; i++) {
+			for (int i = smokel.size(); i < enemySmokeLevel; i++) {
 				smoke = new Cloud((Graphics2D)g, smokeSprite);
 				smoke.setWidth(500);
 				smoke.setHeight(500);
@@ -892,6 +904,8 @@ public class Renderer extends JPanel{
 				if (enemy != null) {
 					smoke.setX(enemy.getPX());
 					smoke.setY(enemy.getPY());
+					smoke.setVelx(-enemy.getVelx());
+					smoke.setVely(-enemy.getVely());
 				}
 				
 				enemy_smokel.add(smoke);
@@ -912,7 +926,7 @@ public class Renderer extends JPanel{
 			enemy_smokel.clear();
 			
 			for (Cloud s : new_enemy_smokel) {
-				smokel.add(s);
+				enemy_smokel.add(s);
 			}
 			
 			new_enemy_smokel.clear();
@@ -1072,16 +1086,18 @@ public class Renderer extends JPanel{
 	}
 	
 	public void renderSmoke(Graphics g) {
-		for (int i = 0; i < smokel.size(); i++) {
-			Cloud smoke = smokel.get(i);
-			smoke.gtick();
-			smoke.draw();
-		}
-		
-		for (int i = 0; i < enemy_smokel.size(); i++) {
-			Cloud smoke = enemy_smokel.get(i);
-			smoke.gtick();
-			smoke.draw();		
+		if (!playerWon && !enemyWon) {
+			for (int i = 0; i < smokel.size(); i++) {
+				Cloud smoke = smokel.get(i);
+				smoke.gtick();
+				smoke.draw();
+			}
+			
+			for (int i = 0; i < enemy_smokel.size(); i++) {
+				Cloud smoke = enemy_smokel.get(i);
+				smoke.gtick();
+				smoke.draw();		
+			}
 		}
 	}
 	
