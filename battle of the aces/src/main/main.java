@@ -16,11 +16,11 @@ import render.Renderer;
 public class main extends Canvas implements Runnable{
 	private Thread mainLoop;
 	private JFrame frame;
-	private double game_version = 0.9;
 	private boolean UPDATE = false;
 	private boolean running = true;
 	private double frame_cap = 1.0/60.0;
 	private int width = 900, height = 700;
+	private String game_version = "0.9.0";
 	
 	private Renderer renderer = new Renderer();
 	private Window w;
