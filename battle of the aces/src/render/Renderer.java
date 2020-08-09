@@ -1106,12 +1106,13 @@ public class Renderer extends JPanel{
 			if (bullet.isDead() == false) {
 				bullet.btick();
 				bullet.draw();	
+				
+				if (bullet.oBounds().intersects(enemy.bounds())) {
+					enemy.setHealth(enemy.getHealth()-1);
+					bullet.setDead(true);
+				}
 			}
 			
-			if (bullet.oBounds().intersects(enemy.bounds()) && !bullet.isDead()) {
-				enemy.setHealth(enemy.getHealth()-1);
-				bullet.setDead(true);
-			}
 			
 			this.remove(bullet);
 		}
@@ -1120,12 +1121,13 @@ public class Renderer extends JPanel{
 			if (bullet.isDead() == false) {
 				bullet.btick();
 				bullet.draw();	
+				
+				if (bullet.oBounds().intersects(player.bounds())) {
+					player.setHealth(player.getHealth()-1);
+					bullet.setDead(true);
+				}
 			}
 			
-			if (bullet.oBounds().intersects(player.bounds()) && !bullet.isDead()) {
-				player.setHealth(player.getHealth()-1);
-				bullet.setDead(true);
-			}
 			
 			this.remove(bullet);
 		}
