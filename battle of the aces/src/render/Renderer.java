@@ -1108,8 +1108,8 @@ public class Renderer extends JPanel{
 				bullet.draw();	
 			}
 			
-			if (bullet.oBounds().intersects(enemy.bounds()) && bullet.isDead() == false) {
-				enemy.setHealth(enemy.getHealth()-0.5);
+			if (bullet.oBounds().intersects(enemy.bounds()) && !bullet.isDead()) {
+				enemy.setHealth(enemy.getHealth()-1);
 				bullet.setDead(true);
 			}
 			
@@ -1122,8 +1122,8 @@ public class Renderer extends JPanel{
 				bullet.draw();	
 			}
 			
-			if (bullet.oBounds().intersects(player.bounds()) && bullet.isDead() == false) {
-				player.setHealth(player.getHealth()-0.5);
+			if (bullet.oBounds().intersects(player.bounds()) && !bullet.isDead()) {
+				player.setHealth(player.getHealth()-1);
 				bullet.setDead(true);
 			}
 			

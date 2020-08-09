@@ -148,8 +148,10 @@ public class main extends Canvas implements Runnable{
 	
 	public void create_server() {
 		if (server == null && renderer.showingMenu) {
-			server = new Server();
-			server.start();
+			new Thread(()->{
+				server = new Server();
+				server.start();
+			}).start();
 			
 			JFrame frame = new JFrame("Server info");
 			JPanel panel = new JPanel();
