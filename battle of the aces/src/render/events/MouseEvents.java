@@ -19,59 +19,62 @@ public class MouseEvents implements MouseListener{
 		mx = e.getX();
 		my = e.getY();
 		
+		int xoff = (m.w.getWidth()-m.width)/2;
+		int yoff = (m.w.getHeight()-m.height)/2;
+		
 		if (renderer.choosingPlayer) {
-			if (mx >= 0+(m.w.getWidth()-m.width)/2 && mx <= 100+(m.w.getWidth()-m.width)/2) {
-				if (my >= 500+(m.w.getHeight()-m.height)/2 && my <= 600+(m.w.getHeight()-m.height)/2) {
+			if (mx >= 0+xoff && mx <= 100+xoff) {
+				if (my >= 500+yoff && my <= 600+yoff) {
 					if (renderer.playerSpriteChosenX > 1) {
 						renderer.playerSpriteChosenX--;
 					}
 					back = true;
 				}
 			}
-			if (mx > 300+(m.w.getWidth()-m.width)/2 && mx < 400+(m.w.getWidth()-m.width)/2) {
-				if (my >= 500+(m.w.getHeight()-m.height)/2 && my <= 600+(m.w.getHeight()-m.height)/2) {
+			if (mx > 300+xoff && mx < 400+xoff) {
+				if (my >= 500+yoff && my <= 600+yoff) {
 					back = false;
 					renderer.playerSpriteChosenX++;
 				}
 			}
 		}else if (renderer.choosingEnemy) {
-			if (mx >= 0+(m.w.getWidth()-m.width)/2 && mx <= 100+(m.w.getWidth()-m.width)/2) {
-				if (my >= 500+(m.w.getHeight()-m.height)/2 && my <= 600+(m.w.getHeight()-m.height)/2) {
+			if (mx >= 0+xoff && mx <= 100+xoff) {
+				if (my >= 500+yoff && my <= 600+yoff) {
 					if (renderer.enemySpriteChosenX > 1) {
 						renderer.enemySpriteChosenX--;
 					}
 					back = true;
 				}
 			}
-			if (mx > 300+(m.w.getWidth()-m.width)/2 && mx < 400+(m.w.getWidth()-m.width)) {
-				if (my >= 500+(m.w.getHeight()-m.height)/2 && my <= 600+(m.w.getHeight()-m.height)/2) {
+			if (mx > 300+xoff && mx < 400+xoff) {
+				if (my >= 500+yoff && my <= 600+yoff) {
 					back = false;
 					renderer.enemySpriteChosenX++;
 				}
 			}
 		}
 		if (renderer.choosingServer) {
-			if (mx > 200+(m.w.getWidth()-m.width)) {
-				if (my >= 65+(m.w.getHeight()-m.height)/2 && my <= 115+(m.w.getHeight()-m.height)/2) {
+			if (mx > 200+xoff) {
+				if (my >= 65+yoff && my <= 115+yoff) {
 					renderer.choosingServerIP = true;
 					renderer.choosingServerPort = false;
 				}
-				if (my >= 165+(m.w.getHeight()-m.height)/2 && my <= 215+(m.w.getHeight()-m.height)/2) {
+				if (my >= 165+yoff && my <= 215+yoff) {
 					renderer.choosingServerPort = true;
 					renderer.choosingServerIP = false;
 				}
 			}
 			if (!renderer.username.equals("")) {
-				if (mx >= 455+(m.w.getWidth()-m.width)/2 && mx <= 730+(m.w.getWidth()-m.width)/2) {
-					if (my >= 465+(m.w.getHeight()-m.height)/2 && my <= 515+(m.w.getHeight()-m.height)/2) {
+				if (mx >= 455+xoff && mx <= 730+xoff) {
+					if (my >= 465+yoff && my <= 515+yoff) {
 						renderer.keyXpress = 3;
 					}
 				}
 			}
 		}
 		if (renderer.gameStarted == false && renderer.introStart == false) {
-			if (mx >= 450+(m.w.getWidth()-m.width)/2 && mx <= 600+(m.w.getWidth()-m.width)/2) {
-				if (my >= 590+(m.w.getHeight()-m.height)/2 && my <= 640+(m.w.getHeight()-m.height)/2) {
+			if (mx >= 450+xoff && mx <= 600+xoff) {
+				if (my >= 590+yoff && my <= 640+yoff) {
 					if (renderer.keyXpress > 0) {
 						renderer.keyXpress--;
 					}

@@ -154,6 +154,14 @@ public class Renderer extends JPanel{
 		this.g = g;
 		
 		if (showMainScreen) {
+			if (showingMenu) {
+				choosingServer = false;
+				choosingServerIP = false;
+				choosingServerPort = false;
+				choosingPlayer = false;
+				choosingEnemy = false;
+			}
+			
 			g2.translate((m.w.getWidth()-m.width)/2, (m.w.getHeight()-m.height)/2);
 			
 			renderMainScreen();
@@ -635,7 +643,7 @@ public class Renderer extends JPanel{
 			g2.drawString("Space : Shoot bullets", 10, 250);
 			g2.drawString("W : Create server", 10, 300);
 			g2.drawString("Escape : Leave multiplayer / singleplayer game (reccomended exit ", 10, 350);
-			g2.drawString("method)", 10, 380);
+			g2.drawString("method) ((Work in progress))", 10, 380);
 		}
 	}
 	
@@ -799,7 +807,7 @@ public class Renderer extends JPanel{
 	}
 	
 	public void createClouds(Graphics g) {
-		for (int i = clouds.size(); i < 15; i++) {
+		for (int i = clouds.size(); i < 15*Math.round(((m.w.getWidth()+m.w.getHeight())/(m.width+m.height))); i++) {
 			cloud = new Cloud((Graphics2D) g,cloudSprite);
 			Random r = new Random();
 			cloud.setX(r.nextInt(m.w.getWidth()));
