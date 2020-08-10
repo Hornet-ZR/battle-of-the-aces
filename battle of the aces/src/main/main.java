@@ -19,11 +19,11 @@ public class main extends Canvas implements Runnable{
 	private boolean UPDATE = false;
 	private boolean running = true;
 	private double frame_cap = 1.0/60.0;
-	private int width = 900, height = 700;
+	public int width = 900, height = 700;
 	private String game_version = "0.9.0";
 	
+	public Window w;
 	private Renderer renderer = new Renderer();
-	private Window w;
 	
 	public int fps = 0;
 	public Client client;
@@ -32,7 +32,7 @@ public class main extends Canvas implements Runnable{
 	public void init() {
 		this.setFocusable(true);
 		this.setFocusTraversalKeysEnabled(false);
-		w = new Window(this, width, height, "Battle of The Aces [BETA "+game_version+"]", false);
+		w = new Window(this, width, height, "Battle of The Aces [BETA "+game_version+"]", true);
 		mainLoop = new Thread(this);
 		mainLoop.run();
 	}
@@ -94,7 +94,7 @@ public class main extends Canvas implements Runnable{
 		if (renderer.gameStarted == false) g.setColor(Color.BLACK);
 		if (renderer.gameStarted == true) g.setColor(new Color(0,0,255));
 		if (renderer.introStart == true) g.setColor(new Color(0,0,255));
-		g.fillRect(0, 0, width, height);
+		g.fillRect(0, 0, w.getWidth(), w.getHeight());
 		
 		if (renderer.gameStarted == true) {	
 			renderer.gameInit();
@@ -105,7 +105,7 @@ public class main extends Canvas implements Runnable{
 			
 			renderer.renderUI(g);
 			
-			g.translate((int)-renderer.player.getPX()+renderer.player.getWidth()+50,(int)-renderer.player.getPY()+renderer.player.getHeight()-50);
+			g.translate(-(int)renderer.player.getPX()+renderer.player.getWidth()+50+(w.getWidth()-width)/2,-(int)renderer.player.getPY()+renderer.player.getHeight()-50+(w.getHeight()-height)/2);
 			
 			renderer.render(g);
 			
@@ -129,7 +129,7 @@ public class main extends Canvas implements Runnable{
 			renderer.createEnemySmoke(g);
 			renderer.renderSmoke(g);
 			
-			g.translate((int)renderer.player.getPX()+renderer.player.getWidth()+50,(int)renderer.player.getPY()+renderer.player.getHeight()-50);
+			g.translate((int)renderer.player.getPX()+renderer.player.getWidth()+50+(w.getWidth()-width)/2,(int)renderer.player.getPY()+renderer.player.getHeight()-50+(w.getHeight()-height)/2);
 		}else if (renderer.gameStarted == false) {
 			renderer.render(g);
 		}

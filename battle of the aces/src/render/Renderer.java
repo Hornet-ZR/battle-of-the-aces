@@ -154,7 +154,11 @@ public class Renderer extends JPanel{
 		this.g = g;
 		
 		if (showMainScreen) {
+			g2.translate((m.w.getWidth()-m.width)/2, (m.w.getHeight()-m.height)/2);
+			
 			renderMainScreen();
+			
+			g2.translate(-(m.w.getWidth()-m.width)/2, -(m.w.getHeight()-m.height)/2);
 		}
 		
 		if (gameStarted) {
@@ -402,7 +406,7 @@ public class Renderer extends JPanel{
 		g.setFont(new Font("Arial",Font.BOLD,30));
 		g.drawString("HEALTH: "+(int)player.getHealth(), 10, 50);
 		if (!isMultiplayer && enemy != null)
-			g.drawString("ENEMY'S HEALTH: "+(int)enemy.getHealth(), 500, 50);
+			g.drawString("ENEMY'S HEALTH: "+(int)enemy.getHealth(), m.w.getWidth()-g.getFontMetrics().stringWidth(String.valueOf("ENEMY'S HEALTH: "+(int)enemy.getHealth()))-50, 50);
 	}
 	
 	public void renderMainScreen() {
@@ -417,7 +421,7 @@ public class Renderer extends JPanel{
 				g2.setColor(Color.BLACK);
 				g2.setFont(new Font("Arial",Font.BOLD,48));
 				g2.drawString("You won!", 100, 500);
-				g2.drawString("Press \"Z\" to go to main menu.", 400, 100);
+				g2.drawString("Press \"Z\" to go to main menu.", 150, 50);
 				g2.drawString("Your remaining health: "+(int)player.getHealth(), 100, 550);
 				g2.drawString("Enemy's remaining health: "+(int)enemy.getHealth(), 100, 600);
 			}else if (enemyWon) {
@@ -798,8 +802,8 @@ public class Renderer extends JPanel{
 		for (int i = clouds.size(); i < 15; i++) {
 			cloud = new Cloud((Graphics2D) g,cloudSprite);
 			Random r = new Random();
-			cloud.setX(r.nextInt(900)-150);
-			cloud.setY(r.nextInt(700)-150);
+			cloud.setX(r.nextInt(m.w.getWidth()));
+			cloud.setY(r.nextInt(m.w.getHeight()));
 			cloud.setWidth(r.nextInt(50));
 			cloud.setHeight(r.nextInt(50));
 			clouds.add(cloud);
@@ -1046,7 +1050,7 @@ public class Renderer extends JPanel{
 						Thread.sleep(1);
 						intro_runway_x--;
 						
-						if (intro_runway_x <= -200 && startedIntroThread2 == false) {
+						if (intro_runway_x <= -600 && startedIntroThread2 == false) {
 							startedIntroThread2 = true;
 							gainAltitude.start();
 							break;
@@ -1066,7 +1070,7 @@ public class Renderer extends JPanel{
 	
 	public void renderClouds(Graphics g) {
 		for (Cloud cl : clouds) {
-			if (cl.getOX() > -200 && cl.getOX() < 900 && cl.getOY() > -200 && cl.getOY() < 700) {
+			if (cl.getOX() > -200 && cl.getOX() < m.w.getWidth() && cl.getOY() > -200 && cl.getOY() < m.w.getHeight()) {
 				cl.setVelx(-player.getVelx());
 				cl.setVely(-player.getVely());
 				
@@ -1162,13 +1166,6 @@ public class Renderer extends JPanel{
 		
 		if (Math.abs(player.getDirection()) >= 360.0f) {
 			player.setDirection(0);
-		}
-		
-		for (Bullets b : enemy_bullets) {
-			if (b.oBounds().intersects(player.bounds()) && !b.isDead()) {
-				player.setHealth(player.getHealth()-1);
-				b.setDead(true);
-			}
 		}
 		
 		player.tick();
