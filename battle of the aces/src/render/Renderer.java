@@ -132,7 +132,7 @@ public class Renderer extends JPanel{
 	public void init(main m) {
 		this.m = m;
 		m.addKeyListener(keyEvent);
-		mouseEvent.init(this);
+		mouseEvent.init(this,m);
 		keyEvent.init(this, m);
 		m.addMouseListener(mouseEvent);
 
