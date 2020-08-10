@@ -412,7 +412,7 @@ public class Renderer extends JPanel{
 	public void renderUI(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Arial",Font.BOLD,30));
-		g.drawString("HEALTH: "+(int)player.getHealth(), 10, 50);
+		g.drawString("HEALTH: "+(int)player.getHealth(), 50, 50);
 		if (!isMultiplayer && enemy != null)
 			g.drawString("ENEMY'S HEALTH: "+(int)enemy.getHealth(), m.w.getWidth()-g.getFontMetrics().stringWidth(String.valueOf("ENEMY'S HEALTH: "+(int)enemy.getHealth()))-50, 50);
 	}
