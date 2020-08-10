@@ -20,16 +20,16 @@ public class MouseEvents implements MouseListener{
 		my = e.getY();
 		
 		if (renderer.choosingPlayer) {
-			if (mx >= 0+(m.w.getWidth()-m.width) && mx <= 100+(m.w.getWidth()-m.width)) {
-				if (my+(m.w.getHeight()-m.height) >= 500 && my <= 600+(m.w.getHeight()-m.height)) {
+			if (mx >= 0+(m.w.getWidth()-m.width)/2 && mx <= 100+(m.w.getWidth()-m.width)/2) {
+				if (my >= 500+(m.w.getHeight()-m.height)/2 && my <= 600+(m.w.getHeight()-m.height)/2) {
 					if (renderer.playerSpriteChosenX > 1) {
 						renderer.playerSpriteChosenX--;
 					}
 					back = true;
 				}
 			}
-			if (mx > 300+(m.w.getWidth()-m.width) && mx < 400+(m.w.getWidth()-m.width)) {
-				if (my >= 500+(m.w.getHeight()-m.height) && my <= 600+(m.w.getHeight()-m.height)) {
+			if (mx > 300+(m.w.getWidth()-m.width)/2 && mx < 400+(m.w.getWidth()-m.width)/2) {
+				if (my >= 500+(m.w.getHeight()-m.height)/2 && my <= 600+(m.w.getHeight()-m.height)/2) {
 					back = false;
 					renderer.playerSpriteChosenX++;
 				}
